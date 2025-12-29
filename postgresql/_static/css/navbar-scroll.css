@@ -1,0 +1,141 @@
+.dask-nav {
+  overflow: visible !important;
+}
+
+/* Horizontal scroll menu */
+.dask-nav > ul {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  align-items: center; 
+  list-style: none;
+  margin: 0 !important;
+  padding: 0 0px !important;
+  scrollbar-width: none;
+}
+
+/* Prevent menu items from shrinking */
+.dask-nav > ul > li {
+  flex: 0 0 auto !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Ensure hidden logo does not reserve space */
+.dask-nav > ul > li.logo {
+  display: none !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Remove ONLY the jet-black primary header (behind the menu) */
+.bd-header-primary,
+.header-primary {
+  display: none !important;
+}
+
+/* Make the black bar (primary header) the same height as your top nav */
+.bd-header-primary,
+.header-primary,
+.dask-nav {
+  height: 20px !important;
+  min-height: 20px !important;
+  line-height: 20px !important;
+}
+
+/* Ensure the nav content is vertically centered */
+.bd-header-primary *,
+.header-primary *,
+.dask-nav * {
+  line-height: inherit !important;
+}
+
+/* ================================
+   NAV ITEM TEXT ALIGNMENT & HOVER
+   ================================ */
+
+/* Center text vertically & horizontally */
+.dask-nav > ul > li > a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 20px;               
+  padding: 0 0 !important;
+  text-decoration: none !important;
+  color: #ffffff !important;
+  transition: 
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* Remove underline in ALL states */
+.dask-nav > ul > li > a:hover,
+.dask-nav > ul > li > a:focus,
+.dask-nav > ul > li > a:active {
+  text-decoration: none !important;
+}
+
+/* Hover effect: invert colors */
+.dask-nav > ul > li > a:hover {
+  background-color: #494949 !important;
+  color: #ffffff !important;
+  /*padding: 18px 0px !important;*/
+  border-radius: 25px;
+}
+
+/* Active / current page (optional) */
+.dask-nav > ul > li.active > a,
+.dask-nav > ul > li > a[aria-current="page"] {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 25px;
+}
+.dask-nav > ul::-webkit-scrollbar {
+  display: none;
+}
+/***** arrow buttons ******/
+.scroll-btn {
+  position: absolute;
+  top: 30%;
+  transform: translateY(-50%, -50%);
+  z-index: 1000;
+  width: 34px;
+  height: 34px;
+  background-color: #292929;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 10px;
+  user-select: none;
+}
+
+.scroll-left { left: 0px; }
+.scroll-right { right: 0px; }
+
+/*********************************************/
+
+/* Slight hover emphasis */
+.dask-nav:hover::before,
+.dask-nav:hover::after {
+  opacity: 1;
+}
+
+/* Hide arrows on large screens (no scroll needed) */
+@media (min-width: 1100px) {
+  .dask-nav::before,
+  .dask-nav::after {
+    display: none !important;
+  }
+}
+
+/****** Home Icon*******/
+.nav-icon img {
+  height: 25px;
+  width: 25px;
+  vertical-align: middle;
+  filter: brightness(0) invert(1);  /* 🔥 makes black → white */
+}
+

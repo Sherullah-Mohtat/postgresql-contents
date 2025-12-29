@@ -1,0 +1,11 @@
+.ad-bottom {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+}
+.ad-bottom a:hover {
+  opacity: 0.7;
+}

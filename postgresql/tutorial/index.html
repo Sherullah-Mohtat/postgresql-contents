@@ -1,0 +1,706 @@
+ 
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="What is pgAdmin? PostgreSQL Graphical Administration Tool" name="title" />
+<meta content="Learn what pgAdmin is, how it works, and how it differs from PostgreSQL. pgAdmin is a graphical administration and management tool for managing PostgreSQL databases visually." name="description" />
+<meta content="pgAdmin, PostgreSQL pgAdmin, PostgreSQL GUI tool, pgAdmin tutorial, PostgreSQL administration tool, PostgreSQL management GUI" name="keywords" />
+<meta content="Sherullah Mohtat" name="author" />
+
+    <title>What is pgAdmin? &#8212; Postgresql</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=873836d9" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/style.css?v=d6ed2d86" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=52fd3798" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/ad_style.css?v=34d129f9" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/navbar-scroll.css?v=4d5946c0" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/index';</script>
+    <script src="../_static/js/custom.js?v=6f0278c6"></script>
+    <script src="../_static/js/navbar-scroll.js?v=cb524ae2"></script>
+    <link rel="icon" href="../_static/sherullah.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Tablespaces(2)" href="../server/localpostgresql/tablespaces/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+<!-- Google Tag Manager (noscript) -->
+<noscript
+  ><iframe
+    src="https://www.googletagmanager.com/ns.html?id=GTM-P4GQM59"
+    height="0"
+    width="0"
+    style="display: none; visibility: hidden"
+  ></iframe
+></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<nav class="dask-nav container-fluid">
+  <ul>
+    <li class="logo">
+      <a href="https://docs.dask.org/">
+        <img
+          class="caption"
+          src="../_static/images/dask-horizontal-white.svg"
+        />
+      </a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/">Dask</a>
+    </li>
+
+    <li>
+      <a href="https://distributed.dask.org/">Distributed</a>
+    </li>
+
+    <li>
+      <a href="https://ml.dask.org/">Dask ML</a>
+    </li>
+
+    <li>
+      <a href="https://examples.dask.org/">Examples</a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/en/latest/ecosystem.html">Ecosystem</a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/en/latest/support.html">Community</a>
+    </li>
+  </ul>
+</nav>
+
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+<nav class="dask-nav container-fluid navbar-scroll-wrap">
+
+    <!-- Left arrow -->
+  <button class="scroll-btn scroll-left" id="navLeft" aria-label="Scroll left">
+    &#10094;
+  </button>
+
+  <ul class="nav-scroll" id="nav-scroll">
+        <!-- 🔥 Home = external site -->
+    <li>
+      <a href="https://sherullah.com/" target="_blank" rel="noopener" class="nav-icon">
+        <img src="../_static/images/logo/home48.png" alt="Home" />
+      </a>
+    </li>
+
+    <!-- 🔥 FLUTTER = external docs -->
+    <li>
+      <a href="https://sherullah.com/flutter-contents/flutter/"
+        target="_blank"
+        rel="noopener">
+        FLUTTER
+      </a>
+    </li> 
+
+    <!-- 🔥 FLUTTER = documentation root 
+    <li class="">
+      <a href="../index.html.html">FLUTTER</a>
+    </li> -->
+
+    <li class="">
+      <a href="../firebase/index.html">FIREBASE</a>
+    </li>
+
+    <li class="">
+      <a href="../dart/index.html">DART</a>
+    </li>
+
+       <!-- 🔥 SDJANGO= external docs -->
+    <li>
+      <a href="https://sherullah.com/django-contents/django/"
+        target="_blank"
+        rel="noopener">
+        DJANGO
+      </a>
+    </li> 
+
+    <li class="">
+      <a href="../python/index.html">PYTHON</a>
+    </li>
+    
+    <li class="">
+      <a href="../index.html">POSTGRESQL</a>
+    </li>
+
+    <li class="">
+      <a href="../mongodb/index.html">MONGODB</a>
+    </li>
+
+    <li class="">
+      <a href="../git/index.html">GIT</a>
+    </li>
+
+    <li class="">
+      <a href="../github/index.html">GITHUB</a>
+    </li>
+
+    <li class="">
+      <a href="../docker/index.html">DOCKER</a>
+    </li>
+
+    <li class="">
+      <a href="../kubernetes/index.html">KUBERNETES</a>
+    </li>
+  </ul>
+
+    <!-- Right arrow -->
+  <button class="scroll-btn scroll-right" id="navRight" aria-label="Scroll right">
+    &#10095;
+  </button>
+</nav>
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="_static/images/dask-horizontal-white.svg">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Postgresql</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Object Explorer</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../server/index.html">Server(1)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../server/localpostgresql/index.html">Local PostgreSQL</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../server/localpostgresql/databases/index.html">Databases(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../server/localpostgresql/databases/mydb/index.html">MyDB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../server/localpostgresql/databases/postgres/index.html">postgres</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../server/localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../server/localpostgresql/tablespaces/index.html">Tablespaces(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">What is pgAdmin?</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>What is pgAdmin?</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-is-used-for">What pgAdmin is used for</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pgadmin-vs-postgresql-very-important">pgAdmin vs PostgreSQL (very important)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analogy-easy-to-remember">Analogy (easy to remember)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#types-of-pgadmin">🖥️ Types of pgAdmin</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-connects-to">🔌 What pgAdmin connects to</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-manages-high-level">📁 What pgAdmin manages (high-level)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#is-pgadmin-required">🔐 Is pgAdmin required?</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="what-is-pgadmin">
+<h1>What is pgAdmin?<a class="headerlink" href="#what-is-pgadmin" title="Link to this heading">#</a></h1>
+<p>pgAdmin is the most popular graphical administration and management tool for PostgreSQL.
+It provides a visual interface that allows developers and database administrators
+to manage, monitor, and interact with PostgreSQL databases efficiently.</p>
+<p>🐘 <strong>pgAdmin</strong> is a <strong>graphical administration and management tool</strong> for PostgreSQL.</p>
+<p>In simple words:</p>
+<blockquote>
+<div><p>pgAdmin is a <strong>GUI application</strong> that lets you <strong>manage PostgreSQL visually</strong> instead of using only terminal commands.</p>
+</div></blockquote>
+<section id="what-pgadmin-is-used-for">
+<h2>What pgAdmin is used for<a class="headerlink" href="#what-pgadmin-is-used-for" title="Link to this heading">#</a></h2>
+<p>With pgAdmin, you can:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Connect to PostgreSQL servers</p></li>
+<li><p>Create and manage databases</p></li>
+<li><p>Manage users (roles) and permissions</p></li>
+<li><p>Write and run SQL queries</p></li>
+<li><p>View tables, indexes, views, functions</p></li>
+<li><p>Monitor activity and performance</p></li>
+<li><p>Inspect server statistics and logs</p></li>
+</ul>
+</div></blockquote>
+<p>All <strong>without memorizing every SQL command.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="pgadmin-vs-postgresql-very-important">
+<h2>pgAdmin vs PostgreSQL (very important)<a class="headerlink" href="#pgadmin-vs-postgresql-very-important" title="Link to this heading">#</a></h2>
+<p>Many beginners confuse these two.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>PostgreSQL</p></th>
+<th class="head"><p>pgAdmin</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Database server (engine)</p></td>
+<td><p>Management tool</p></td>
+</tr>
+<tr class="row-odd"><td><p>Stores data</p></td>
+<td><p>Does NOT store data</p></td>
+</tr>
+<tr class="row-even"><td><p>Runs as a service</p></td>
+<td><p>Runs as an application</p></td>
+</tr>
+<tr class="row-odd"><td><p>Can work without pgAdmin</p></td>
+<td><p>Requires PostgreSQL</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>pgAdmin cannot exist without PostgreSQL</strong></p>
+<p><strong>PostgreSQL works fine without pgAdmin</strong></p>
+</section>
+<hr class="docutils" />
+<section id="analogy-easy-to-remember">
+<h2>Analogy (easy to remember)<a class="headerlink" href="#analogy-easy-to-remember" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Think of:</dt><dd><ul class="simple">
+<li><p><strong>PostgreSQL</strong> = Engine of a car 🚗</p></li>
+<li><p><strong>pgAdmin</strong> = Dashboard &amp; control panel 🧭</p></li>
+</ul>
+</dd>
+</dl>
+<p>You can drive without the dashboard, but the dashboard makes life easier.</p>
+</section>
+<hr class="docutils" />
+<section id="types-of-pgadmin">
+<h2>🖥️ Types of pgAdmin<a class="headerlink" href="#types-of-pgadmin" title="Link to this heading">#</a></h2>
+<p><strong>1️⃣ pgAdmin Desktop</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>Installed on your computer</dt><dd><ul>
+<li><p>Uses browser-based UI internally</p></li>
+<li><p>Common for developers</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>2️⃣ pgAdmin Web</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Runs on a server</p></li>
+<li><p>Accessed via browser</p></li>
+<li><p>Used by teams / enterprises</p></li>
+</ul>
+</div></blockquote>
+<p>Both do the <strong>same job.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="what-pgadmin-connects-to">
+<h2>🔌 What pgAdmin connects to<a class="headerlink" href="#what-pgadmin-connects-to" title="Link to this heading">#</a></h2>
+<p><strong>pgAdmin can connect to:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Local PostgreSQL (localhost)</p></li>
+<li><p>Remote PostgreSQL servers</p></li>
+<li><p>Cloud PostgreSQL (AWS RDS, Azure, GCP)</p></li>
+<li><p>Multiple servers at once</p></li>
+</ul>
+</div></blockquote>
+<p>That’s why you see:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Servers<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="o">)</span>
+</pre></div>
+</div>
+</section>
+<section id="what-pgadmin-manages-high-level">
+<h2>📁 What pgAdmin manages (high-level)<a class="headerlink" href="#what-pgadmin-manages-high-level" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>PostgreSQL<span class="w"> </span>Server
+├──<span class="w"> </span>Databases
+│<span class="w">   </span>├──<span class="w"> </span>Schemas
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>Tables
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>Views
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>Functions
+├──<span class="w"> </span>Roles<span class="w"> </span><span class="o">(</span>Users<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>Groups<span class="o">)</span>
+└──<span class="w"> </span>Tablespaces
+</pre></div>
+</div>
+<p>pgAdmin simply <strong>shows and controls</strong> this hierarchy.</p>
+</section>
+<hr class="docutils" />
+<section id="is-pgadmin-required">
+<h2>🔐 Is pgAdmin required?<a class="headerlink" href="#is-pgadmin-required" title="Link to this heading">#</a></h2>
+<p>❌ <strong>No — PostgreSQL works with:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>psql</p></li>
+<li><p>Application code</p></li>
+<li><p>ORMs</p></li>
+</ul>
+</div></blockquote>
+<p>✅ <strong>But pgAdmin is highly recommended for:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Learning</p></li>
+<li><p>Debugging</p></li>
+<li><p>Visualization</p></li>
+<li><p>Administration tasks</p></li>
+</ul>
+</div></blockquote>
+<hr class="docutils" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>One-line summary</strong></p>
+<p>pgAdmin is a graphical administration tool that allows users to manage,
+monitor, and interact with PostgreSQL databases through a visual interface.
+Besides pgAdmin, several graphical administration and management tools—such as DBeaver, DataGrip, and TablePlus—are available to manage PostgreSQL databases, each offering different features and user experiences.</p>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../server/localpostgresql/tablespaces/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Tablespaces(2)</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-is-used-for">What pgAdmin is used for</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pgadmin-vs-postgresql-very-important">pgAdmin vs PostgreSQL (very important)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analogy-easy-to-remember">Analogy (easy to remember)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#types-of-pgadmin">🖥️ Types of pgAdmin</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-connects-to">🔌 What pgAdmin connects to</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-manages-high-level">📁 What pgAdmin manages (high-level)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#is-pgadmin-required">🔐 Is pgAdmin required?</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024 Sherullah Mohtat. All rights reserved..
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+<!-- Google Tag Manager -->
+<script>
+  (function (w, d, s, l, i) {
+    w[l] = w[l] || [];
+    w[l].push({
+      "gtm.start": new Date().getTime(),
+      event: "gtm.js",
+    });
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s),
+      dl = l != "dataLayer" ? "&l=" + l : "";
+    j.async = true;
+    j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+    f.parentNode.insertBefore(j, f);
+  })(
+    window,
+    document,
+    "script",
+    "dataLayer",
+    "GTM-P4GQM59"
+  );
+</script>
+<!-- End Google Tag Manager -->
+
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

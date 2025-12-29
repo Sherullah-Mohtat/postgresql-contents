@@ -1,0 +1,681 @@
+ 
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="Server (1) in pgAdmin – What It Means in PostgreSQL" name="title" />
+<meta content="Learn what Server (1) means in pgAdmin, why PostgreSQL uses the term server, and how pgAdmin organizes PostgreSQL server instances." name="description" />
+<meta content="pgAdmin Server, Server (1) pgAdmin, PostgreSQL server instance, pgAdmin Object Explorer, PostgreSQL server explained" name="keywords" />
+<meta content="Sherullah Mohtat" name="author" />
+
+    <title>Server(1) &#8212; Postgresql</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=873836d9" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/style.css?v=d6ed2d86" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=52fd3798" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/ad_style.css?v=34d129f9" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/navbar-scroll.css?v=4d5946c0" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'server/index';</script>
+    <script src="../_static/js/custom.js?v=6f0278c6"></script>
+    <script src="../_static/js/navbar-scroll.js?v=cb524ae2"></script>
+    <link rel="icon" href="../_static/sherullah.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Local PostgreSQL" href="localpostgresql/index.html" />
+    <link rel="prev" title="Welcome to PostgreSQL Learning" href="../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+<!-- Google Tag Manager (noscript) -->
+<noscript
+  ><iframe
+    src="https://www.googletagmanager.com/ns.html?id=GTM-P4GQM59"
+    height="0"
+    width="0"
+    style="display: none; visibility: hidden"
+  ></iframe
+></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<nav class="dask-nav container-fluid">
+  <ul>
+    <li class="logo">
+      <a href="https://docs.dask.org/">
+        <img
+          class="caption"
+          src="../_static/images/dask-horizontal-white.svg"
+        />
+      </a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/">Dask</a>
+    </li>
+
+    <li>
+      <a href="https://distributed.dask.org/">Distributed</a>
+    </li>
+
+    <li>
+      <a href="https://ml.dask.org/">Dask ML</a>
+    </li>
+
+    <li>
+      <a href="https://examples.dask.org/">Examples</a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/en/latest/ecosystem.html">Ecosystem</a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/en/latest/support.html">Community</a>
+    </li>
+  </ul>
+</nav>
+
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+<nav class="dask-nav container-fluid navbar-scroll-wrap">
+
+    <!-- Left arrow -->
+  <button class="scroll-btn scroll-left" id="navLeft" aria-label="Scroll left">
+    &#10094;
+  </button>
+
+  <ul class="nav-scroll" id="nav-scroll">
+        <!-- 🔥 Home = external site -->
+    <li>
+      <a href="https://sherullah.com/" target="_blank" rel="noopener" class="nav-icon">
+        <img src="../_static/images/logo/home48.png" alt="Home" />
+      </a>
+    </li>
+
+    <!-- 🔥 FLUTTER = external docs -->
+    <li>
+      <a href="https://sherullah.com/flutter-contents/flutter/"
+        target="_blank"
+        rel="noopener">
+        FLUTTER
+      </a>
+    </li> 
+
+    <!-- 🔥 FLUTTER = documentation root 
+    <li class="">
+      <a href="../index.html.html">FLUTTER</a>
+    </li> -->
+
+    <li class="">
+      <a href="../firebase/index.html">FIREBASE</a>
+    </li>
+
+    <li class="">
+      <a href="../dart/index.html">DART</a>
+    </li>
+
+       <!-- 🔥 SDJANGO= external docs -->
+    <li>
+      <a href="https://sherullah.com/django-contents/django/"
+        target="_blank"
+        rel="noopener">
+        DJANGO
+      </a>
+    </li> 
+
+    <li class="">
+      <a href="../python/index.html">PYTHON</a>
+    </li>
+    
+    <li class="">
+      <a href="../index.html">POSTGRESQL</a>
+    </li>
+
+    <li class="">
+      <a href="../mongodb/index.html">MONGODB</a>
+    </li>
+
+    <li class="">
+      <a href="../git/index.html">GIT</a>
+    </li>
+
+    <li class="">
+      <a href="../github/index.html">GITHUB</a>
+    </li>
+
+    <li class="">
+      <a href="../docker/index.html">DOCKER</a>
+    </li>
+
+    <li class="">
+      <a href="../kubernetes/index.html">KUBERNETES</a>
+    </li>
+  </ul>
+
+    <!-- Right arrow -->
+  <button class="scroll-btn scroll-right" id="navRight" aria-label="Scroll right">
+    &#10095;
+  </button>
+</nav>
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="_static/images/dask-horizontal-white.svg">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Postgresql</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Object Explorer</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Server(1)</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="localpostgresql/index.html">Local PostgreSQL</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="localpostgresql/databases/index.html">Databases(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="localpostgresql/databases/mydb/index.html">MyDB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="localpostgresql/databases/postgres/index.html">postgres</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="localpostgresql/tablespaces/index.html">Tablespaces(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial/index.html">What is pgAdmin?</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Server(1)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-server-1-mean-in-pgadmin">What does Server (1) mean in pgAdmin?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-called-a-server">Why is it called a “Server”?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-local-postgresql">Why “Local PostgreSQL”?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-you-had-more-servers">What if you had more servers?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#server-hierarchy">Server hierarchy</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="server-1">
+<h1>Server(1)<a class="headerlink" href="#server-1" title="Link to this heading">#</a></h1>
+<p>In pgAdmin, <strong>Server (1)</strong> represents the number of PostgreSQL server instances
+currently registered and available for connection. Each server entry corresponds
+to a running PostgreSQL service, whether it is local, remote, or cloud-based.</p>
+<section id="what-does-server-1-mean-in-pgadmin">
+<h2>What does Server (1) mean in pgAdmin?<a class="headerlink" href="#what-does-server-1-mean-in-pgadmin" title="Link to this heading">#</a></h2>
+<p>In pgAdmin, “Server” does NOT mean a physical machine only.
+It means a PostgreSQL server instance that pgAdmin knows about.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Servers<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="o">)</span>
+└──<span class="w"> </span>Local<span class="w"> </span>PostgreSQL
+</pre></div>
+</div>
+<p>This tells us:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>pgAdmin has <strong>1 server registered</strong></p></li>
+<li><p>That server is named <strong>Local PostgreSQL</strong></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="why-is-it-called-a-server">
+<h2>Why is it called a “Server”?<a class="headerlink" href="#why-is-it-called-a-server" title="Link to this heading">#</a></h2>
+<p>A <strong>PostgreSQL server</strong> is:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A running PostgreSQL service (process)</p></li>
+<li><p>Listening on a port (usually 5432)</p></li>
+<li><p>Managing databases, users, and connections</p></li>
+</ul>
+</div></blockquote>
+<p>Even on your own laptop, PostgreSQL still runs as a <strong>server process</strong>.</p>
+<dl class="simple">
+<dt>So:</dt><dd><ul class="simple">
+<li><p>Laptop ✔</p></li>
+<li><p>Cloud ✔</p></li>
+<li><p>Remote machine ✔</p></li>
+</ul>
+</dd>
+</dl>
+<p>All are called <strong>servers.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="why-local-postgresql">
+<h2>Why “Local PostgreSQL”?<a class="headerlink" href="#why-local-postgresql" title="Link to this heading">#</a></h2>
+<p><strong>Local PostgreSQL</strong> means:</p>
+<p>PostgreSQL is running <strong>on the same machine</strong> as pgAdmin.</p>
+<dl class="simple">
+<dt>Technically:</dt><dd><ul class="simple">
+<li><p>Host: localhost or 127.0.0.1</p></li>
+<li><p>PostgreSQL service started</p></li>
+<li><p>pgAdmin connects locally</p></li>
+</ul>
+</dd>
+</dl>
+<p>“Local” ≠ simple
+“Local” just means <strong>same computer</strong></p>
+</section>
+<section id="what-if-you-had-more-servers">
+<h2>What if you had more servers?<a class="headerlink" href="#what-if-you-had-more-servers" title="Link to this heading">#</a></h2>
+<p>If you add more PostgreSQL connections, pgAdmin would show:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Servers<span class="w"> </span><span class="o">(</span><span class="m">3</span><span class="o">)</span>
+├──<span class="w"> </span>Local<span class="w"> </span>PostgreSQL
+├──<span class="w"> </span>Production<span class="w"> </span>PostgreSQL<span class="w"> </span><span class="o">(</span>AWS<span class="o">)</span>
+└──<span class="w"> </span>Staging<span class="w"> </span>PostgreSQL
+</pre></div>
+</div>
+<dl class="simple">
+<dt>So the number updates automatically:</dt><dd><ul class="simple">
+<li><p>Servers (1)</p></li>
+<li><p>Servers (2)</p></li>
+<li><p>Servers (5)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="server-hierarchy">
+<h2>Server hierarchy<a class="headerlink" href="#server-hierarchy" title="Link to this heading">#</a></h2>
+<p>Inside <strong>each Server</strong>, PostgreSQL organizes things like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Server
+├──<span class="w"> </span>Databases
+│<span class="w">   </span>├──<span class="w"> </span>Schemas
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>Tables
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>Views
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>Functions
+├──<span class="w"> </span>Login<span class="w"> </span>/<span class="w"> </span>Group<span class="w"> </span>Roles
+└──<span class="w"> </span>Tablespaces
+</pre></div>
+</div>
+<p>This is why <strong>Server</strong> is the <strong>top-level object.</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>📝 <strong>One-line summary</strong></p>
+<p>Server (1) indicates that pgAdmin is connected to one PostgreSQL server instance.</p>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="localpostgresql/index.html">Local PostgreSQL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="localpostgresql/index.html#what-is-local-postgresql">What is Local PostgreSQL?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="localpostgresql/index.html#what-is-running-behind-local-postgresql">What is running behind “Local PostgreSQL”?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="localpostgresql/index.html#local-vs-remote-postgresql">Local vs Remote PostgreSQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="localpostgresql/databases/index.html">Databases(2)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="localpostgresql/databases/index.html#what-is-a-database-in-postgresql">What is a Database in PostgreSQL?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="localpostgresql/databases/index.html#databases-and-roles-users">🔐 Databases and Roles (Users)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="localpostgresql/databases/index.html#databases-and-tablespaces">💾 Databases and Tablespaces</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="localpostgresql/logingrouproles/index.html#what-is-a-role-in-postgresql">What is a Role in PostgreSQL?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="localpostgresql/tablespaces/index.html">Tablespaces(2)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="localpostgresql/tablespaces/index.html#why-does-pgadmin-show-tablespaces-2">Why does pgAdmin show Tablespaces (2)?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="localpostgresql/tablespaces/index.html#what-are-the-default-tablespaces">What are the default tablespaces?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Welcome to PostgreSQL Learning</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="localpostgresql/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Local PostgreSQL</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-server-1-mean-in-pgadmin">What does Server (1) mean in pgAdmin?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-called-a-server">Why is it called a “Server”?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-local-postgresql">Why “Local PostgreSQL”?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-you-had-more-servers">What if you had more servers?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#server-hierarchy">Server hierarchy</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024 Sherullah Mohtat. All rights reserved..
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+<!-- Google Tag Manager -->
+<script>
+  (function (w, d, s, l, i) {
+    w[l] = w[l] || [];
+    w[l].push({
+      "gtm.start": new Date().getTime(),
+      event: "gtm.js",
+    });
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s),
+      dl = l != "dataLayer" ? "&l=" + l : "";
+    j.async = true;
+    j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+    f.parentNode.insertBefore(j, f);
+  })(
+    window,
+    document,
+    "script",
+    "dataLayer",
+    "GTM-P4GQM59"
+  );
+</script>
+<!-- End Google Tag Manager -->
+
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
