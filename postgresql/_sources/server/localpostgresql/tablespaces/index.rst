@@ -37,9 +37,11 @@ What are the default tablespaces?
 1️⃣ pg_default
 	- Stores **user data**
 	- Default location for:
-      - Tables
-      - Indexes
-      - Schemas
+
+    - Tables
+    - Indexes
+    - Schemas
+
 	- Used unless another tablespace is specified
 
 Most of your databases live here.
@@ -48,9 +50,10 @@ Most of your databases live here.
 	- Stores **global system data**
 	- Shared across all databases
 	- Contains:
-      - Roles (users)
-      - System catalogs
-      - Global metadata
+
+    - Roles (users)
+    - System catalogs
+    - Global metadata
 
 You usually **never touch this directly.**
 
@@ -96,9 +99,7 @@ Tablespaces are about **disk,** not structure.
    Tablespaces control where PostgreSQL stores database data physically on disk.
 
 
-.. toctree::
-   :maxdepth: 4
-  
-   localpostgresql/index
+
+
   
  

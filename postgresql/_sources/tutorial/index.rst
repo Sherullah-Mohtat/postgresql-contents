@@ -148,8 +148,4 @@ pgAdmin simply **shows and controls** this hierarchy.
    Besides pgAdmin, several graphical administration and management tools—such as DBeaver, DataGrip, and TablePlus—are available to manage PostgreSQL databases, each offering different features and user experiences.
 
 
-.. toctree::
-   :maxdepth: 4
-  
-   pgadmin.rst
   

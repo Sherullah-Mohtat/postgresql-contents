@@ -119,7 +119,7 @@ So the chain becomes:
 .. toctree::
    :maxdepth: 4
   
-   mydb/index.rst 
-   postgres/index.rst
+   mydb/index
+   postgres/index
+   
   
- 

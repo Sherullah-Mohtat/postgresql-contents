@@ -75,19 +75,3 @@ You **work in office rooms**, not at reception.
 
     Databases are logical containers that organize and isolate data inside a PostgreSQL server.
     
-
-
-
-
-.. toctree::
-   :maxdepth: 9
-  
-   casts.rst 
-   catalogs.rst 
-   eventtriggers.rst 
-   extensions.rst 
-   foreigndatawrappers.rst 
-   languages.rst 
-   publications.rst 
-   schemas.rst 
-   subscriptions.rst 

@@ -131,8 +131,5 @@ Means:
 
 
 
-.. toctree::
-   :maxdepth: 4
-  
-   logingrouproles/index
+
   

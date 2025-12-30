@@ -87,4 +87,4 @@ Think of templates as **blueprints.**
    📝 **Summary**
 
    Default databases are system-created for administration and templates, while user databases are created to store real application data.
-   
+  
