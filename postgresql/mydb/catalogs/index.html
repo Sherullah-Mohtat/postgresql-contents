@@ -422,7 +422,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -438,6 +440,19 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-catalogs-in-postgresql">What are Catalogs in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-does-pgadmin-show-catalogs-2">Why does pgAdmin show Catalogs (2)?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ansi-catalog-information-schema">1️⃣ ANSI Catalog — information_schema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#postgresql-catalog-pg-catalog">2️⃣ PostgreSQL Catalog — pg_catalog</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -449,6 +464,199 @@ document.write(`
                   
   <section id="catalogs">
 <h1>Catalogs<a class="headerlink" href="#catalogs" title="Link to this heading">#</a></h1>
+<section id="what-are-catalogs-in-postgresql">
+<h2>What are Catalogs in PostgreSQL?<a class="headerlink" href="#what-are-catalogs-in-postgresql" title="Link to this heading">#</a></h2>
+<p><strong>Catalogs</strong> are <strong>system schemas</strong> that store <strong>metadata about the database itself.</strong></p>
+<blockquote>
+<div><p>Metadata = data <strong>about</strong> data</p>
+</div></blockquote>
+<dl class="simple">
+<dt>They tell PostgreSQL:</dt><dd><ul class="simple">
+<li><p>What tables exist</p></li>
+<li><p>What columns they have</p></li>
+<li><p>What types, indexes, users, permissions, functions, etc. exist</p></li>
+</ul>
+</dd>
+</dl>
+<p>You <strong>do not store your application data here</strong></p>
+<p>PostgreSQL <strong>uses catalogs internally to work</strong></p>
+</section>
+<hr class="docutils" />
+<section id="why-does-pgadmin-show-catalogs-2">
+<h2>Why does pgAdmin show Catalogs (2)?<a class="headerlink" href="#why-does-pgadmin-show-catalogs-2" title="Link to this heading">#</a></h2>
+<p>Because PostgreSQL exposes <strong>two main catalog schemas</strong> in every database:</p>
+<p>1️⃣ <strong>ANSI (information_schema)</strong></p>
+<p>2️⃣ <strong>PostgreSQL Catalog (pg_catalog)</strong></p>
+<hr class="docutils" />
+<section id="ansi-catalog-information-schema">
+<h3>1️⃣ ANSI Catalog — information_schema<a class="headerlink" href="#ansi-catalog-information-schema" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>What it is</dt><dd><ul class="simple">
+<li><p>A <strong>standard SQL schema</strong></p></li>
+<li><p>Defined by <strong>ANSI / ISO SQL standard</strong></p></li>
+<li><p>Works similarly across:</p></li>
+<li><p>PostgreSQL</p></li>
+<li><p>MySQL</p></li>
+<li><p>SQL Server</p></li>
+<li><p>Oracle</p></li>
+</ul>
+</dd>
+</dl>
+<p>Purpose:</p>
+<p>Portable, safe, standard way to inspect database structure</p>
+<hr class="docutils" />
+<p><strong>What it contains</strong></p>
+<dl class="simple">
+<dt>Views like:</dt><dd><ul class="simple">
+<li><p>information_schema.tables</p></li>
+<li><p>information_schema.columns</p></li>
+<li><p>information_schema.schemata</p></li>
+<li><p>information_schema.views</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>Example (safe &amp; recommended)</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="k">table_name</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">information_schema</span><span class="p">.</span><span class="n">tables</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">table_schema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;public&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>✔ Portable</p>
+<p>✔ Stable</p>
+<p>✔ Preferred for apps, tools, reports</p>
+<hr class="docutils" />
+<dl class="simple">
+<dt>When to use information_schema</dt><dd><ul class="simple">
+<li><p>Writing <strong>cross-database tools</strong></p></li>
+<li><p>Reporting</p></li>
+<li><p>Teaching SQL</p></li>
+<li><p>Safer introspection</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="postgresql-catalog-pg-catalog">
+<h3>2️⃣ PostgreSQL Catalog — pg_catalog<a class="headerlink" href="#postgresql-catalog-pg-catalog" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>What it is</dt><dd><ul class="simple">
+<li><p>PostgreSQL’s internal system catalog</p></li>
+<li><p>PostgreSQL-specific</p></li>
+<li><p>More detailed and powerful</p></li>
+</ul>
+</dd>
+</dl>
+<p>Purpose:</p>
+<p>How PostgreSQL <strong>really knows everything</strong></p>
+<hr class="docutils" />
+<p><strong>What it contains</strong></p>
+<dl class="simple">
+<dt>System tables like:</dt><dd><ul class="simple">
+<li><p>pg_database</p></li>
+<li><p>pg_class</p></li>
+<li><p>pg_attribute</p></li>
+<li><p>pg_type</p></li>
+<li><p>pg_index</p></li>
+<li><p>pg_proc</p></li>
+<li><p>pg_roles</p></li>
+</ul>
+</dd>
+</dl>
+<p>These are <strong>real tables</strong>, not just views.</p>
+<hr class="docutils" />
+<p><strong>Example</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">datname</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_database</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">relname</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_class</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">relkind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;r&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>✔ Very powerful</p>
+<p>❌ PostgreSQL-only</p>
+<p>❌ Internal structure may change between versions</p>
+<hr class="docutils" />
+<dl class="simple">
+<dt>When to use pg_catalog</dt><dd><ul class="simple">
+<li><p>Deep database introspection</p></li>
+<li><p>DBA tasks</p></li>
+<li><p>Performance tuning</p></li>
+<li><p>Extensions</p></li>
+<li><p>Advanced tooling</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>Key Differences</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>information_schema</p></th>
+<th class="head"><p>pg_catalog</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Standard</p></td>
+<td><p>✅ ANSI SQL</p></td>
+<td><p>❌ PostgreSQL-only</p></td>
+</tr>
+<tr class="row-odd"><td><p>Portability</p></td>
+<td><p>✅ High</p></td>
+<td><p>❌ Low</p></td>
+</tr>
+<tr class="row-even"><td><p>Detail level</p></td>
+<td><p>Medium</p></td>
+<td><p>Very high</p></td>
+</tr>
+<tr class="row-odd"><td><p>Stability</p></td>
+<td><p>Very stable</p></td>
+<td><p>Internal</p></td>
+</tr>
+<tr class="row-even"><td><p>Recommended for apps</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>⚠️ Advanced only</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<p><strong>Important Rule ⚠️</strong></p>
+<p>❌ Never modify catalog tables directly</p>
+<p>PostgreSQL manages them automatically.</p>
+<dl class="simple">
+<dt>You:</dt><dd><ul class="simple">
+<li><p>Query them ✔</p></li>
+<li><p>Read metadata ✔</p></li>
+<li><p>Learn from them ✔</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>How pgAdmin uses Catalogs</strong></p>
+<dl class="simple">
+<dt>pgAdmin:</dt><dd><ul class="simple">
+<li><p>Reads information_schema for structure</p></li>
+<li><p>Reads pg_catalog for deep info</p></li>
+<li><p>Combines both to draw the UI tree you see</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Summary</dt><dd><ul class="simple">
+<li><p>Catalogs = metadata storage</p></li>
+<li><p>information_schema → standard, safe, portable</p></li>
+<li><p>pg_catalog → internal, powerful, PostgreSQL-specific</p></li>
+<li><p>Every database has both</p></li>
+<li><p>Your data never goes here</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
 </section>
 
 
@@ -486,6 +694,26 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-catalogs-in-postgresql">What are Catalogs in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-does-pgadmin-show-catalogs-2">Why does pgAdmin show Catalogs (2)?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ansi-catalog-information-schema">1️⃣ ANSI Catalog — information_schema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#postgresql-catalog-pg-catalog">2️⃣ PostgreSQL Catalog — pg_catalog</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

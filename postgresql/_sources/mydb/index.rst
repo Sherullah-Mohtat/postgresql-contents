@@ -120,6 +120,7 @@ Summary
    **MyDB is a logical container inside a PostgreSQL server that holds all application data, schemas, and database-level objects.**
 
 .. toctree::
+   :hidden:
    :maxdepth: 4
 
    casts/index.rst

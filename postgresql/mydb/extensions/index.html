@@ -422,7 +422,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -438,6 +440,23 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#postgresql-extensions">PostgreSQL Extensions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-postgresql-extension">1️⃣ What is a PostgreSQL Extension?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-extensions-exist-big-picture">2️⃣ Why Extensions Exist (Big Picture)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-pgadmin-shows-extensions-1">3️⃣ Why pgAdmin shows “Extensions (1)”</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-plpgsql-extension">4️⃣ What is plpgsql Extension?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#is-plpgsql-special">5️⃣ Is plpgsql special?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions-are-database-level-important">6️⃣ Extensions are Database-Level (Important!)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-extensions-work-internally">7️⃣ How Extensions Work Internally</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-postgresql-extensions-very-important">8️⃣ Common PostgreSQL Extensions (Very Important)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-install-an-extension">9️⃣ How to Install an Extension</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -449,6 +468,228 @@ document.write(`
                   
   <section id="extensions">
 <h1>Extensions<a class="headerlink" href="#extensions" title="Link to this heading">#</a></h1>
+<section id="postgresql-extensions">
+<h2>PostgreSQL Extensions<a class="headerlink" href="#postgresql-extensions" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Extensions<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="o">)</span>
+└──<span class="w"> </span>plpgsql
+</pre></div>
+</div>
+<p>This means <strong>one extension is installed in this database.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="what-is-a-postgresql-extension">
+<h2>1️⃣ What is a PostgreSQL Extension?<a class="headerlink" href="#what-is-a-postgresql-extension" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>A PostgreSQL extension is a packaged feature that can add:</dt><dd><ul class="simple">
+<li><p>New <strong>functions</strong></p></li>
+<li><p>New <strong>data types</strong></p></li>
+<li><p>New <strong>operators</strong></p></li>
+<li><p>New <strong>index types</strong></p></li>
+<li><p>New <strong>procedural languages</strong></p></li>
+<li><p>New <strong>SQL capabilities</strong></p></li>
+</ul>
+</dd>
+</dl>
+<p>Think of extensions as plug-ins for PostgreSQL.</p>
+<p>PostgreSQL itself is very small and clean at the core.
+Most powerful features come via extensions.</p>
+</section>
+<hr class="docutils" />
+<section id="why-extensions-exist-big-picture">
+<h2>2️⃣ Why Extensions Exist (Big Picture)<a class="headerlink" href="#why-extensions-exist-big-picture" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Without extensions, PostgreSQL would only support:</dt><dd><ul class="simple">
+<li><p>Basic SQL</p></li>
+<li><p>Basic data types</p></li>
+<li><p>Core query engine</p></li>
+</ul>
+</dd>
+<dt>Extensions allow PostgreSQL to become:</dt><dd><ul class="simple">
+<li><p>Spatial database (PostGIS)</p></li>
+<li><p>Time-series database (TimescaleDB)</p></li>
+<li><p>Full-text search engine</p></li>
+<li><p>Procedural programming platform</p></li>
+<li><p>Analytics engine</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="why-pgadmin-shows-extensions-1">
+<h2>3️⃣ Why pgAdmin shows “Extensions (1)”<a class="headerlink" href="#why-pgadmin-shows-extensions-1" title="Link to this heading">#</a></h2>
+<p>pgAdmin shows <strong>how many extensions are installed in the current database.</strong></p>
+<p>In your case:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Extensions<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="o">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Means:</dt><dd><ul class="simple">
+<li><p>Only <strong>one extension</strong> is installed</p></li>
+<li><p>That extension is <strong>plpgsql</strong></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="what-is-plpgsql-extension">
+<h2>4️⃣ What is plpgsql Extension?<a class="headerlink" href="#what-is-plpgsql-extension" title="Link to this heading">#</a></h2>
+<p><strong>plpgsql = PostgreSQL Procedural Language</strong></p>
+<dl class="simple">
+<dt>plpgsql allows you to write:</dt><dd><ul class="simple">
+<li><p>Functions</p></li>
+<li><p>Triggers</p></li>
+<li><p>Event triggers</p></li>
+<li><p>Procedures</p></li>
+</ul>
+</dd>
+<dt>Using:</dt><dd><ul class="simple">
+<li><p>Variables</p></li>
+<li><p>Loops</p></li>
+<li><p>Conditions (IF, CASE)</p></li>
+<li><p>Exception handling</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">add_numbers</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="nb">int</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="nb">int</span><span class="p">)</span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="nb">int</span>
+<span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span>
+<span class="k">AS</span><span class="w"> </span><span class="s">$$</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="k">RETURN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="s">$$</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Without plpgsql, <strong>this would be impossible.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="is-plpgsql-special">
+<h2>5️⃣ Is plpgsql special?<a class="headerlink" href="#is-plpgsql-special" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Yes — very special.</dt><dd><ul class="simple">
+<li><p>plpgsql is <strong>installed by default</strong> in almost all PostgreSQL databases</p></li>
+<li><p>It is considered a <strong>trusted language</strong></p></li>
+<li><p>PostgreSQL uses it internally for many features</p></li>
+</ul>
+</dd>
+</dl>
+<p>That’s why you see it even in a fresh database.</p>
+</section>
+<hr class="docutils" />
+<section id="extensions-are-database-level-important">
+<h2>6️⃣ Extensions are Database-Level (Important!)<a class="headerlink" href="#extensions-are-database-level-important" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Extensions are:</dt><dd><ul class="simple">
+<li><p>✅ Installed <strong>per database</strong></p></li>
+<li><p>❌ Not global across all databases</p></li>
+</ul>
+</dd>
+</dl>
+<p>That’s why you see:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Databases
+├──<span class="w"> </span>postgres
+├──<span class="w"> </span>MyDB
+└──<span class="w"> </span>test_db
+</pre></div>
+</div>
+<p>Each database can have <strong>different extensions installed.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="how-extensions-work-internally">
+<h2>7️⃣ How Extensions Work Internally<a class="headerlink" href="#how-extensions-work-internally" title="Link to this heading">#</a></h2>
+<p>When you run:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">EXTENSION</span><span class="w"> </span><span class="n">plpgsql</span><span class="p">;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>PostgreSQL does:</dt><dd><ol class="arabic simple">
+<li><p>Reads extension files from:</p></li>
+</ol>
+</dd>
+</dl>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">$PGHOME</span>/share/extension/
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Creates system objects:
+- Functions
+- Types
+- Operators</p></li>
+<li><p>Registers metadata in pg_extension</p></li>
+</ol>
+<p>You can see them using:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_extension</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="common-postgresql-extensions-very-important">
+<h2>8️⃣ Common PostgreSQL Extensions (Very Important)<a class="headerlink" href="#common-postgresql-extensions-very-important" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Extension</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>plpgsql</p></td>
+<td><p>Procedural language</p></td>
+</tr>
+<tr class="row-odd"><td><p>postgis</p></td>
+<td><p>GIS / spatial data</p></td>
+</tr>
+<tr class="row-even"><td><p>pg_stat_statements</p></td>
+<td><p>Query performance analysis</p></td>
+</tr>
+<tr class="row-odd"><td><p>citext</p></td>
+<td><p>Case-insensitive text</p></td>
+</tr>
+<tr class="row-even"><td><p>hstore</p></td>
+<td><p>Key-value storage</p></td>
+</tr>
+<tr class="row-odd"><td><p>uuid-ossp</p></td>
+<td><p>UUID generation</p></td>
+</tr>
+<tr class="row-even"><td><p>pgcrypto</p></td>
+<td><p>Cryptography</p></td>
+</tr>
+<tr class="row-odd"><td><p>timescaledb</p></td>
+<td><p>Time-series data</p></td>
+</tr>
+<tr class="row-even"><td><p>unaccent</p></td>
+<td><p>Text normalization</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="how-to-install-an-extension">
+<h2>9️⃣ How to Install an Extension<a class="headerlink" href="#how-to-install-an-extension" title="Link to this heading">#</a></h2>
+<p>Using SQL</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">EXTENSION</span><span class="w"> </span><span class="n">pgcrypto</span><span class="p">;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Using pgAdmin</dt><dd><ol class="arabic simple">
+<li><p>Right-click <strong>Extensions</strong></p></li>
+<li><p>Click <strong>Create → Extension</strong></p></li>
+<li><p>Select extension</p></li>
+<li><p>Save</p></li>
+</ol>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>🔒 Security Note (Important for Docs)</dt><dd><ul class="simple">
+<li><p>Some extensions are <strong>trusted</strong> (safe for users)</p></li>
+<li><p>Some extensions are <strong>untrusted</strong></p></li>
+<li><p>Installing extensions usually requires <strong>superuser or elevated privileges</strong></p></li>
+</ul>
+</dd>
+</dl>
+</section>
 </section>
 
 
@@ -486,6 +727,30 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#postgresql-extensions">PostgreSQL Extensions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-postgresql-extension">1️⃣ What is a PostgreSQL Extension?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-extensions-exist-big-picture">2️⃣ Why Extensions Exist (Big Picture)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-pgadmin-shows-extensions-1">3️⃣ Why pgAdmin shows “Extensions (1)”</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-plpgsql-extension">4️⃣ What is plpgsql Extension?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#is-plpgsql-special">5️⃣ Is plpgsql special?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions-are-database-level-important">6️⃣ Extensions are Database-Level (Important!)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-extensions-work-internally">7️⃣ How Extensions Work Internally</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-postgresql-extensions-very-important">8️⃣ Common PostgreSQL Extensions (Very Important)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-install-an-extension">9️⃣ How to Install an Extension</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

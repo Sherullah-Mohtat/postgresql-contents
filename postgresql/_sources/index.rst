@@ -69,7 +69,8 @@ This mirrors how PostgreSQL is organized internally and how it appears in pgAdmi
    Google uses links to understand structure.
 
 .. toctree::
-   :maxdepth: 999
+   :hidden:
+   :maxdepth: 3
    :caption: Object Explorer
 
    server/index
@@ -77,14 +78,16 @@ This mirrors how PostgreSQL is organized internally and how it appears in pgAdmi
 
 
 .. toctree::
-   :maxdepth: 999
+   :hidden:
+   :maxdepth: 3
    :caption: Explanations
-      
+     
    mydb/index
 
 
 .. toctree::
-   :maxdepth: 999
+   :hidden:
+   :maxdepth: 1
    :caption: Tutorials
       
    tutorial/index
@@ -96,8 +99,21 @@ This mirrors how PostgreSQL is organized internally and how it appears in pgAdmi
 
 
 
+..
+   .. contents::
+   :local:
+   :depth: 2
 
+..
+   .. toctree::
+   :caption: Server
+   :maxdepth: 1
+   :class: server-tree
 
+..
+   .. toctree::
+   :caption: Server
+   :icon: material-server
 
 
 

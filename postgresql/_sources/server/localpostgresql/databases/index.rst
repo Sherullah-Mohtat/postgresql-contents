@@ -117,8 +117,9 @@ So the chain becomes:
 
 
 .. toctree::
-   :maxdepth: 4
-  
+   :hidden:
+   :maxdepth: 2
+ 
    mydb/index
    postgres/index
    

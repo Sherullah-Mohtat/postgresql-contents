@@ -112,8 +112,9 @@ Local vs Remote PostgreSQL
 
 
 .. toctree::
-   :maxdepth: 6
-  
+   :hidden:
+   :maxdepth: 2
+ 
    databases/index
    logingrouproles/index
    tablespaces/index 

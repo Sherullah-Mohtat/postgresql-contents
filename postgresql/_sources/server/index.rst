@@ -106,7 +106,8 @@ This is why **Server** is the **top-level object.**
    Server (1) indicates that pgAdmin is connected to one PostgreSQL server instance.
 
 .. toctree::
-   :maxdepth: 8
-  
+   :hidden:
+   :maxdepth: 2
+ 
    localpostgresql/index
   
