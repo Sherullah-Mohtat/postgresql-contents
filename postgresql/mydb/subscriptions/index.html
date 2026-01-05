@@ -320,8 +320,26 @@
 <li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/databases/postgres/index.html">postgres</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../server/localpostgresql/tablespaces/index.html">Tablespaces(2)</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_database_owner.html">pg_database_owner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_execute_server_program.html">pg_execute_server_program</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_monitor.html">pg_monitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_data.html">pg_read_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_settings.html">pg_read_all_settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_stats.html">pg_read_all_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_server_files.html">pg_read_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_signal_backend.html">pg_signal_backend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_stat_scan_tables.html">pg_stat_scan_tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_all_data.html">pg_write_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_server_files.html">pg_write_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/sherullahmohtat.html">👤 sherullahmohtat</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/tablespaces/index.html">Tablespaces(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_default/index.html">pg_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_global/index.html">pg_global</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 </ul>
@@ -422,7 +440,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -438,6 +458,17 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-subscriptions-in-postgresql">What Are Subscriptions in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#publication-vs-subscription">Publication vs Subscription</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-subscriptions-work">How Subscriptions Work</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-gets-replicated">What Gets Replicated?</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -449,6 +480,245 @@ document.write(`
                   
   <section id="subscriptions">
 <h1>Subscriptions<a class="headerlink" href="#subscriptions" title="Link to this heading">#</a></h1>
+<section id="what-are-subscriptions-in-postgresql">
+<h2>What Are Subscriptions in PostgreSQL?<a class="headerlink" href="#what-are-subscriptions-in-postgresql" title="Link to this heading">#</a></h2>
+<p>A PostgreSQL subscription connects to a publication and continuously replicates data changes (INSERT, UPDATE, DELETE) from a source database into a target database using logical replication.</p>
+<p>A <strong>subscription</strong> is a logical replication object that <strong>connects to a publication and pulls data from it.</strong></p>
+<p><strong>If Publication says “what to share”, Subscription says “I want to receive it”.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="publication-vs-subscription">
+<h2>Publication vs Subscription<a class="headerlink" href="#publication-vs-subscription" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Aspect</p></th>
+<th class="head"><p>Publication</p></th>
+<th class="head"><p>Subscription</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Lives in</p></td>
+<td><p>Source database</p></td>
+<td><p>Target database</p></td>
+</tr>
+<tr class="row-odd"><td><p>Role</p></td>
+<td><p>Publisher</p></td>
+<td><p>Subscriber</p></td>
+</tr>
+<tr class="row-even"><td><p>Defines</p></td>
+<td><p>What data is shared</p></td>
+<td><p>Where data is copied</p></td>
+</tr>
+<tr class="row-odd"><td><p>Direction</p></td>
+<td><p>Outgoing</p></td>
+<td><p>Incoming</p></td>
+</tr>
+<tr class="row-even"><td><p>pgAdmin section</p></td>
+<td><p>Publications</p></td>
+<td><p>Subscriptions</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="how-subscriptions-work">
+<h2>How Subscriptions Work<a class="headerlink" href="#how-subscriptions-work" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>1️ Publisher database</dt><dd><ul class="simple">
+<li><p>Has tables</p></li>
+<li><p>Defines a <strong>publication</strong></p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">PUBLICATION</span><span class="w"> </span><span class="n">my_pub</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">users</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<dl class="simple">
+<dt>2️ Subscriber database</dt><dd><ul class="simple">
+<li><p>Creates <strong>subscription</strong></p></li>
+<li><p>Connects to publisher</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">SUBSCRIPTION</span><span class="w"> </span><span class="n">my_sub</span>
+<span class="k">CONNECTION</span><span class="w"> </span><span class="s1">&#39;host=source_host dbname=source_db user=rep_user password=secret&#39;</span>
+<span class="k">PUBLICATION</span><span class="w"> </span><span class="n">my_pub</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<dl class="simple">
+<dt>3️ PostgreSQL does the rest automatically</dt><dd><ul class="simple">
+<li><p>Copies existing data (initial sync)</p></li>
+<li><p>Streams future changes</p></li>
+<li><p>Keeps tables in sync</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="what-gets-replicated">
+<h2>What Gets Replicated?<a class="headerlink" href="#what-gets-replicated" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>By default:</dt><dd><ul class="simple">
+<li><p>✅ INSERT</p></li>
+<li><p>✅ UPDATE</p></li>
+<li><p>✅ DELETE</p></li>
+<li><p>❌ TRUNCATE (optional)</p></li>
+</ul>
+</dd>
+</dl>
+<p>Same rules as publication.</p>
+<hr class="docutils" />
+<p>What pgAdmin Shows Under “Subscriptions”</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Database
+└──<span class="w"> </span>Subscriptions
+<span class="w">    </span>└──<span class="w"> </span>my_sub
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Clicking it shows:</dt><dd><ul class="simple">
+<li><p>Connection info</p></li>
+<li><p>Status (active / inactive)</p></li>
+<li><p>Publications linked</p></li>
+<li><p>Replication slot used</p></li>
+<li><p>Worker process</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>Important Subscription Options</p>
+<p>Initial data copy</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">WITH</span><span class="w"> </span><span class="p">(</span><span class="n">copy_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Disable initial copy:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">WITH</span><span class="w"> </span><span class="p">(</span><span class="n">copy_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Disable temporarily</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="k">SUBSCRIPTION</span><span class="w"> </span><span class="n">my_sub</span><span class="w"> </span><span class="k">DISABLE</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Enable again:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="k">SUBSCRIPTION</span><span class="w"> </span><span class="n">my_sub</span><span class="w"> </span><span class="k">ENABLE</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p>🔐 Permissions &amp; Requirements</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Requirement</p></th>
+<th class="head"><p>Needed</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Source user</p></td>
+<td><p>REPLICATION role</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tables</p></td>
+<td><p>Must exist on subscriber</p></td>
+</tr>
+<tr class="row-even"><td><p>Schema</p></td>
+<td><p>Must match</p></td>
+</tr>
+<tr class="row-odd"><td><p>Network</p></td>
+<td><p>Direct DB connection</p></td>
+</tr>
+<tr class="row-even"><td><p>WAL</p></td>
+<td><p>Logical replication enabled</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<p>⚠️ Very Important Limitations</p>
+<p>❌ No conflict resolution</p>
+<p>If both sides modify same row → ❌ error</p>
+<dl class="simple">
+<dt>❌ No DDL replication</dt><dd><ul class="simple">
+<li><p>Table structure changes not replicated</p></li>
+<li><p>You must manually apply DDL</p></li>
+</ul>
+</dd>
+<dt>❌ One-way only</dt><dd><ul class="simple">
+<li><p>Publisher → Subscriber</p></li>
+<li><p>Not bi-directional (unless complex setup)</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>🌍 Real-World Use Cases</p>
+<dl class="simple">
+<dt>✅ Read replicas</dt><dd><ul class="simple">
+<li><p>Reporting / analytics DB</p></li>
+</ul>
+</dd>
+<dt>✅ Microservices</dt><dd><ul class="simple">
+<li><p>User service subscribes to Auth DB</p></li>
+</ul>
+</dd>
+<dt>✅ Multi-region sync</dt><dd><ul class="simple">
+<li><p>Central DB publishes</p></li>
+<li><p>Regional DBs subscribe</p></li>
+</ul>
+</dd>
+<dt>✅ ETL pipelines</dt><dd><ul class="simple">
+<li><p>Operational DB → Data warehouse</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>Real-World Analogy</p>
+<p>Think of <strong>YouTube:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Concept</p></th>
+<th class="head"><p>PostgreSQL</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Channel</p></td>
+<td><p>Publication</p></td>
+</tr>
+<tr class="row-odd"><td><p>Subscriber</p></td>
+<td><p>Subscription</p></td>
+</tr>
+<tr class="row-even"><td><p>Videos</p></td>
+<td><p>Data changes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Notifications</p></td>
+<td><p>Replication stream</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>You don’t get content unless you <strong>subscribe.</strong></p>
+<hr class="docutils" />
+<p>How to Check Subscription Status</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_subscription</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Check replication slots:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_replication_slots</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Publication + Subscription Summary</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">   </span>Source<span class="w"> </span>DB
+<span class="w">   </span>└──<span class="w"> </span>Publication
+<span class="w">       </span>↓
+<span class="w">   </span>WAL<span class="w"> </span>logical<span class="w"> </span>stream
+<span class="w">       </span>↓
+<span class="w">   </span>Target<span class="w"> </span>DB
+<span class="w">   </span>└──<span class="w"> </span>Subscription
+
+..<span class="w"> </span>note::
+
+<span class="w">   </span>PostgreSQL<span class="w"> </span>subscriptions<span class="w"> </span>are<span class="w"> </span>part<span class="w"> </span>of<span class="w"> </span>logical<span class="w"> </span>replication<span class="w"> </span>and<span class="w"> </span>act<span class="w"> </span>as<span class="w"> </span>the<span class="w"> </span>receiving<span class="w"> </span>side<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>publication.<span class="w"> </span>A<span class="w"> </span>subscription<span class="w"> </span>connects<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>remote<span class="w"> </span>PostgreSQL<span class="w"> </span>database,<span class="w"> </span>fetches<span class="w"> </span>initial<span class="w"> </span>table<span class="w"> </span>data,<span class="w"> </span>and<span class="w"> </span>continuously<span class="w"> </span>applies<span class="w"> </span>data<span class="w"> </span>changes<span class="w"> </span>to<span class="w"> </span>keep<span class="w"> </span>the<span class="w"> </span>subscriber<span class="w"> </span>database<span class="w"> </span><span class="k">in</span><span class="w"> </span>sync.
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -486,6 +756,24 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-subscriptions-in-postgresql">What Are Subscriptions in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#publication-vs-subscription">Publication vs Subscription</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-subscriptions-work">How Subscriptions Work</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-gets-replicated">What Gets Replicated?</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

@@ -103,7 +103,7 @@ Local vs Remote PostgreSQL
 
 .. note::
 
-   📝 **One-line summary**
+   **Summary**
 
    Local PostgreSQL means PostgreSQL is running on your own computer and is
    accessed through localhost.
@@ -113,7 +113,7 @@ Local vs Remote PostgreSQL
 
 .. toctree::
    :hidden:
-   :maxdepth: 2
+   :maxdepth: 14
  
    databases/index
    logingrouproles/index

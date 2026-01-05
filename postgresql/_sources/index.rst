@@ -70,7 +70,7 @@ This mirrors how PostgreSQL is organized internally and how it appears in pgAdmi
 
 .. toctree::
    :hidden:
-   :maxdepth: 3
+   :maxdepth: 14
    :caption: Object Explorer
 
    server/index

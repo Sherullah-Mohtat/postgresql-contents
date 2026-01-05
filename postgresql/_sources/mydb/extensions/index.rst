@@ -32,9 +32,9 @@ Most powerful features come via extensions.
 
 ================================================================================================================
 
----------------------------------------
-2️⃣ Why Extensions Exist (Big Picture)
----------------------------------------
+----------------------------
+2️⃣ Why Extensions Exist 
+----------------------------
 
 Without extensions, PostgreSQL would only support:
 	- Basic SQL
@@ -116,9 +116,9 @@ That’s why you see it even in a fresh database.
 
 ================================================================================================================
 
------------------------------------------------
-6️⃣ Extensions are Database-Level (Important!)
------------------------------------------------
+------------------------------------
+6️⃣ Extensions are Database-Level
+------------------------------------
 
 Extensions are:
 	- ✅ Installed **per database**
@@ -169,9 +169,9 @@ You can see them using:
 
 ================================================================================================================
 
--------------------------------------------------
-8️⃣ Common PostgreSQL Extensions (Very Important)
--------------------------------------------------
+---------------------------------------
+8️⃣ Common PostgreSQL Extensions 
+---------------------------------------
 
 .. list-table::
     :header-rows: 1
@@ -220,7 +220,7 @@ Using pgAdmin
 
 ================================================================================================================
 
-🔒 Security Note (Important for Docs)
+🔒 Security Note
 	- Some extensions are **trusted** (safe for users)
 	- Some extensions are **untrusted**
 	- Installing extensions usually requires **superuser or elevated privileges**

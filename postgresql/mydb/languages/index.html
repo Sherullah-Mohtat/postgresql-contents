@@ -320,8 +320,26 @@
 <li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/databases/postgres/index.html">postgres</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../server/localpostgresql/tablespaces/index.html">Tablespaces(2)</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_database_owner.html">pg_database_owner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_execute_server_program.html">pg_execute_server_program</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_monitor.html">pg_monitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_data.html">pg_read_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_settings.html">pg_read_all_settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_stats.html">pg_read_all_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_server_files.html">pg_read_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_signal_backend.html">pg_signal_backend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_stat_scan_tables.html">pg_stat_scan_tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_all_data.html">pg_write_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_server_files.html">pg_write_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/sherullahmohtat.html">👤 sherullahmohtat</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/tablespaces/index.html">Tablespaces(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_default/index.html">pg_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_global/index.html">pg_global</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 </ul>
@@ -422,7 +440,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -438,6 +458,23 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-languages-in-postgresql">What Are “Languages” in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-does-postgresql-need-languages">1️ Why Does PostgreSQL Need Languages?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-plpgsql">2️ What Is plpgsql?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-can-you-do-with-plpgsql">3️ What Can You Do With plpgsql?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-plpgsql-example">4️ Simple plpgsql Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plpgsql-vs-sql">5️ plpgsql vs SQL</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-pgadmin-shows-languages-under-a-database">6️ Why pgAdmin Shows “Languages” Under a Database</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-postgresql-languages-optional">7️ Other PostgreSQL Languages (Optional)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trusted-vs-untrusted-languages">8️ Trusted vs Untrusted Languages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#languages-vs-extensions">9️ Languages vs Extensions</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -449,6 +486,236 @@ document.write(`
                   
   <section id="languages">
 <h1>Languages<a class="headerlink" href="#languages" title="Link to this heading">#</a></h1>
+<section id="what-are-languages-in-postgresql">
+<h2>What Are “Languages” in PostgreSQL?<a class="headerlink" href="#what-are-languages-in-postgresql" title="Link to this heading">#</a></h2>
+<p>In PostgreSQL, <strong>Languages</strong> means:</p>
+<blockquote>
+<div><p>Programming languages that PostgreSQL can use to write stored procedures, functions, triggers, and event triggers.</p>
+</div></blockquote>
+<p>PostgreSQL is not just SQL — it can <strong>execute code written in other languages inside the database.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="why-does-postgresql-need-languages">
+<h2>1️ Why Does PostgreSQL Need Languages?<a class="headerlink" href="#why-does-postgresql-need-languages" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>SQL alone is <strong>not enough</strong> for:</dt><dd><ul class="simple">
+<li><p>Loops</p></li>
+<li><p>Conditions (if, else)</p></li>
+<li><p>Error handling</p></li>
+<li><p>Complex logic</p></li>
+<li><p>Automation</p></li>
+<li><p>Validation</p></li>
+<li><p>System rules</p></li>
+</ul>
+</dd>
+</dl>
+<p>So PostgreSQL embeds <strong>procedural languages.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="what-is-plpgsql">
+<h2>2️ What Is plpgsql?<a class="headerlink" href="#what-is-plpgsql" title="Link to this heading">#</a></h2>
+<p>plpgsql stands for:</p>
+<blockquote>
+<div><p>Procedural Language PostgreSQL</p>
+</div></blockquote>
+<dl class="simple">
+<dt>It is:</dt><dd><ul class="simple">
+<li><p>PostgreSQL’s native programming language</p></li>
+<li><p>Installed by default</p></li>
+<li><p>Tightly integrated with SQL</p></li>
+</ul>
+</dd>
+</dl>
+<p>That’s why you see <strong>Languages (1) → plpgsql</strong></p>
+</section>
+<hr class="docutils" />
+<section id="what-can-you-do-with-plpgsql">
+<h2>3️ What Can You Do With plpgsql?<a class="headerlink" href="#what-can-you-do-with-plpgsql" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>With plpgsql, you can create:</dt><dd><ul class="simple">
+<li><p>Functions</p></li>
+<li><p>Stored procedures</p></li>
+<li><p>Triggers</p></li>
+<li><p>Event triggers</p></li>
+<li><p>Business rules</p></li>
+<li><p>Auditing logic</p></li>
+<li><p>Security checks</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="simple-plpgsql-example">
+<h2>4️ Simple plpgsql Example<a class="headerlink" href="#simple-plpgsql-example" title="Link to this heading">#</a></h2>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">add_numbers</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="nb">INT</span><span class="p">)</span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="nb">INT</span>
+<span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span>
+<span class="k">AS</span><span class="w"> </span><span class="s">$$</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="k">RETURN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="s">$$</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Call it:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">add_numbers</span><span class="p">(</span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="plpgsql-vs-sql">
+<h2>5️ plpgsql vs SQL<a class="headerlink" href="#plpgsql-vs-sql" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>SQL</p></th>
+<th class="head"><p>plpgsql</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Simple queries</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>Loops</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>IF / ELSE</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Variables</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Error handling</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Triggers</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>plpgsql wraps SQL inside logic</strong></p>
+</section>
+<hr class="docutils" />
+<section id="why-pgadmin-shows-languages-under-a-database">
+<h2>6️ Why pgAdmin Shows “Languages” Under a Database<a class="headerlink" href="#why-pgadmin-shows-languages-under-a-database" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Languages are:</dt><dd><ul class="simple">
+<li><p><strong>Database-level objects</strong></p></li>
+<li><p>Installed <strong>per database</strong></p></li>
+<li><p>Stored in system catalogs</p></li>
+</ul>
+</dd>
+<dt>So each database can have:</dt><dd><ul class="simple">
+<li><p>Different languages</p></li>
+<li><p>Different permissions</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="other-postgresql-languages-optional">
+<h2>7️ Other PostgreSQL Languages (Optional)<a class="headerlink" href="#other-postgresql-languages-optional" title="Link to this heading">#</a></h2>
+<p>PostgreSQL supports many languages <strong>via extensions:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Language</p></th>
+<th class="head"><p>Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PL/pgSQL</p></td>
+<td><p>plpgsql</p></td>
+</tr>
+<tr class="row-odd"><td><p>Python</p></td>
+<td><p>plpython3u</p></td>
+</tr>
+<tr class="row-even"><td><p>JavaScript</p></td>
+<td><p>plv8</p></td>
+</tr>
+<tr class="row-odd"><td><p>Perl</p></td>
+<td><p>plperl</p></td>
+</tr>
+<tr class="row-even"><td><p>Tcl</p></td>
+<td><p>pltcl</p></td>
+</tr>
+<tr class="row-odd"><td><p>R</p></td>
+<td><p>plr</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">EXTENSION</span><span class="w"> </span><span class="n">plpython3u</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Then it appears under <strong>Languages.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="trusted-vs-untrusted-languages">
+<h2>8️ Trusted vs Untrusted Languages<a class="headerlink" href="#trusted-vs-untrusted-languages" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Trusted</p></td>
+<td><p>Safe, sandboxed</p></td>
+</tr>
+<tr class="row-odd"><td><p>Untrusted (u)</p></td>
+<td><p>Can access OS</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="simple">
+<dt>Examples:</dt><dd><ul class="simple">
+<li><p>plpgsql → trusted</p></li>
+<li><p>plpython3u → untrusted</p></li>
+</ul>
+</dd>
+</dl>
+<p>That’s why <strong>superuser privileges</strong> are required.</p>
+</section>
+<hr class="docutils" />
+<section id="languages-vs-extensions">
+<h2>9️ Languages vs Extensions<a class="headerlink" href="#languages-vs-extensions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Languages</p></th>
+<th class="head"><p>Extensions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Execution engine</p></td>
+<td><p>Feature bundle</p></td>
+</tr>
+<tr class="row-odd"><td><p>Used for logic</p></td>
+<td><p>Used for capabilities</p></td>
+</tr>
+<tr class="row-even"><td><p>Required for triggers</p></td>
+<td><p>May add languages</p></td>
+</tr>
+<tr class="row-odd"><td><p>plpgsql is default</p></td>
+<td><p>postgis, pgcrypto</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Some extensions <strong>add languages.</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>PostgreSQL Languages are procedural programming languages that allow developers to write functions, stored procedures, and triggers inside the database. The default language, plpgsql, enables complex logic, loops, conditions, and error handling beyond standard SQL.</p>
+</div>
+</section>
 </section>
 
 
@@ -486,6 +753,30 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-languages-in-postgresql">What Are “Languages” in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-does-postgresql-need-languages">1️ Why Does PostgreSQL Need Languages?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-plpgsql">2️ What Is plpgsql?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-can-you-do-with-plpgsql">3️ What Can You Do With plpgsql?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-plpgsql-example">4️ Simple plpgsql Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plpgsql-vs-sql">5️ plpgsql vs SQL</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-pgadmin-shows-languages-under-a-database">6️ Why pgAdmin Shows “Languages” Under a Database</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-postgresql-languages-optional">7️ Other PostgreSQL Languages (Optional)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trusted-vs-untrusted-languages">8️ Trusted vs Untrusted Languages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#languages-vs-extensions">9️ Languages vs Extensions</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

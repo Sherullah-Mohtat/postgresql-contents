@@ -320,8 +320,26 @@
 <li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/databases/postgres/index.html">postgres</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../server/localpostgresql/tablespaces/index.html">Tablespaces(2)</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_database_owner.html">pg_database_owner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_execute_server_program.html">pg_execute_server_program</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_monitor.html">pg_monitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_data.html">pg_read_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_settings.html">pg_read_all_settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_stats.html">pg_read_all_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_server_files.html">pg_read_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_signal_backend.html">pg_signal_backend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_stat_scan_tables.html">pg_stat_scan_tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_all_data.html">pg_write_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_server_files.html">pg_write_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/sherullahmohtat.html">👤 sherullahmohtat</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/tablespaces/index.html">Tablespaces(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_default/index.html">pg_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_global/index.html">pg_global</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 </ul>
@@ -447,13 +465,13 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#postgresql-extensions">PostgreSQL Extensions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-postgresql-extension">1️⃣ What is a PostgreSQL Extension?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-extensions-exist-big-picture">2️⃣ Why Extensions Exist (Big Picture)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-extensions-exist">2️⃣ Why Extensions Exist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-pgadmin-shows-extensions-1">3️⃣ Why pgAdmin shows “Extensions (1)”</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-plpgsql-extension">4️⃣ What is plpgsql Extension?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#is-plpgsql-special">5️⃣ Is plpgsql special?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions-are-database-level-important">6️⃣ Extensions are Database-Level (Important!)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions-are-database-level">6️⃣ Extensions are Database-Level</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-extensions-work-internally">7️⃣ How Extensions Work Internally</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-postgresql-extensions-very-important">8️⃣ Common PostgreSQL Extensions (Very Important)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-postgresql-extensions">8️⃣ Common PostgreSQL Extensions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-install-an-extension">9️⃣ How to Install an Extension</a></li>
 </ul>
             </nav>
@@ -495,8 +513,8 @@ document.write(`
 Most powerful features come via extensions.</p>
 </section>
 <hr class="docutils" />
-<section id="why-extensions-exist-big-picture">
-<h2>2️⃣ Why Extensions Exist (Big Picture)<a class="headerlink" href="#why-extensions-exist-big-picture" title="Link to this heading">#</a></h2>
+<section id="why-extensions-exist">
+<h2>2️⃣ Why Extensions Exist<a class="headerlink" href="#why-extensions-exist" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>Without extensions, PostgreSQL would only support:</dt><dd><ul class="simple">
 <li><p>Basic SQL</p></li>
@@ -577,8 +595,8 @@ Most powerful features come via extensions.</p>
 <p>That’s why you see it even in a fresh database.</p>
 </section>
 <hr class="docutils" />
-<section id="extensions-are-database-level-important">
-<h2>6️⃣ Extensions are Database-Level (Important!)<a class="headerlink" href="#extensions-are-database-level-important" title="Link to this heading">#</a></h2>
+<section id="extensions-are-database-level">
+<h2>6️⃣ Extensions are Database-Level<a class="headerlink" href="#extensions-are-database-level" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>Extensions are:</dt><dd><ul class="simple">
 <li><p>✅ Installed <strong>per database</strong></p></li>
@@ -624,8 +642,8 @@ Most powerful features come via extensions.</p>
 </div>
 </section>
 <hr class="docutils" />
-<section id="common-postgresql-extensions-very-important">
-<h2>8️⃣ Common PostgreSQL Extensions (Very Important)<a class="headerlink" href="#common-postgresql-extensions-very-important" title="Link to this heading">#</a></h2>
+<section id="common-postgresql-extensions">
+<h2>8️⃣ Common PostgreSQL Extensions<a class="headerlink" href="#common-postgresql-extensions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Extension</p></th>
@@ -682,7 +700,7 @@ Most powerful features come via extensions.</p>
 </dl>
 <hr class="docutils" />
 <dl class="simple">
-<dt>🔒 Security Note (Important for Docs)</dt><dd><ul class="simple">
+<dt>🔒 Security Note</dt><dd><ul class="simple">
 <li><p>Some extensions are <strong>trusted</strong> (safe for users)</p></li>
 <li><p>Some extensions are <strong>untrusted</strong></p></li>
 <li><p>Installing extensions usually requires <strong>superuser or elevated privileges</strong></p></li>
@@ -739,13 +757,13 @@ Most powerful features come via extensions.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#postgresql-extensions">PostgreSQL Extensions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-postgresql-extension">1️⃣ What is a PostgreSQL Extension?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-extensions-exist-big-picture">2️⃣ Why Extensions Exist (Big Picture)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-extensions-exist">2️⃣ Why Extensions Exist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-pgadmin-shows-extensions-1">3️⃣ Why pgAdmin shows “Extensions (1)”</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-plpgsql-extension">4️⃣ What is plpgsql Extension?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#is-plpgsql-special">5️⃣ Is plpgsql special?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions-are-database-level-important">6️⃣ Extensions are Database-Level (Important!)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions-are-database-level">6️⃣ Extensions are Database-Level</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-extensions-work-internally">7️⃣ How Extensions Work Internally</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-postgresql-extensions-very-important">8️⃣ Common PostgreSQL Extensions (Very Important)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-postgresql-extensions">8️⃣ Common PostgreSQL Extensions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-install-an-extension">9️⃣ How to Install an Extension</a></li>
 </ul>
   </nav></div>

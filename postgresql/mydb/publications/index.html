@@ -320,8 +320,26 @@
 <li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/databases/postgres/index.html">postgres</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../server/localpostgresql/tablespaces/index.html">Tablespaces(2)</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_database_owner.html">pg_database_owner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_execute_server_program.html">pg_execute_server_program</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_monitor.html">pg_monitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_data.html">pg_read_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_settings.html">pg_read_all_settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_stats.html">pg_read_all_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_server_files.html">pg_read_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_signal_backend.html">pg_signal_backend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_stat_scan_tables.html">pg_stat_scan_tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_all_data.html">pg_write_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_server_files.html">pg_write_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/sherullahmohtat.html">👤 sherullahmohtat</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/tablespaces/index.html">Tablespaces(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_default/index.html">pg_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_global/index.html">pg_global</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 </ul>
@@ -422,7 +440,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -438,6 +458,20 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-publications-in-postgresql">What Are Publications in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-publications-exist">1️ Why Publications Exist</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-shows-under-publications">2️ What pgAdmin Shows Under “Publications”</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-a-publication-contain">3️ What Does a Publication Contain?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-publication-example">4️ Simple Publication Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-exactly-gets-replicated">5️ What Exactly Gets Replicated?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#publications-do-nothing-alone">6️ Publications Do NOTHING Alone ⚠️</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -449,6 +483,217 @@ document.write(`
                   
   <section id="publications">
 <h1>Publications<a class="headerlink" href="#publications" title="Link to this heading">#</a></h1>
+<section id="what-are-publications-in-postgresql">
+<h2>What Are Publications in PostgreSQL?<a class="headerlink" href="#what-are-publications-in-postgresql" title="Link to this heading">#</a></h2>
+<p>PostgreSQL Publications define which tables and data changes (INSERT, UPDATE, DELETE) are exposed for logical replication. They act as the publishing side of PostgreSQL’s logical replication system, enabling selective, table-level data sharing across databases.</p>
+<p><strong>Publication</strong> is a <strong>logical replication object.</strong></p>
+<blockquote>
+<div><p>A publication defines what data is allowed to be replicated (published) from a database to other databases.</p>
+</div></blockquote>
+<p>Think of it as:</p>
+<blockquote>
+<div><p><strong>“I choose which tables and which changes I want to broadcast.”</strong></p>
+</div></blockquote>
+<hr class="docutils" />
+<p>PostgreSQL replication has <strong>two main types:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Physical replication</p></td>
+<td><p>Binary / streaming</p></td>
+</tr>
+<tr class="row-odd"><td><p>Logical replication</p></td>
+<td><p>Publications &amp; Subscriptions</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="why-publications-exist">
+<h2>1️ Why Publications Exist<a class="headerlink" href="#why-publications-exist" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Publications allow you to:</dt><dd><ul class="simple">
+<li><p>Replicate <strong>specific tables</strong>, not whole DB</p></li>
+<li><p>Replicate <strong>INSERT / UPDATE / DELETE</strong></p></li>
+<li><p>Share data <strong>between different PostgreSQL versions</strong></p></li>
+<li><p>Do <strong>microservice-style data sharing</strong></p></li>
+<li><p>Build <strong>read replicas, analytics replicas, sync services</strong></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="what-pgadmin-shows-under-publications">
+<h2>2️ What pgAdmin Shows Under “Publications”<a class="headerlink" href="#what-pgadmin-shows-under-publications" title="Link to this heading">#</a></h2>
+<p>In pgAdmin:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Database
+└──<span class="w"> </span>Publications
+</pre></div>
+</div>
+<p>If empty → no logical replication is configured yet.</p>
+<p>Publications live <strong>inside a database</strong>, not at server level.</p>
+</section>
+<hr class="docutils" />
+<section id="what-does-a-publication-contain">
+<h2>3️ What Does a Publication Contain?<a class="headerlink" href="#what-does-a-publication-contain" title="Link to this heading">#</a></h2>
+<p>A publication defines:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Item</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Tables</p></td>
+<td><p>Which tables are published</p></td>
+</tr>
+<tr class="row-odd"><td><p>Actions</p></td>
+<td><p>INSERT / UPDATE / DELETE</p></td>
+</tr>
+<tr class="row-even"><td><p>Schema</p></td>
+<td><p>Optional</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ownership</p></td>
+<td><p>Database role</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="simple-publication-example">
+<h2>4️ Simple Publication Example<a class="headerlink" href="#simple-publication-example" title="Link to this heading">#</a></h2>
+<p><strong>Step 1:</strong> Create a publication</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">PUBLICATION</span><span class="w"> </span><span class="n">my_pub</span>
+<span class="k">FOR</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">users</span><span class="p">,</span><span class="w"> </span><span class="n">orders</span><span class="p">;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Now PostgreSQL will publish changes from:</dt><dd><ul class="simple">
+<li><p>users</p></li>
+<li><p>orders</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Step 2:</strong> Publish all tables (common)</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">PUBLICATION</span><span class="w"> </span><span class="n">all_tables_pub</span>
+<span class="k">FOR</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">TABLES</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>⚠ Use carefully — this publishes everything.</p>
+</section>
+<hr class="docutils" />
+<section id="what-exactly-gets-replicated">
+<h2>5️ What Exactly Gets Replicated?<a class="headerlink" href="#what-exactly-gets-replicated" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>By default:</dt><dd><ul class="simple">
+<li><p>INSERT</p></li>
+<li><p>UPDATE</p></li>
+<li><p>DELETE</p></li>
+<li><p>TRUNCATE (optional)</p></li>
+</ul>
+</dd>
+</dl>
+<p>You can control this:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">PUBLICATION</span><span class="w"> </span><span class="n">pub_changes</span>
+<span class="k">FOR</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">users</span>
+<span class="k">WITH</span><span class="w"> </span><span class="p">(</span><span class="n">publish</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;insert, update&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="publications-do-nothing-alone">
+<h2>6️ Publications Do NOTHING Alone ⚠️<a class="headerlink" href="#publications-do-nothing-alone" title="Link to this heading">#</a></h2>
+<p>Very important concept:</p>
+<blockquote>
+<div><p>A publication by itself does not replicate anything.</p>
+</div></blockquote>
+<p>It needs:
+➡ <strong>Subscription</strong> (on another database)</p>
+<hr class="docutils" />
+<p><strong>7️ Publications + Subscriptions (Publisher vs Subscriber)</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Role</p></th>
+<th class="head"><p>Object</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Source DB</p></td>
+<td><p>Publication</p></td>
+</tr>
+<tr class="row-odd"><td><p>Target DB</p></td>
+<td><p>Subscription</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Flow:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Publisher<span class="w"> </span>DB<span class="w"> </span>──<span class="o">(</span>Publication<span class="o">)</span>──▶<span class="w"> </span>Subscriber<span class="w"> </span>DB
+</pre></div>
+</div>
+<hr class="docutils" />
+<p>8️ <strong>Real-World Analogy</strong> 🌍</p>
+<dl class="simple">
+<dt>Imagine a news agency:</dt><dd><ul class="simple">
+<li><p>Publication = What news is published</p></li>
+<li><p>Subscription = Who receives the news</p></li>
+</ul>
+</dd>
+<dt>You cannot receive news without:</dt><dd><ul class="simple">
+<li><p>A publisher</p></li>
+<li><p>A subscriber</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>9️ <strong>Real-World Use Cases</strong></p>
+<dl class="simple">
+<dt>Microservices</dt><dd><ul class="simple">
+<li><p>User service publishes users</p></li>
+<li><p>Order service subscribes to users</p></li>
+</ul>
+</dd>
+<dt>Analytics DB</dt><dd><ul class="simple">
+<li><p>Production DB publishes tables</p></li>
+<li><p>Analytics DB subscribes (read-only)</p></li>
+</ul>
+</dd>
+<dt>Multi-region sync</dt><dd><ul class="simple">
+<li><p>One region publishes</p></li>
+<li><p>Others subscribe</p></li>
+</ul>
+</dd>
+<dt>SaaS multi-tenant</dt><dd><ul class="simple">
+<li><p>Central DB publishes</p></li>
+<li><p>Client DBs subscribe</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>🔐 Security &amp; Permissions</dt><dd><ul class="simple">
+<li><p>Only table owners can publish tables</p></li>
+<li><p>Superuser or replication role required</p></li>
+<li><p>Uses replication slots</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>1️0️ What Publications Are NOT</p>
+<blockquote>
+<div><p>❌ Not backups</p>
+<p>❌ Not full DB clone</p>
+<p>❌ Not physical replication</p>
+<p>❌ Not high-availability by itself</p>
+</div></blockquote>
+<p>They are data-sharing rules.</p>
+</section>
 </section>
 
 
@@ -486,6 +731,27 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-publications-in-postgresql">What Are Publications in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-publications-exist">1️ Why Publications Exist</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-shows-under-publications">2️ What pgAdmin Shows Under “Publications”</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-a-publication-contain">3️ What Does a Publication Contain?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-publication-example">4️ Simple Publication Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-exactly-gets-replicated">5️ What Exactly Gets Replicated?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#publications-do-nothing-alone">6️ Publications Do NOTHING Alone ⚠️</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

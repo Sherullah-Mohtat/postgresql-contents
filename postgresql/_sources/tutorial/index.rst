@@ -141,7 +141,7 @@ pgAdmin simply **shows and controls** this hierarchy.
 
 .. note::
 
-   **One-line summary**
+   **Summary**
 
    pgAdmin is a graphical administration tool that allows users to manage,
    monitor, and interact with PostgreSQL databases through a visual interface.

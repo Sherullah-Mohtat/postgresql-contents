@@ -102,4 +102,9 @@ Tablespaces are about **disk,** not structure.
 
 
   
+.. toctree::
+   :hidden:
+   :maxdepth: 2
  
+   pg_default/index
+   pg_global/index 

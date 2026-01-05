@@ -320,8 +320,26 @@
 <li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/databases/postgres/index.html">postgres</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../server/localpostgresql/tablespaces/index.html">Tablespaces(2)</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/index.html">Login/Group Roles(12)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_database_owner.html">pg_database_owner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_execute_server_program.html">pg_execute_server_program</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_monitor.html">pg_monitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_data.html">pg_read_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_settings.html">pg_read_all_settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_stats.html">pg_read_all_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_server_files.html">pg_read_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_signal_backend.html">pg_signal_backend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_stat_scan_tables.html">pg_stat_scan_tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_all_data.html">pg_write_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_server_files.html">pg_write_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/sherullahmohtat.html">👤 sherullahmohtat</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/tablespaces/index.html">Tablespaces(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_default/index.html">pg_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_global/index.html">pg_global</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 </ul>
@@ -422,7 +440,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -438,6 +458,29 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#postgresql-foreign-data-wrappers-fdw">PostgreSQL Foreign Data Wrappers (FDW)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-foreign-data-wrapper">1️ What is a Foreign Data Wrapper?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-fdw-exists">2️ Why FDW Exists</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fdw-in-simple-words">3️ FDW in Simple Words</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-fdw-components">4️ Core FDW Components</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#foreign-data-wrapper">1. Foreign Data Wrapper</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#foreign-server">2. Foreign Server</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#user-mapping">3. User Mapping</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#foreign-table">4. Foreign Table</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-shows-under-foreign-data-wrappers">5️ What pgAdmin Shows Under “Foreign Data Wrappers”</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#most-common-fdws-in-postgresql">6️ Most Common FDWs in PostgreSQL</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fdw-vs-logical-replication">7️ FDW vs Logical Replication</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-safety-notes">8️ Performance &amp; Safety Notes ⚠️</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-working-fdw-example-postgres-postgres">9️ Minimal Working FDW Example (Postgres → Postgres)</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -449,6 +492,243 @@ document.write(`
                   
   <section id="foreign-data-wrappers">
 <h1>Foreign Data Wrappers<a class="headerlink" href="#foreign-data-wrappers" title="Link to this heading">#</a></h1>
+<section id="postgresql-foreign-data-wrappers-fdw">
+<h2>PostgreSQL Foreign Data Wrappers (FDW)<a class="headerlink" href="#postgresql-foreign-data-wrappers-fdw" title="Link to this heading">#</a></h2>
+<p>In your pgAdmin tree you see:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>MyDB
+<span class="p">|</span>___<span class="w"> </span>Casts
+<span class="p">|</span>___<span class="w"> </span>Catalogs
+<span class="p">|</span>___<span class="w"> </span>Event<span class="w"> </span>Triggers
+<span class="p">|</span>___<span class="w"> </span>Extensions
+<span class="p">|</span>___<span class="w"> </span>Foreign<span class="w"> </span>Data<span class="w"> </span>Wrappers
+<span class="p">|</span>___<span class="w"> </span>Languages
+<span class="p">|</span>___<span class="w"> </span>Publications
+<span class="p">|</span>___<span class="w"> </span>Schemas
+<span class="p">|</span>___<span class="w"> </span>Subscriptions
+</pre></div>
+</div>
+<p>This means PostgreSQL is ready to <strong>connect to external data sources</strong> as if they were local tables.</p>
+</section>
+<hr class="docutils" />
+<section id="what-is-a-foreign-data-wrapper">
+<h2>1️ What is a Foreign Data Wrapper?<a class="headerlink" href="#what-is-a-foreign-data-wrapper" title="Link to this heading">#</a></h2>
+<p>A Foreign Data Wrapper (FDW) allows PostgreSQL to:</p>
+<blockquote>
+<div><p>Access data stored outside the current database using normal SQL queries.</p>
+</div></blockquote>
+<p>PostgreSQL becomes a <strong>data gateway</strong>, not just a database.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A data gateway is a system that allows applications to access and query data from multiple external sources through a single interface. In PostgreSQL, Foreign Data Wrappers (FDW) enable PostgreSQL to act as a data gateway.</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="why-fdw-exists">
+<h2>2️ Why FDW Exists<a class="headerlink" href="#why-fdw-exists" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Normally, PostgreSQL can only query:</dt><dd><ul class="simple">
+<li><p>Tables inside the same database</p></li>
+</ul>
+</dd>
+<dt>With FDW, PostgreSQL can query:</dt><dd><ul class="simple">
+<li><p>Other PostgreSQL databases</p></li>
+<li><p>MySQL</p></li>
+<li><p>Oracle</p></li>
+<li><p>MongoDB</p></li>
+<li><p>CSV files</p></li>
+<li><p>REST APIs (via custom FDWs)</p></li>
+<li><p>Even another server on another machine</p></li>
+</ul>
+</dd>
+</dl>
+<p>All using <strong>SELECT, JOIN, WHERE</strong>, etc.</p>
+</section>
+<hr class="docutils" />
+<section id="fdw-in-simple-words">
+<h2>3️ FDW in Simple Words<a class="headerlink" href="#fdw-in-simple-words" title="Link to this heading">#</a></h2>
+<p>FDW = <strong>“Query external data as if it were local”</strong></p>
+</section>
+<hr class="docutils" />
+<section id="core-fdw-components">
+<h2>4️ Core FDW Components<a class="headerlink" href="#core-fdw-components" title="Link to this heading">#</a></h2>
+<p>FDW is not a single thing. It has <strong>four layers:</strong></p>
+<section id="foreign-data-wrapper">
+<h3>1. Foreign Data Wrapper<a class="headerlink" href="#foreign-data-wrapper" title="Link to this heading">#</a></h3>
+<p>Defines how to talk to an external source.</p>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">EXTENSION</span><span class="w"> </span><span class="n">postgres_fdw</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="foreign-server">
+<h3>2. Foreign Server<a class="headerlink" href="#foreign-server" title="Link to this heading">#</a></h3>
+<p>Connection details to the external system</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">SERVER</span><span class="w"> </span><span class="n">remote_pg</span>
+<span class="k">FOREIGN</span><span class="w"> </span><span class="k">DATA</span><span class="w"> </span><span class="k">WRAPPER</span><span class="w"> </span><span class="n">postgres_fdw</span>
+<span class="k">OPTIONS</span><span class="w"> </span><span class="p">(</span><span class="n">host</span><span class="w"> </span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">dbname</span><span class="w"> </span><span class="s1">&#39;otherdb&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="s1">&#39;5432&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="user-mapping">
+<h3>3. User Mapping<a class="headerlink" href="#user-mapping" title="Link to this heading">#</a></h3>
+<p>Authentication credentials.</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="k">MAPPING</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="k">current_user</span>
+<span class="k">SERVER</span><span class="w"> </span><span class="n">remote_pg</span>
+<span class="k">OPTIONS</span><span class="w"> </span><span class="p">(</span><span class="k">user</span><span class="w"> </span><span class="s1">&#39;remote_user&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">password</span><span class="w"> </span><span class="s1">&#39;secret&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="foreign-table">
+<h3>4. Foreign Table<a class="headerlink" href="#foreign-table" title="Link to this heading">#</a></h3>
+<p>A local definition pointing to remote data.</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">users_remote</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">int</span><span class="p">,</span>
+<span class="w">    </span><span class="k">name</span><span class="w"> </span><span class="nb">text</span>
+<span class="p">)</span>
+<span class="k">SERVER</span><span class="w"> </span><span class="n">remote_pg</span>
+<span class="k">OPTIONS</span><span class="w"> </span><span class="p">(</span><span class="n">schema_name</span><span class="w"> </span><span class="s1">&#39;public&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">table_name</span><span class="w"> </span><span class="s1">&#39;users&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="what-pgadmin-shows-under-foreign-data-wrappers">
+<h2>5️ What pgAdmin Shows Under “Foreign Data Wrappers”<a class="headerlink" href="#what-pgadmin-shows-under-foreign-data-wrappers" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Once configured, pgAdmin will show:</dt><dd><ul class="simple">
+<li><p>FDW extensions (e.g., postgres_fdw)</p></li>
+<li><p>Foreign servers</p></li>
+<li><p>Foreign tables</p></li>
+</ul>
+</dd>
+</dl>
+<p>They look <strong>almost like normal tables</strong> — but they are not stored locally.</p>
+</section>
+<hr class="docutils" />
+<section id="most-common-fdws-in-postgresql">
+<h2>6️ Most Common FDWs in PostgreSQL<a class="headerlink" href="#most-common-fdws-in-postgresql" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>FDW</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>postgres_fdw</p></td>
+<td><p>Connect to another PostgreSQL</p></td>
+</tr>
+<tr class="row-odd"><td><p>mysql_fdw</p></td>
+<td><p>Connect to MySQL</p></td>
+</tr>
+<tr class="row-even"><td><p>oracle_fdw</p></td>
+<td><p>Connect to Oracle</p></td>
+</tr>
+<tr class="row-odd"><td><p>mongo_fdw</p></td>
+<td><p>Connect to MongoDB</p></td>
+</tr>
+<tr class="row-even"><td><p>file_fdw</p></td>
+<td><p>Read CSV / flat files</p></td>
+</tr>
+<tr class="row-odd"><td><p>tds_fdw</p></td>
+<td><p>SQL Server</p></td>
+</tr>
+<tr class="row-even"><td><p>jdbc_fdw</p></td>
+<td><p>JDBC sources</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="fdw-vs-logical-replication">
+<h2>7️ FDW vs Logical Replication<a class="headerlink" href="#fdw-vs-logical-replication" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>FDW</p></th>
+<th class="head"><p>Replication</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Live access</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>❌ No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Data copied</p></td>
+<td><p>❌ No</p></td>
+<td><p>✅ Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Joins across DBs</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>❌ No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Performance</p></td>
+<td><p>Slower</p></td>
+<td><p>Faster</p></td>
+</tr>
+<tr class="row-even"><td><p>Use case</p></td>
+<td><p>Read/Query</p></td>
+<td><p>Sync/Backup</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="performance-safety-notes">
+<h2>8️ Performance &amp; Safety Notes ⚠️<a class="headerlink" href="#performance-safety-notes" title="Link to this heading">#</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>FDW queries are <strong>slower</strong> than local tables</p></li>
+<li><p>Network latency matters</p></li>
+<li><p>Indexes may not be pushed down</p></li>
+<li><p>Permissions must be handled carefully</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>FDW is best for:</dt><dd><ul class="simple">
+<li><p>Reporting</p></li>
+<li><p>Analytics</p></li>
+<li><p>Read-heavy workloads</p></li>
+<li><p>Cross-system queries</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>🔒 Security Model</strong></p>
+<dl class="simple">
+<dt>FDW respects:</dt><dd><ul class="simple">
+<li><p>PostgreSQL roles</p></li>
+<li><p>User mappings</p></li>
+<li><p>Schema permissions</p></li>
+</ul>
+</dd>
+<dt>But:</dt><dd><ul class="simple">
+<li><p>Passwords are stored in metadata</p></li>
+<li><p>Superuser is usually required to set it up</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="minimal-working-fdw-example-postgres-postgres">
+<h2>9️ Minimal Working FDW Example (Postgres → Postgres)<a class="headerlink" href="#minimal-working-fdw-example-postgres-postgres" title="Link to this heading">#</a></h2>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">EXTENSION</span><span class="w"> </span><span class="n">postgres_fdw</span><span class="p">;</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">SERVER</span><span class="w"> </span><span class="n">other_db</span>
+<span class="k">FOREIGN</span><span class="w"> </span><span class="k">DATA</span><span class="w"> </span><span class="k">WRAPPER</span><span class="w"> </span><span class="n">postgres_fdw</span>
+<span class="k">OPTIONS</span><span class="w"> </span><span class="p">(</span><span class="n">host</span><span class="w"> </span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">dbname</span><span class="w"> </span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="s1">&#39;5432&#39;</span><span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="k">MAPPING</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="k">CURRENT_USER</span>
+<span class="k">SERVER</span><span class="w"> </span><span class="n">other_db</span>
+<span class="k">OPTIONS</span><span class="w"> </span><span class="p">(</span><span class="k">user</span><span class="w"> </span><span class="s1">&#39;postgres&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">password</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">);</span>
+
+<span class="k">IMPORT</span><span class="w"> </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">public</span>
+<span class="k">FROM</span><span class="w"> </span><span class="k">SERVER</span><span class="w"> </span><span class="n">other_db</span>
+<span class="k">INTO</span><span class="w"> </span><span class="n">public</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -486,6 +766,36 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#postgresql-foreign-data-wrappers-fdw">PostgreSQL Foreign Data Wrappers (FDW)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-foreign-data-wrapper">1️ What is a Foreign Data Wrapper?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-fdw-exists">2️ Why FDW Exists</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fdw-in-simple-words">3️ FDW in Simple Words</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-fdw-components">4️ Core FDW Components</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#foreign-data-wrapper">1. Foreign Data Wrapper</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#foreign-server">2. Foreign Server</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#user-mapping">3. User Mapping</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#foreign-table">4. Foreign Table</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-shows-under-foreign-data-wrappers">5️ What pgAdmin Shows Under “Foreign Data Wrappers”</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#most-common-fdws-in-postgresql">6️ Most Common FDWs in PostgreSQL</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fdw-vs-logical-replication">7️ FDW vs Logical Replication</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-safety-notes">8️ Performance &amp; Safety Notes ⚠️</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-working-fdw-example-postgres-postgres">9️ Minimal Working FDW Example (Postgres → Postgres)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

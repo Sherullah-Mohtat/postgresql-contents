@@ -29,9 +29,7 @@ PostgreSQL **does not separate users and groups** like some databases — everyt
 
 **What pgAdmin shows under Login / Group Roles**
 
-From your screenshot, pgAdmin lists roles like:
-
-**System-defined roles (built-in)**
+**pgAdmin** lists roles like **System-defined roles (built-in)**
 
 These are created automatically by PostgreSQL:
 	- pg_database_owner
@@ -133,3 +131,20 @@ Means:
 
 
   
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   
+   pg_database_owner.rst
+   pg_execute_server_program.rst
+   pg_monitor.rst
+   pg_read_all_data.rst
+   pg_read_all_settings.rst
+   pg_read_all_stats.rst
+   pg_read_server_files.rst
+   pg_signal_backend.rst
+   pg_stat_scan_tables.rst
+   pg_write_all_data.rst 
+   pg_write_server_files.rst
+   sherullahmohtat.rst
+
