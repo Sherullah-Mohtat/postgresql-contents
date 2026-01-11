@@ -5,7 +5,7 @@
 
 
 -----------------------------------
-What is pg_execute_server_program?
+What is pg_execute-server_program?
 -----------------------------------
 
 This is a **built-in privileged role** provided by PostgreSQL.
