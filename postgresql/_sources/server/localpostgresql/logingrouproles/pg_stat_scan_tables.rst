@@ -1,5 +1,7 @@
-pg_stat_scan_tables
-=====================
+|pg_groups| pg_stat_scan_tables
+==================================
+
+.. |pg_groups| image:: /_static/images/sidebar_icons/pg_groups.png
 
 -------------------------------
 What is pg_stat_scan_tables?

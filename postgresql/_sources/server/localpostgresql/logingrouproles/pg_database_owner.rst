@@ -1,5 +1,7 @@
-pg_database_owner
-==================
+|pg_groups| pg_database_owner
+===============================
+
+.. |pg_groups| image:: /_static/images/sidebar_icons/pg_groups.png
 
 ----------------------------
 What is pg_database_owner?

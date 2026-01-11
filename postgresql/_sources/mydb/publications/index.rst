@@ -1,5 +1,7 @@
-Publications 
-==============
+|publications| Publications 
+==============================
+
+.. |publications| image:: /_static/images/sidebar_icons/publications.png
 
 --------------------------------------
 What Are Publications in PostgreSQL?

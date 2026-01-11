@@ -1,5 +1,7 @@
-Event Triggers 
-================
+|eventtriggers| Event Triggers 
+================================
+
+.. |eventtriggers| image:: /_static/images/sidebar_icons/event_triggers.png
 
 ----------------------------------------
 What are Event Triggers in PostgreSQL?

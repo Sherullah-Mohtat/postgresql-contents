@@ -4,8 +4,11 @@
    :keywords: pgAdmin Server, Server (1) pgAdmin, PostgreSQL server instance, pgAdmin Object Explorer, PostgreSQL server explained
    :author: Sherullah Mohtat
 
-Server(1)
-==========
+|server_icon| Server(1)
+=========================
+
+.. |server_icon| image:: /_static/images/sidebar_icons/server.png
+
 
 In pgAdmin, **Server (1)** represents the number of PostgreSQL server instances
 currently registered and available for connection. Each server entry corresponds
@@ -108,6 +111,6 @@ This is why **Server** is the **top-level object.**
 .. toctree::
    :hidden:
    :maxdepth: 14
- 
+
    localpostgresql/index
   

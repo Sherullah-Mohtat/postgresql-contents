@@ -1,5 +1,7 @@
-pg_read_all_stats
-===================
+|pg_groups| pg_read_all_stats
+=================================
+
+.. |pg_groups| image:: /_static/images/sidebar_icons/pg_groups.png
 
 ----------------------------
 What is pg_read_all_stats?

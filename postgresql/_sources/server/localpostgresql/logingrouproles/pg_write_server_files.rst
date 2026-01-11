@@ -1,5 +1,7 @@
-pg_write_server_files
-========================
+|pg_groups| pg_write_server_files
+===================================
+
+.. |pg_groups| image:: /_static/images/sidebar_icons/pg_groups.png
 
 ---------------------------------
 What is pg_write_server_files?

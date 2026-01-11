@@ -4,8 +4,10 @@
    :keywords: PostgreSQL MyDB, PostgreSQL user database, PostgreSQL database structure, PostgreSQL schemas, PostgreSQL extensions, pgAdmin databases
    :author: Sherullah Mohtat
 
-MyDB 
-=====
+|mydb| MyDB 
+==============
+
+.. |mydb| image:: /_static/images/sidebar_icons/mydb.png
 
 MyDB represents a **user-created PostgreSQL database**.  
 This is where **real application data lives** and where developers work most of the time.

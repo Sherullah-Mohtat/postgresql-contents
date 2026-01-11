@@ -1,5 +1,7 @@
-Foreign Data Wrappers
-======================
+|foreigndatawrappers| Foreign Data Wrappers
+===============================================
+
+.. |foreigndatawrappers| image:: /_static/images/sidebar_icons/foreign_data_wrappers.png
 
 ----------------------------------------
 PostgreSQL Foreign Data Wrappers (FDW)

@@ -1,5 +1,7 @@
-pg_global 
-===========
+|pg_global| pg_global 
+=======================
+
+.. |pg_global| image:: /_static/images/sidebar_icons/pg_default.png
 
 -----------------------------------
 What is pg_global in PostgreSQL?

@@ -1,5 +1,7 @@
-Languages 
-==========
+|language| Languages 
+======================
+
+.. |language| image:: /_static/images/sidebar_icons/languages.png
 
 -------------------------------------
 What Are “Languages” in PostgreSQL?

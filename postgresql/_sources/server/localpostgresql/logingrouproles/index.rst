@@ -4,8 +4,10 @@
    :keywords: PostgreSQL roles, login roles, group roles, pgAdmin users, PostgreSQL permissions
    :author: Sherullah Mohtat
 
-Login/Group Roles(12)
-======================
+|lgr| Login/Group Roles(12)
+=============================
+
+.. |lgr| image:: /_static/images/sidebar_icons/logingroup.png
 
 In pgAdmin, **Login / Group Roles (12)** means:
 

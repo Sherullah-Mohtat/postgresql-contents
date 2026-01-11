@@ -1,9 +1,11 @@
-Catalogs 
-=========
+|catalogs| Catalogs 
+=======================
 
-----------------------------------
-What are Catalogs in PostgreSQL?
-----------------------------------
+.. |catalogs| image:: /_static/images/sidebar_icons/catalogs.png
+	
+--------------------------------------
+ What are Catalogs in PostgreSQL?
+--------------------------------------
 
 **Catalogs** are **system schemas** that store **metadata about the database itself.**
 

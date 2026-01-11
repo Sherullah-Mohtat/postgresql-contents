@@ -1,5 +1,7 @@
-Subscriptions 
-==============
+|subscriptions| Subscriptions 
+================================
+
+.. |subscriptions| image:: /_static/images/sidebar_icons/subscriptions.png
 
 ---------------------------------------
  What Are Subscriptions in PostgreSQL?

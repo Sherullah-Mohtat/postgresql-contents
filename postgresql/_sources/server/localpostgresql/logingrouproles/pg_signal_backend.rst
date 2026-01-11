@@ -1,5 +1,7 @@
-pg_signal_backend
-===================
+|pg_groups| pg_signal_backend
+================================
+
+.. |pg_groups| image:: /_static/images/sidebar_icons/pg_groups.png
 
 ----------------------------
 What is pg_signal_backend?

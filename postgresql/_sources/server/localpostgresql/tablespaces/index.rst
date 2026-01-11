@@ -4,8 +4,10 @@
    :keywords: PostgreSQL tablespaces, Tablespaces (2) pgAdmin, pg_default, pg_global, PostgreSQL storage
    :author: Sherullah Mohtat
 
-Tablespaces(2)
-===============
+|tbs| Tablespaces(2)
+=====================
+
+.. |tbs| image:: /_static/images/sidebar_icons/tablespaces.png
 
 In PostgreSQL, tablespaces define the physical locations on disk where database
 objects are stored. The label Tablespaces (2) in pgAdmin indicates that two

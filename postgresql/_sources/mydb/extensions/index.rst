@@ -1,5 +1,7 @@
-Extensions 
-===========
+|extensions| Extensions 
+=========================
+
+.. |extensions| image:: /_static/images/sidebar_icons/extensions.png
 
 -------------------------
 PostgreSQL Extensions

@@ -4,8 +4,10 @@
    :keywords: PostgreSQL databases, Databases (2) pgAdmin, PostgreSQL database explained, pgAdmin databases
    :author: Sherullah Mohtat
 
-Databases(2)
-=============
+|db| Databases(2)
+===================
+
+.. |db| image:: /_static/images/sidebar_icons/databases.png
 
 In pgAdmin, **Databases (2)** means:
 
@@ -94,7 +96,7 @@ This connects directly to **Login / Group Roles (12).**
 
 ================================================================================================
 
-💾 Databases and Tablespaces
+Databases and Tablespaces
 -----------------------------
 
 Databases store their data in:

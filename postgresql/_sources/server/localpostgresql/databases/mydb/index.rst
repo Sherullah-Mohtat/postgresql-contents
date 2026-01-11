@@ -4,8 +4,10 @@
    :keywords: PostgreSQL default database, postgres database, user database PostgreSQL, pgAdmin databases
    :author: Sherullah Mohtat
 
-MyDB 
-=====
+|mydb| MyDB 
+==============
+
+.. |mydb| image:: /_static/images/sidebar_icons/mydb.png
 
 1️⃣ What is a User Database?
 ----------------------------

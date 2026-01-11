@@ -1,6 +1,8 @@
-Casts 
-======
+|casts| Casts 
+===============
 
+.. |casts| image:: /_static/images/sidebar_icons/casts.png
+    
 -------------------------------
 What are Casts in PostgreSQL?
 -------------------------------

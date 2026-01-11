@@ -1,5 +1,8 @@
-pg_default 
-===========
+|pg_default| pg_default 
+=========================
+
+.. |pg_default| image:: /_static/images/sidebar_icons/pg_default.png
+
 
 .. code-block::
 

@@ -4,8 +4,10 @@
    :keywords: PostgreSQL databases, Databases (1) pgAdmin, PostgreSQL database explained, pgAdmin databases
    :author: Sherullah Mohtat
 
-postgres 
-=========
+|mydb| postgres 
+=================
+
+.. |mydb| image:: /_static/images/sidebar_icons/mydb.png
 
 **Default Database vs User Database (PostgreSQL)**
 

@@ -1,5 +1,7 @@
-pg_monitor
-===========
+|pg_groups| pg_monitor
+=========================
+
+.. |pg_groups| image:: /_static/images/sidebar_icons/pg_groups.png
 
 ---------------------
 What is pg_monitor?

@@ -4,8 +4,10 @@
    :keywords: Local PostgreSQL, pgAdmin Local PostgreSQL, PostgreSQL localhost, PostgreSQL local server
    :author: Sherullah Mohtat
 
-Local PostgreSQL
-=================
+|local| Local PostgreSQL
+=========================
+
+.. |local| image:: /_static/images/sidebar_icons/local.png
 
 Local PostgreSQL refers to a PostgreSQL server instance running on the same
 machine as pgAdmin. It allows developers to manage databases locally using

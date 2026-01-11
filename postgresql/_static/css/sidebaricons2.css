@@ -1,0 +1,359 @@
+/* =========================================================
+   Sidebar Icons (Sphinx) — RTD + Bootstrap/PyData themes
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1) Base: spacing + icon pseudo-element
+   Apply to BOTH <a> and <span> because current item can be span.
+   --------------------------------------------------------- */
+
+.wy-menu-vertical :is(a.reference.internal, span.reference.internal),
+.bd-sidebar       :is(a.reference.internal, span.reference.internal) {
+  position: relative !important;
+  padding-left: 28px !important; /* room for icon */
+}
+
+/* icon base */
+.wy-menu-vertical :is(a.reference.internal, span.reference.internal)::before,
+.bd-sidebar       :is(a.reference.internal, span.reference.internal)::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+
+  width: 16px !important;
+  height: 16px !important;
+
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+
+  opacity: 0.95 !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+/* Some themes reduce opacity/hide pseudo elements on current */
+.wy-menu-vertical li.current > :is(a.reference.internal, span.reference.internal)::before,
+.bd-sidebar li.current       > :is(a.reference.internal, span.reference.internal)::before,
+.bd-sidebar .current         > :is(a.reference.internal, span.reference.internal)::before,
+.bd-sidebar .active          > :is(a.reference.internal, span.reference.internal)::before,
+.bd-sidebar .is-current-page > :is(a.reference.internal, span.reference.internal)::before {
+  opacity: 0.95 !important;
+}
+
+
+/* =========================================================
+   2) ICON MAPS
+   Rule order matters: more specific AFTER general.
+   ========================================================= */
+
+/* ---------- Server (use server/ to avoid pg_execute_server_program collisions) ---------- */
+.wy-menu-vertical a.reference.internal[href*="server/"]::before,
+.bd-sidebar       a.reference.internal[href*="server/"]::before {
+  background-image: url("../images/sidebar_icons/server.png") !important;
+}
+
+/* ---------- Local PostgreSQL (support common slug variants) ---------- */
+.wy-menu-vertical a.reference.internal[href*="server/localpostgresql"]::before,
+.wy-menu-vertical a.reference.internal[href*="server/localpostgresql"]::before,
+.bd-sidebar a.reference.internal[href*="server/localpostgresql"]::before,
+.bd-sidebar a.reference.internal[href*="server/localpostgresql"]::before{
+  background-image: url("../images/sidebar_icons/local.png") !important;
+}
+
+/* ---------- Databases ---------- */
+.wy-menu-vertical a.reference.internal[href*="databases"]::before,
+.bd-sidebar       a.reference.internal[href*="databases"]::before {
+  background-image: url("../images/sidebar_icons/databases.png") !important;
+}
+
+/* ---------- MyDB root ---------- */
+.wy-menu-vertical a.reference.internal[href*="mydb/"]::before,
+.bd-sidebar       a.reference.internal[href*="mydb/"]::before {
+  background-image: url("../images/sidebar_icons/mydb.png") !important;
+}
+
+/* ---------- postgres database page ---------- */
+.wy-menu-vertical a.reference.internal[href*="postgres/"]::before,
+.bd-sidebar       a.reference.internal[href*="postgres/"]::before {
+  background-image: url("../images/sidebar_icons/mydb.png") !important;
+}
+
+/* ---------- Login/Group Roles ---------- */
+.wy-menu-vertical a.reference.internal[href*="logingroup"]::before,
+.bd-sidebar       a.reference.internal[href*="logingroup"]::before,
+.wy-menu-vertical a.reference.internal[href*="login_group"]::before,
+.bd-sidebar       a.reference.internal[href*="login_group"]::before {
+  background-image: url("../images/sidebar_icons/logingroup.png") !important;
+}
+
+/* ---------- pg_* roles (group icon) ---------- */
+.wy-menu-vertical a.reference.internal[href*="pg_database_owner"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_database_owner"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_execute_server_program"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_execute_server_program"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_monitor"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_monitor"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_read_all_data"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_read_all_data"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_read_all_settings"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_read_all_settings"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_read_all_stats"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_read_all_stats"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_read_server_files"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_read_server_files"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_signal_backend"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_signal_backend"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_stat_scan_tables"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_stat_scan_tables"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_write_all_data"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_write_all_data"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_write_server_files"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_write_server_files"]::before {
+  background-image: url("../images/sidebar_icons/pg_groups.png") !important;
+}
+
+/* ---------- user page ---------- */
+.wy-menu-vertical a.reference.internal[href*="sherullahmohtat"]::before,
+.bd-sidebar       a.reference.internal[href*="sherullahmohtat"]::before {
+  background-image: url("../images/sidebar_icons/sh_profile.png") !important;
+}
+
+
+/* ---------- Tablespaces (match both tablespaces/ and tablespaces.html) ---------- */
+.wy-menu-vertical a.reference.internal[href*="tablespaces"]::before,
+.bd-sidebar       a.reference.internal[href*="tablespaces"]::before {
+  background-image: url("../images/sidebar_icons/tablespaces.png") !important;
+}
+
+/* More specific tablespaces AFTER general */
+.wy-menu-vertical a.reference.internal[href*="tablespaces/pg_default"]::before,
+.bd-sidebar       a.reference.internal[href*="tablespaces/pg_default"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_default"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_default"]::before {
+  background-image: url("../images/sidebar_icons/pg_default.png") !important;
+}
+
+.wy-menu-vertical a.reference.internal[href*="tablespaces/pg_global"]::before,
+.bd-sidebar       a.reference.internal[href*="tablespaces/pg_global"]::before,
+.wy-menu-vertical a.reference.internal[href*="pg_global"]::before,
+.bd-sidebar       a.reference.internal[href*="pg_global"]::before {
+  background-image: url("../images/sidebar_icons/pg_default.png") !important;
+}
+
+
+/* =========================================================
+   3) MyDB submenu (FIXED selectors)
+   ========================================================= */
+
+.wy-menu-vertical a.reference.internal[href*="mydb/casts"]::before,
+.bd-sidebar       a.reference.internal[href*="mydb/casts"]::before,
+.wy-menu-vertical a.reference.internal[href*="/casts"]::before,
+.bd-sidebar       a.reference.internal[href*="/casts"]::before {
+  background-image: url("../images/sidebar_icons/casts.png") !important;
+}
+
+.wy-menu-vertical a.reference.internal[href*="mydb/catalogs"]::before,
+.bd-sidebar       a.reference.internal[href*="mydb/catalogs"]::before,
+.wy-menu-vertical a.reference.internal[href*="/catalogs"]::before,
+.bd-sidebar       a.reference.internal[href*="/catalogs"]::before {
+  background-image: url("../images/sidebar_icons/catalogs.png") !important;
+}
+
+.wy-menu-vertical a.reference.internal[href*="mydb/eventtriggers"]::before,
+.bd-sidebar       a.reference.internal[href*="mydb/eventtriggers"]::before,
+.wy-menu-vertical a.reference.internal[href*="/eventtriggers"]::before,
+.bd-sidebar       a.reference.internal[href*="/eventtriggers"]::before {
+  background-image: url("../images/sidebar_icons/event_triggers.png") !important;
+}
+
+.wy-menu-vertical a.reference.internal[href*="mydb/extensions"]::before,
+.bd-sidebar       a.reference.internal[href*="mydb/extensions"]::before,
+.wy-menu-vertical a.reference.internal[href*="/extensions"]::before,
+.bd-sidebar       a.reference.internal[href*="/extensions"]::before {
+  background-image: url("../images/sidebar_icons/extensions.png") !important;
+}
+
+.wy-menu-vertical a.reference.internal[href*="mydb/foreigndatawrappers"]::before,
+.bd-sidebar       a.reference.internal[href*="mydb/foreigndatawrappers"]::before,
+.wy-menu-vertical a.reference.internal[href*="/foreigndatawrappers"]::before,
+.bd-sidebar       a.reference.internal[href*="/foreigndatawrappers"]::before {
+  background-image: url("../images/sidebar_icons/foreign_data_wrappers.png") !important;
+}
+
+.wy-menu-vertical a.reference.internal[href*="mydb/languages"]::before,
+.bd-sidebar       a.reference.internal[href*="mydb/languages"]::before,
+.wy-menu-vertical a.reference.internal[href*="/languages"]::before,
+.bd-sidebar       a.reference.internal[href*="/languages"]::before {
+  background-image: url("../images/sidebar_icons/languages.png") !important;
+}
+
+.wy-menu-vertical a.reference.internal[href*="mydb/publications"]::before,
+.bd-sidebar       a.reference.internal[href*="mydb/publications"]::before,
+.wy-menu-vertical a.reference.internal[href*="/publications"]::before,
+.bd-sidebar       a.reference.internal[href*="/publications"]::before {
+  background-image: url("../images/sidebar_icons/publications.png") !important;
+}
+
+.wy-menu-vertical a.reference.internal[href*="mydb/schemas"]::before,
+.bd-sidebar       a.reference.internal[href*="mydb/schemas"]::before,
+.wy-menu-vertical a.reference.internal[href*="/schemas"]::before,
+.bd-sidebar       a.reference.internal[href*="/schemas"]::before {
+  background-image: url("../images/sidebar_icons/schemas.png") !important;
+}
+
+.wy-menu-vertical a.reference.internal[href*="mydb/subscriptions"]::before,
+.bd-sidebar       a.reference.internal[href*="mydb/subscriptions"]::before,
+.wy-menu-vertical a.reference.internal[href*="/subscriptions"]::before,
+.bd-sidebar       a.reference.internal[href*="/subscriptions"]::before {
+  background-image: url("../images/sidebar_icons/subscriptions.png") !important;
+}
+
+/* =========================================================
+   Schema: public + submenu (anchor to schemas/public to avoid publications)
+   ========================================================= */
+
+/* public schema node */
+.wy-menu-vertical a.reference.internal[href*="public/"]::before,
+.bd-sidebar       a.reference.internal[href*="public/"]::before {
+  background-image: url("../images/sidebar_icons/public.png") !important;
+}
+
+/* public → Aggregates */
+.wy-menu-vertical a.reference.internal[href*="public/aggregates"]::before,
+.bd-sidebar       a.reference.internal[href*="public/aggregates"]::before,
+.wy-menu-vertical a.reference.internal[href*="aggregates"]::before,
+.bd-sidebar       a.reference.internal[href*="aggregates"]::before {
+  background-image: url("../images/sidebar_icons/aggregates.png") !important;
+}
+
+/* public → Collations */
+.wy-menu-vertical a.reference.internal[href*="public/collations"]::before,
+.bd-sidebar       a.reference.internal[href*="public/collations"]::before,
+.wy-menu-vertical a.reference.internal[href*="collations"]::before,
+.bd-sidebar       a.reference.internal[href*="collations"]::before {
+  background-image: url("../images/sidebar_icons/collations.png") !important;
+}
+
+/* public → Domains */
+.wy-menu-vertical a.reference.internal[href*="public/domains"]::before,
+.bd-sidebar       a.reference.internal[href*="public/domains"]::before,
+.wy-menu-vertical a.reference.internal[href*="domains"]::before,
+.bd-sidebar       a.reference.internal[href*="domains"]::before {
+  background-image: url("../images/sidebar_icons/domains.png") !important;
+}
+
+/* public → FTS Configurations */
+.wy-menu-vertical a.reference.internal[href*="public/ftsconfigurations"]::before,
+.bd-sidebar       a.reference.internal[href*="public/ftsconfigurations"]::before,
+.wy-menu-vertical a.reference.internal[href*="fts_configurations"]::before,
+.bd-sidebar       a.reference.internal[href*="fts_configurations"]::before {
+  background-image: url("../images/sidebar_icons/fts_configurations.png") !important;
+}
+
+/* public → FTS Dictionaries */
+.wy-menu-vertical a.reference.internal[href*="public/ftsdictionaries"]::before,
+.bd-sidebar       a.reference.internal[href*="public/ftsdictionaries"]::before,
+.wy-menu-vertical a.reference.internal[href*="fts_dictionaries"]::before,
+.bd-sidebar       a.reference.internal[href*="fts_dictionaries"]::before {
+  background-image: url("../images/sidebar_icons/fts_dictionaries.png") !important;
+}
+
+/* public → FTS Parsers */
+.wy-menu-vertical a.reference.internal[href*="public/ftsparsers"]::before,
+.bd-sidebar       a.reference.internal[href*="public/ftsparsers"]::before,
+.wy-menu-vertical a.reference.internal[href*="fts_parsers"]::before,
+.bd-sidebar       a.reference.internal[href*="fts_parsers"]::before {
+  background-image: url("../images/sidebar_icons/fts_parsers.png") !important;
+}
+
+/* public → FTS Templates */
+.wy-menu-vertical a.reference.internal[href*="public/ftstemplates"]::before,
+.bd-sidebar       a.reference.internal[href*="public/ftstemplates"]::before,
+.wy-menu-vertical a.reference.internal[href*="fts_templates"]::before,
+.bd-sidebar       a.reference.internal[href*="fts_templates"]::before {
+  background-image: url("../images/sidebar_icons/fts_templates.png") !important;
+}
+
+/* public → Foreign Tables */
+.wy-menu-vertical a.reference.internal[href*="public/foreigntables"]::before,
+.bd-sidebar       a.reference.internal[href*="public/foreigntables"]::before,
+.wy-menu-vertical a.reference.internal[href*="foreign_tables"]::before,
+.bd-sidebar       a.reference.internal[href*="foreign_tables"]::before {
+  background-image: url("../images/sidebar_icons/foreign_tables.png") !important;
+}
+
+/* public → Functions */
+.wy-menu-vertical a.reference.internal[href*="public/functions"]::before,
+.bd-sidebar       a.reference.internal[href*="public/functions"]::before,
+.wy-menu-vertical a.reference.internal[href*="functions"]::before,
+.bd-sidebar       a.reference.internal[href*="functions"]::before {
+  background-image: url("../images/sidebar_icons/functions.png") !important;
+}
+
+/* public → Materialized Views */
+.wy-menu-vertical a.reference.internal[href*="public/materializedviews"]::before,
+.bd-sidebar       a.reference.internal[href*="public/materializedviews"]::before,
+.wy-menu-vertical a.reference.internal[href*="materialized_views"]::before,
+.bd-sidebar       a.reference.internal[href*="materialized_views"]::before {
+  background-image: url("../images/sidebar_icons/materialize_views.png") !important;
+}
+
+/* public → Operators */
+.wy-menu-vertical a.reference.internal[href*="public/operators"]::before,
+.bd-sidebar       a.reference.internal[href*="public/operators"]::before,
+.wy-menu-vertical a.reference.internal[href*="operators"]::before,
+.bd-sidebar       a.reference.internal[href*="operators"]::before {
+  background-image: url("../images/sidebar_icons/operators.png") !important;
+}
+
+/* public → Procedures */
+.wy-menu-vertical a.reference.internal[href*="public/procedures"]::before,
+.bd-sidebar       a.reference.internal[href*="public/procedures"]::before,
+.wy-menu-vertical a.reference.internal[href*="procedures"]::before,
+.bd-sidebar       a.reference.internal[href*="procedures"]::before {
+  background-image: url("../images/sidebar_icons/procedures.png") !important;
+}
+
+/* public → Sequences */
+.wy-menu-vertical a.reference.internal[href*="public/sequences"]::before,
+.bd-sidebar       a.reference.internal[href*="public/sequences"]::before,
+.wy-menu-vertical a.reference.internal[href*="sequences"]::before,
+.bd-sidebar       a.reference.internal[href*="sequences"]::before {
+  background-image: url("../images/sidebar_icons/sequences.png") !important;
+}
+
+/* =========================public → Tables=========================== */
+
+.wy-menu-vertical a.reference.internal[href*="tables/"]::before,
+.bd-sidebar       a.reference.internal[href*="tables/"]::before {
+  background-image: url("../images/sidebar_icons/tables.png") !important;
+}
+
+/* public → Trigger Functions */
+.wy-menu-vertical a.reference.internal[href*="public/triggerfunctions"]::before,
+.bd-sidebar       a.reference.internal[href*="public/triggerfunctions"]::before,
+.wy-menu-vertical a.reference.internal[href*="trigger_functions"]::before,
+.bd-sidebar       a.reference.internal[href*="trigger_functions"]::before {
+  background-image: url("../images/sidebar_icons/trigger_functions.png") !important;
+}
+
+/* public → Types */
+.wy-menu-vertical a.reference.internal[href*="public/types"]::before,
+.bd-sidebar       a.reference.internal[href*="public/types"]::before,
+.wy-menu-vertical a.reference.internal[href*="types"]::before,
+.bd-sidebar       a.reference.internal[href*="types"]::before {
+  background-image: url("../images/sidebar_icons/types.png") !important;
+}
+
+/* public → Views */
+.wy-menu-vertical a.reference.internal[href*="public/views"]::before,
+.bd-sidebar       a.reference.internal[href*="public/views"]::before,
+.wy-menu-vertical a.reference.internal[href*="views"]::before,
+.bd-sidebar       a.reference.internal[href*="views"]::before {
+  background-image: url("../images/sidebar_icons/views.png") !important;
+}
+
+
