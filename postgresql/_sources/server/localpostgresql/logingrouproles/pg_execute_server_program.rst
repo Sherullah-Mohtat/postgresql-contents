@@ -1,4 +1,4 @@
-|pg_groups| pg_execute_server_program
+|pg_groups| pg_execute-server_program
 =======================================
 
 .. |pg_groups| image:: /_static/images/sidebar_icons/pg_groups.png
