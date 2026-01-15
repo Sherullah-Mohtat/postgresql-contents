@@ -1,0 +1,233 @@
+:orphan:
+
+.. code-block:: sql 
+
+    VALUE ~ '^[\u0600-\u06FF\s]+$'
+
+This is a **regular expression check** used inside a **DOMAIN** or **CHECK constraint.**
+
+**Big picture**
+
+**“Only allow Arabic-script characters (Pashto/Arabic/etc.) and spaces — nothing else.”**
+
+**Piece-by-piece explanation**
+
+1️⃣ VALUE
+	- In a **DOMAIN**, VALUE means:
+
+        “The value being inserted or updated”
+
+Example:
+
+.. code-block:: sql 
+
+    INSERT INTO pashto_words VALUES ('ښکلی');
+
+Here: 
+
+.. code-block:: sql 
+
+    VALUE = 'ښکلی'
+
+=======================================================================================================
+
+**2️⃣ ~**
+
+	- This is PostgreSQL’s regex match operator
+	- Means: “matches the regular expression”
+
+.. list-table::
+    :header-rows: 1
+
+    * - Operator
+      - Meaning
+    * - ~
+      - matches (case-sensitive)
+    * - !~
+      - does NOT match
+    * - ~*
+      - matches (case-insensitive)
+
+=======================================================================================================
+
+**3️⃣ '^[\u0600-\u06FF\s]+$' → the REGEX**
+
+Now the important part 
+
+**Regex explained visually**
+
+.. code-block:: bash 
+
+    ^        start of string
+    [ ... ] allowed characters
+    +        one or more
+    $        end of string
+
+=======================================================================================================
+
+**🔤 \u0600-\u06FF**
+
+This is a Unicode range.
+
+It includes:
+	- Arabic letters
+	- Pashto letters
+	- Persian letters
+	- Urdu letters
+	- Arabic punctuation
+
+✅ Examples inside this range:
+
+.. code-block:: bash 
+
+    ا ب ت ث
+    پ چ ژ ړ ږ ښ ځ ټ
+
+❌ Not included:
+
+.. code-block:: bash 
+
+    A B C
+    1 2 3
+    @ # !
+
+=======================================================================================================
+
+🔹 \s
+	- Means whitespace
+	- Includes:
+	- space
+	- tab
+	- newline
+
+So this allows:
+
+.. code-block:: bash 
+
+    "دا ښه کتاب دی"
+
+=======================================================================================================
+
+**🔹 [ ... ] (character class)**
+
+.. code-block:: bash 
+
+    [\u0600-\u06FF\s]
+
+Means:
+    “One character that is either:
+        - Arabic/Pashto Unicode
+        - OR whitespace”
+
+=======================================================================================================
+
+**🔹 +**
+
+.. code-block:: bash 
+
+    +   → one or more
+
+✔ At least one character required
+
+❌ Empty string rejected
+
+=======================================================================================================
+
+**🔹 ^ and $ (anchors)**
+
+.. list-table::
+    :header-rows: 1
+
+    * - Symbol
+      - Meaning
+    * - ^
+      - start of string
+    * - $
+      - end of string
+
+Together they mean:
+    “The ENTIRE value must match — not just part of it.”
+
+=======================================================================================================
+
+✅ What PASSES this rule
+
+.. list-table::
+    :header-rows: 1
+
+    * - Value
+      - Why
+    * - سلام
+      - Pashto letters
+    * -  ښکلی کتاب
+      - Letters + space
+    * -  افغانستان
+      - Arabic script
+    * -  دا ښه دی
+      - Valid Pashto
+
+=======================================================================================================
+
+❌ What FAILS this rule
+
+.. list-table::
+    :header-rows: 1
+
+    * - Value
+      - Why
+    * - hello
+      - Latin letters
+    * -  سلام123
+      - Numbers
+    * -  سلام!
+      - Punctuation
+    * -  test سلام
+      - Mixed scripts
+    * - ''
+      - Empty
+
+=======================================================================================================
+
+**Example domain using it**
+
+.. code-block:: postgres 
+
+    CREATE DOMAIN pashto_text AS TEXT
+    CHECK (VALUE ~ '^[\u0600-\u06FF\s]+$');
+
+Why this is IMPORTANT for Pashto
+
+Pashto is:
+	- Right-to-left
+	- Arabic script
+	- Has extra letters
+	- Must not mix Latin characters accidentally
+
+This rule ensures:
+    - ✅ Clean data
+    - ✅ Correct language
+    - ✅ No garbage text
+    - ✅ No accidental English input
+
+=======================================================================================================
+
+⚠️ Important notes
+	#.	This checks characters, not grammar
+	#.	It does NOT sort — that’s collation’s job
+	#.	Emoji ❌ (not in this range)
+	#.	Arabic numbers (١٢٣) ❌ unless added
+
+**Advanced version (allow Arabic digits too)**
+
+.. code-block:: bash 
+
+    ^[\u0600-\u06FF\u0660-\u0669\s]+$
+
+**Summary**
+
+VALUE ~ '^[\u0600-\u06FF\s]+$'
+
+forces the column to contain ONLY Arabic-script text (Pashto) and spaces — nothing else.
+
+
+

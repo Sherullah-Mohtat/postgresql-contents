@@ -1,0 +1,725 @@
+:orphan:
+
+-----------
+PostgREST
+-----------
+
+**PostgREST** is a server that **automatically turns your PostgreSQL database into a secure REST API — without writing backend code.**
+
+In simple terms:
+    Database tables + views + functions → REST endpoints
+
+=====================================================================================================================================================
+
+---------------
+The core idea
+---------------
+
+Instead of:
+
+.. code-block:: bash 
+
+    Frontend → Backend code → SQL → PostgreSQL
+
+You get:
+
+.. code-block:: bash 
+
+    Frontend → PostgREST → PostgreSQL
+
+PostgREST:
+	- Reads your database schema
+	- Exposes **tables, views, and functions** as REST endpoints
+	- Uses **database roles & permissions** for security
+
+=====================================================================================================================================================
+
+-------------------------------
+What it exposes automatically
+-------------------------------
+
+.. list-table:: 
+    :header-rows: 1
+
+    * - Database object
+      - REST endpoint
+    * - Table
+      - /table_name
+    * - View
+      - /view_name
+    * - Function
+      - /rpc/function_name
+
+Example table:
+
+.. code-block:: postgres 
+
+    CREATE TABLE users (
+        id serial PRIMARY KEY,
+        email text
+    );
+
+Instant API:
+
+.. code-block:: bash 
+
+    GET /users
+    POST /users
+
+No backend code written.
+
+=====================================================================================================================================================
+
+**Functions = API endpoints (very powerful)**
+
+.. code-block:: postgres 
+        
+    CREATE FUNCTION add_user(email text)
+    RETURNS void
+    LANGUAGE sql
+    AS $$
+        INSERT INTO users(email) VALUES (email);
+    $$;
+
+Call it via HTTP:
+
+.. code-block:: bash 
+
+    POST /rpc/add_user
+    {
+    "email": "test@example.com"
+    }
+
+This is why **PostgreSQL functions matter.**
+
+=====================================================================================================================================================
+
+----------------------------
+Security model (important)
+----------------------------
+
+PostgREST **does NOT implement its own auth logic.**
+
+It relies on:
+	- PostgreSQL roles
+	- Row Level Security (RLS)
+	- GRANT / REVOKE
+
+Example:
+
+.. code-block:: postgres 
+
+    GRANT SELECT ON users TO web_user;
+
+If the role can’t access it in SQL → it can’t via API.
+
+This is **stronger than most ORMs.**
+
+=====================================================================================================================================================
+
+-----------------------------------
+Authentication (how users log in)
+-----------------------------------
+
+Typically:
+	- JWT (JSON Web Token)
+	- JWT maps to a database role
+	- PostgREST sets role per request
+
+Flow:
+
+.. code-block:: bash 
+
+    Client → JWT → PostgREST → PostgreSQL role
+
+=====================================================================================================================================================
+
+--------------------------
+Why people use PostgREST
+--------------------------
+
+✅ Pros
+	- Zero backend boilerplate
+	- Extremely fast
+	- Perfect for APIs
+	- Database = source of truth
+	- Clean separation of concerns
+	- Ideal for:
+	- Admin panels
+	- Microservices
+	- Headless backends
+	- Internal APIs
+
+❌ Cons
+	- Requires strong SQL knowledge
+	- Business logic must live in DB
+	- Not ideal for heavy custom workflows
+
+=====================================================================================================================================================
+
+-----------------------------------
+PostgREST vs traditional backend
+-----------------------------------
+
+.. list-table::
+    :header-rows: 1
+
+    * - Feature
+      - PostgREST
+      - Django / FastAPI
+    * - Backend code
+      - ❌
+      - ✅
+    * - SQL-first
+      - ✅
+      - ❌
+    * - Performance
+      - Very high
+      - High
+    * - Flexibility
+      - Medium
+      - Very high
+    * - Learning curve
+      - SQL-heavy
+      - Code-heavy
+
+=====================================================================================================================================================
+
+Where PostgREST shines
+	- CRUD APIs
+	- Data-heavy systems
+	- Multi-tenant apps
+	- Role-based access
+	- Analytics APIs
+
+Many modern stacks use:
+
+.. code-block:: bash 
+
+    PostgreSQL + PostgREST + Frontend
+
+=====================================================================================================================================================
+
+Summary: 
+    PostgREST turns PostgreSQL itself into a REST API, using tables, views, functions, and roles as the backend.
+
+=====================================================================================================================================================
+
+--------------------------------
+Why PostgREST can be very safe
+--------------------------------
+
+1. Security lives in PostgreSQL (the strongest place)
+
+PostgREST does **not invent its own permission system.**
+
+It relies on:
+	- PostgreSQL roles
+	- GRANT / REVOKE
+	- Row Level Security (RLS)
+	- Schemas
+	- Functions with controlled privileges
+
+If a user **cannot do something in SQL**, they **cannot do it via the API.**
+
+That’s a strong security model.
+
+=====================================================================================================================================================
+
+2. No ORM, no dynamic SQL
+	- No string-built queries
+	- No SQL injection via API
+	- Requests are translated to **prepared SQL**
+
+This removes a huge class of backend vulnerabilities.
+
+=====================================================================================================================================================
+
+3. Row Level Security (RLS) = per-row protection
+
+You can protect data at the row level:
+
+.. code-block:: postgres 
+
+    ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+
+    CREATE POLICY own_orders
+    ON orders
+    USING (user_id = current_setting('request.jwt.claim.user_id')::int);
+
+Even if someone guesses an ID:
+	- PostgreSQL blocks the row
+	- PostgREST cannot bypass it
+
+=====================================================================================================================================================
+
+4. JWT-based auth mapped to DB roles
+
+PostgREST:
+	- Verifies JWT
+	- Switches PostgreSQL role per request
+	- Enforces least privilege
+
+Example:
+
+.. code-block:: bash 
+
+    anonymous → read-only
+    user → own data
+    admin → full access
+
+No shared “god backend user”.
+
+=====================================================================================================================================================
+
+--------------------------------------------------
+Where PostgREST becomes unsafe (common mistakes)
+--------------------------------------------------
+
+❌ 1. Using a superuser role
+
+.. code-block:: bash 
+
+    THIS IS THE #1 SECURITY FAILURE
+
+Never run PostgREST as:
+	- postgres
+	- superuser
+	- database owner with full privileges
+
+=====================================================================================================================================================
+
+❌ 2. No RLS on sensitive tables
+
+If you don’t enable RLS:
+	- All rows are visible to allowed roles
+	- Authorization becomes table-level only
+
+=====================================================================================================================================================
+
+❌ 3. Exposing raw tables blindly
+
+Don’t expose:
+	- Internal tables
+	- Audit tables
+	- Secrets
+	- Admin-only structures
+
+Use:
+	- Views
+	- Controlled functions
+	- Separate schemas
+
+=====================================================================================================================================================
+
+❌ 4. Trusting PostgREST instead of PostgreSQL
+
+PostgREST is **not** your security layer.
+
+PostgreSQL **is**.
+
+If SQL permissions are wrong → API is wrong.
+
+=====================================================================================================================================================
+
+Safe production checklist (important)
+
+✅ Database roles
+	- One authenticator role
+	- Multiple application roles
+	- No superusers
+
+✅ Schema isolation
+
+.. code-block:: bash 
+
+    public → readonly views
+    api → exposed objects
+    internal → hidden
+
+✅ RLS enabled
+	- On all user-owned data
+	- Enforced with JWT claims
+
+✅ Functions over tables
+	- Prefer SECURITY DEFINER functions
+	- Validate inputs in SQL
+	- Hide raw tables
+
+=====================================================================================================================================================
+
+---------------------------------------
+Comparison with traditional backends
+---------------------------------------
+
+.. list-table:: 
+    :header-rows: 1
+
+    * - Risk
+      - PostgREST
+      - Typical Backend
+    * - SQL Injection
+      - ❌ very hard
+      - ❌ common
+    * - Auth bugs
+      - ❌ fewer
+      - ❌ frequent
+    * - Permission drift
+      - ❌ centralized
+      - ❌ scattered
+    * - Logic bypass
+      - ❌ hard
+      - ❌ possible
+
+=====================================================================================================================================================
+
+------------------
+Real-world usage
+------------------
+
+PostgREST is used in:
+	- Fintech systems
+	- Internal APIs
+	- Production SaaS backends
+	- Large-scale data services
+
+It is **battle-tested.**
+
+=====================================================================================================================================================
+
+Final verdict
+
+✅ PostgREST is safe when:
+	- You understand PostgreSQL security
+	- You use RLS
+	- You avoid superusers
+	- You design roles properly
+
+❌ PostgREST is unsafe when:
+	- You treat it like a “magic API generator”
+	- You skip database security
+	- You expose everything
+
+=====================================================================================================================================================
+
+One-line truth:
+    PostgREST is as safe as your PostgreSQL security model — no more, no less.
+
+=====================================================================================================================================================
+
+--------------------------------------------------------
+1) Production-safe Postgres role model (for PostgREST)
+--------------------------------------------------------
+
+Goal
+	- PostgREST connects with **one login role** (the “authenticator”).
+	- Each request is mapped to a **low-privilege DB role** (anon/user/admin).
+	- Your tables are not exposed directly; you expose **views/functions** in an api schema.
+	- Sensitive tables are protected with **RLS.**
+
+**Recommended roles**
+
+Login role (used only for connection):
+	- pgrst_authenticator (LOGIN)
+	    - Only needs: GRANT <app_roles> TO pgrst_authenticator
+
+Request roles (NO LOGIN):
+	- app_anon (NOLOGIN) → public/anonymous access
+	- app_user (NOLOGIN) → authenticated users
+	- app_admin (NOLOGIN) → privileged users (still not superuser)
+
+Optional “service” role (NO LOGIN)
+	- app_service for background jobs / internal automation (careful; still not superuser)
+
+Schema layout
+	- api schema → ONLY objects you want exposed (views, functions)
+	- app schema → base tables (protected by RLS)
+	- internal schema → private stuff, not exposed
+
+=====================================================================================================================================================
+
+SQL: create roles + base grants
+
+.. code-block:: postgres 
+
+    -- 1) Create roles
+    CREATE ROLE pgrst_authenticator LOGIN PASSWORD 'CHANGE_ME_STRONG_PASSWORD';
+
+    CREATE ROLE app_anon  NOLOGIN;
+    CREATE ROLE app_user  NOLOGIN;
+    CREATE ROLE app_admin NOLOGIN;
+
+    -- Optional internal service role (use cautiously)
+    -- CREATE ROLE app_service NOLOGIN;
+
+    -- 2) Allow PostgREST authenticator to switch into request roles
+    GRANT app_anon, app_user, app_admin TO pgrst_authenticator;
+
+    -- 3) Create schemas
+    CREATE SCHEMA IF NOT EXISTS app;
+    CREATE SCHEMA IF NOT EXISTS api;
+
+    -- 4) Schema access: what each role can "see"
+    GRANT USAGE ON SCHEMA api TO app_anon, app_user, app_admin;
+    GRANT USAGE ON SCHEMA app TO app_user, app_admin;  -- usually deny app_anon direct access
+
+    -- 5) Default: lock down everything
+    REVOKE ALL ON SCHEMA public FROM PUBLIC;
+
+**Key idea:** app_anon should typically have **no direct access** to app tables. Public access goes through safe api views/functions only.
+
+=====================================================================================================================================================
+
+--------------------------------------------
+2) JWT + RLS example (complete, practical)
+--------------------------------------------
+
+What we’ll implement
+	- A table app.orders containing orders for many users
+	- JWT contains: sub (user id) and role (app_user or app_admin)
+	- PostgREST verifies JWT and sets claims into the request context
+	- RLS policies enforce:
+	- app_user can only see/change their own rows
+	- app_admin can access all rows
+
+=====================================================================================================================================================
+
+**Step A — Create a table**
+
+.. code-block:: postgres 
+
+    CREATE TABLE app.orders (
+        id         bigserial PRIMARY KEY,
+        user_id    bigint NOT NULL,
+        item       text NOT NULL,
+        created_at timestamptz NOT NULL DEFAULT now()
+    );
+
+Insert sample data:
+
+.. code-block:: postgres 
+
+    INSERT INTO app.orders (user_id, item) VALUES
+        (1, 'Coffee'),
+        (1, 'Sandwich'),
+        (2, 'Pizza');
+
+=====================================================================================================================================================
+
+**Step B — Enable RLS**
+
+.. code-block:: postgres 
+
+    ALTER TABLE app.orders ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE app.orders FORCE ROW LEVEL SECURITY; -- optional but recommended
+
+FORCE prevents table owners from bypassing RLS accidentally.
+
+=====================================================================================================================================================
+
+**Step C — Read JWT claims in SQL (PostgREST way)**
+
+PostgREST makes JWT claims available through current_setting(...).
+
+Common patterns:
+	- request.jwt.claim.sub
+	- request.jwt.claim.role
+	- Or a JSON blob: request.jwt.claims
+
+To be safe across setups, use the JSON blob approach:
+
+.. code-block:: postgres 
+
+    CREATE OR REPLACE FUNCTION app.jwt_claim(claim text)
+    RETURNS text
+    LANGUAGE sql
+    STABLE
+    AS $$
+        SELECT current_setting('request.jwt.claims', true)::json ->> claim;
+    $$;
+
+Now app.jwt_claim('sub') returns the user id from JWT (as text), if present.
+
+=====================================================================================================================================================
+
+**Step D — Grants for roles (table level)**
+
+You still must grant table privileges, otherwise RLS won’t matter.
+
+.. code-block:: postgres 
+
+    GRANT SELECT, INSERT, UPDATE, DELETE ON app.orders TO app_user;
+    GRANT SELECT, INSERT, UPDATE, DELETE ON app.orders TO app_admin;
+
+(You can reduce privileges later; this is clear for learning.)
+
+=====================================================================================================================================================
+
+**Step E — Create RLS policies**
+
+1) Users can see only their rows
+
+.. code-block:: postgres 
+
+    CREATE POLICY orders_select_own
+    ON app.orders
+    FOR SELECT
+    TO app_user
+    USING (user_id = app.jwt_claim('sub')::bigint);
+
+2) Users can insert only for themselves
+
+.. code-block:: postgres 
+
+    CREATE POLICY orders_insert_own
+    ON app.orders
+    FOR INSERT
+    TO app_user
+    WITH CHECK (user_id = app.jwt_claim('sub')::bigint);
+
+3) Users can update only their rows and keep them theirs
+
+.. code-block:: postgres 
+
+    CREATE POLICY orders_update_own
+    ON app.orders
+    FOR UPDATE
+    TO app_user
+    USING (user_id = app.jwt_claim('sub')::bigint)
+    WITH CHECK (user_id = app.jwt_claim('sub')::bigint);
+
+4) Users can delete only their rows
+
+.. code-block:: postgres 
+
+    CREATE POLICY orders_delete_own
+    ON app.orders
+    FOR DELETE
+    TO app_user
+    USING (user_id = app.jwt_claim('sub')::bigint);
+
+Admin can do anything
+
+.. code-block:: postgres 
+
+    CREATE POLICY orders_admin_all
+    ON app.orders
+    FOR ALL
+    TO app_admin
+    USING (true)
+    WITH CHECK (true);
+
+=====================================================================================================================================================
+
+---------------------------------------------------
+3) Expose safely via api schema (recommended)
+---------------------------------------------------
+
+Instead of exposing app.orders directly, expose a view:
+
+.. code-block:: postgres 
+
+    CREATE VIEW api.orders AS
+    SELECT id, user_id, item, created_at
+    FROM app.orders;
+
+    GRANT SELECT, INSERT, UPDATE, DELETE ON api.orders TO app_user, app_admin;
+    GRANT SELECT ON api.orders TO app_anon; -- only if you want public reads (usually no)
+
+**Note:** RLS is on the base table, so the view is still protected.
+
+=====================================================================================================================================================
+
+-----------------------------------------------
+4) JWT examples (what claims should look like)
+-----------------------------------------------
+
+User token payload example
+
+.. code-block:: json 
+
+    {
+        "sub": "1",
+        "role": "app_user",
+        "exp": 1893456000
+    }
+
+Admin token payload example
+
+.. code-block:: json 
+
+    {
+        "sub": "999",
+        "role": "app_admin",
+        "exp": 1893456000
+    }
+
+PostgREST reads role to switch DB role per request.
+
+=====================================================================================================================================================
+
+----------------------------------------------------
+5) How PostgREST config ties it together (minimal)
+----------------------------------------------------
+
+Typical PostgREST config keys (conceptually):
+	- db-uri uses pgrst_authenticator
+	- db-anon-role = "app_anon"
+	- jwt-secret or jwt-public-key
+	- PostgREST will set role from JWT claim role (default behavior in many setups)
+
+Example (conceptual, not strict file format):
+
+.. code-block:: ini 
+    
+    db-uri = "postgres://pgrst_authenticator:...@localhost:5432/MyDB"
+    db-anon-role = "app_anon"
+    jwt-secret = "YOUR_JWT_SECRET"
+
+=====================================================================================================================================================
+
+---------------------------------------------
+6) Quick tests in SQL (simulate JWT claims)
+---------------------------------------------
+
+You can simulate what PostgREST does:
+
+Pretend request is user 1
+
+.. code-block:: postgres 
+
+    SET LOCAL ROLE app_user;
+    SELECT set_config('request.jwt.claims', '{"sub":"1","role":"app_user"}', true);
+
+    SELECT * FROM api.orders ORDER BY id;
+    -- should show only user_id = 1 rows
+
+Pretend request is user 2
+
+.. code-block:: postgres 
+
+    SET LOCAL ROLE app_user;
+    SELECT set_config('request.jwt.claims', '{"sub":"2","role":"app_user"}', true);
+
+    SELECT * FROM api.orders ORDER BY id;
+    -- should show only user_id = 2 rows
+
+Pretend request is admin
+
+.. code-block:: postgres 
+
+    SET LOCAL ROLE app_admin;
+    SELECT set_config('request.jwt.claims', '{"sub":"999","role":"app_admin"}', true);
+
+    SELECT * FROM api.orders ORDER BY id;
+    -- should show all rows
+
+=====================================================================================================================================================
+
+7) Golden rules (to stay production-safe)
+	- **Never** run PostgREST as superuser.
+	- Put real tables in app schema, expose only what you want in api.
+	- Turn on **RLS** for any table containing user data.
+	- Use **least privilege** roles (app_user ≠ app_admin).
+	- Prefer views/functions over raw tables for your API surface.
+

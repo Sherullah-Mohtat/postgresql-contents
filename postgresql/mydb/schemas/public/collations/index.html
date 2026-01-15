@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,17 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-collation">What is a Collation?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-collation-controls">What Collation Controls</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#real-world-analogy">Real-world analogy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pashto-is-special">Pashto is special</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +502,510 @@ document.write(`
                   
   <section id="collations-collations">
 <h1><img alt="collations" src="../../../../_images/collations.png" /> Collations<a class="headerlink" href="#collations-collations" title="Link to this heading">#</a></h1>
+<section id="what-is-a-collation">
+<h2>What is a Collation?<a class="headerlink" href="#what-is-a-collation" title="Link to this heading">#</a></h2>
+<p>Collation decides how text is compared and sorted.</p>
+<dl class="simple">
+<dt>A collation defines how text is:</dt><dd><ul class="simple">
+<li><p>✅ sorted (ORDER BY)</p></li>
+<li><p>✅ compared (=, &lt;, &gt;)</p></li>
+<li><p>✅ matched (LIKE, indexes)</p></li>
+</ul>
+</dd>
+</dl>
+<p>In short:</p>
+<p>Collation = language + rules for text comparison</p>
+</section>
+<hr class="docutils" />
+<section id="what-collation-controls">
+<h2>What Collation Controls<a class="headerlink" href="#what-collation-controls" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Collation affects ONLY text (TEXT, VARCHAR, CHAR) and controls:</dt><dd><ol class="arabic simple">
+<li><p>Sorting (ORDER BY)</p></li>
+<li><p>Comparing (=, &lt;, &gt;)</p></li>
+<li><p>Searching (LIKE)</p></li>
+<li><p>Index behavior on text</p></li>
+</ol>
+</dd>
+<dt>It does NOT affect:</dt><dd><ul class="simple">
+<li><p>numbers</p></li>
+<li><p>dates</p></li>
+<li><p>storage size</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="real-world-analogy">
+<h2>Real-world analogy<a class="headerlink" href="#real-world-analogy" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Thing</p></th>
+<th class="head"><p>What it means</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Dictionary</p></td>
+<td><p>Has rules for word order</p></td>
+</tr>
+<tr class="row-odd"><td><p>Language</p></td>
+<td><p>Has accents, cases, symbols</p></td>
+</tr>
+<tr class="row-even"><td><p>Collation</p></td>
+<td><p>Dictionary rules for the database</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<p>Simple SQL example</p>
+<p>Table</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">names</span><span class="w"> </span><span class="p">(</span><span class="k">name</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Data</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="k">names</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="p">(</span><span class="s1">&#39;apple&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;Banana&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;Álvaro&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p>🔴 Without thinking about collation</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="k">name</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">names</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">name</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Result may be:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Banana
+apple
+Álvaro
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Why?</dt><dd><ul class="simple">
+<li><p>Capital letters first</p></li>
+<li><p>Accented letters last</p></li>
+</ul>
+</dd>
+</dl>
+<p>That’s one <strong>collation rule.</strong></p>
+<hr class="docutils" />
+<p>🟢 With a different collation</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="k">name</span>
+<span class="k">FROM</span><span class="w"> </span><span class="k">names</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">name</span><span class="w"> </span><span class="k">COLLATE</span><span class="w"> </span><span class="s s-Name">&quot;en_US.UTF-8&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Result becomes more <strong>human-friendly.</strong></p>
+<hr class="docutils" />
+<p><strong>Best practice</strong></p>
+<dl class="simple">
+<dt>For most apps:</dt><dd><ul class="simple">
+<li><p>Keep database default collation</p></li>
+<li><dl class="simple">
+<dt>Use C collation for:</dt><dd><ul>
+<li><p>emails</p></li>
+<li><p>usernames</p></li>
+<li><p>codes (fast &amp; predictable)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Use language collation for:</dt><dd><ul>
+<li><p>names</p></li>
+<li><p>descriptions</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="s1">&#39;apple&#39;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Apple&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Result depends on collation:</dt><dd><ul class="simple">
+<li><p>Some collations → false</p></li>
+<li><p>Case-insensitive collation → true</p></li>
+</ul>
+</dd>
+</dl>
+<p>That’s all collation does.</p>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Summary</dt><dd><ul class="simple">
+<li><p>Collation = text comparison rules</p></li>
+<li><p>Controls sorting &amp; comparing</p></li>
+<li><p>Comes from language rules</p></li>
+<li><p>You usually don’t touch it</p></li>
+<li><p>You only customize it when needed</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="pashto-is-special">
+<h2>Pashto is special<a class="headerlink" href="#pashto-is-special" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Pashto:</dt><dd><ul class="simple">
+<li><p>Uses <strong>Arabic script</strong></p></li>
+<li><p>Has extra letters (ټ ړ ږ ښ ځ etc.)</p></li>
+<li><p>Reads <strong>right-to-left</strong></p></li>
+<li><p>Sorting rules are <strong>different from English</strong></p></li>
+</ul>
+</dd>
+</dl>
+<p>So <strong>ASCII / C collation is NOT OK</strong></p>
+<p><strong>Unicode-aware collation IS required</strong></p>
+<hr class="docutils" />
+<p><strong>What you MUST do</strong></p>
+<p>1️⃣ Use UTF-8 database</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SHOW</span><span class="w"> </span><span class="n">server_encoding</span><span class="p">;</span>
+<span class="c1">-- UTF8</span>
+</pre></div>
+</div>
+<p>2️⃣ Use ICU collation</p>
+<dl class="simple">
+<dt>Modern PostgreSQL (v10+) supports <strong>ICU</strong>, which handles:</dt><dd><ul class="simple">
+<li><p>Arabic script</p></li>
+<li><p>Pashto letters</p></li>
+<li><p>Unicode ordering</p></li>
+<li><p>Case &amp; accent rules</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>Check ICU support:</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">collprovider</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_collation</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Possible results</p>
+<p>If you see:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>collprovider
+-------------
+c
+i
+d
+</pre></div>
+</div>
+<p>Then:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>c</p></td>
+<td><p>libc (en_US.UTF-8)</p></td>
+</tr>
+<tr class="row-odd"><td><p>i</p></td>
+<td><p>ICU (und-x-icu) or (ar-x-icu)</p></td>
+</tr>
+<tr class="row-even"><td><p>d</p></td>
+<td><p>default Usually points to a libc or ICU</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>If i exists → <strong>ICU is available on your system</strong></p>
+<hr class="docutils" />
+<p><strong>Side-by-side comparison</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>ar-x-icu</p></th>
+<th class="head"><p>und-x-icu</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Language-specific</p></td>
+<td><p>Arabic family</p></td>
+<td><p>Mixed / neutral</p></td>
+</tr>
+<tr class="row-odd"><td><p>Script awareness</p></td>
+<td><p>Arabic script</p></td>
+<td><p>All scripts</p></td>
+</tr>
+<tr class="row-even"><td><p>Pashto support</p></td>
+<td><p>✅ Very good</p></td>
+<td><p>✅ Good</p></td>
+</tr>
+<tr class="row-odd"><td><p>Chinese support</p></td>
+<td><p>❌ Not ideal</p></td>
+<td><p>✅ Good</p></td>
+</tr>
+<tr class="row-even"><td><p>English support</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Best for</p></td>
+<td><p>Arabic-family text</p></td>
+<td><p>Multilingual apps</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<p><strong>Do you need ICU for Pashto?</strong></p>
+<dl class="simple">
+<dt>Short answer:</dt><dd><p>Not strictly, but recommended for correctness</p>
+</dd>
+</dl>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Scenario</p></th>
+<th class="head"><p>Need ICU?</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Store Pashto text</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>Display Pashto text</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-even"><td><p>Sort Pashto alphabetically</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Search linguistically</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Case-insensitive search</p></td>
+<td><p>✅</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Best practice create ICU-based DB (recommended)</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">pashto_db</span>
+<span class="k">WITH</span>
+<span class="k">ENCODING</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;UTF8&#39;</span>
+<span class="n">LOCALE_PROVIDER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">icu</span>
+<span class="n">ICU_LOCALE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;und&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>und = Unicode default (safe for Pashto)</p></li>
+<li><p>Works perfectly for RTL languages</p></li>
+</ul>
+<hr class="docutils" />
+<p>Best practice for Pashto tables (recommended)</p>
+<p><strong>Option A</strong> — Use database default (most cases)</p>
+<p>If your database was created with UTF-8 and ICU:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">pashto_words</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">word</span><span class="w"> </span><span class="nb">TEXT</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>✔ Works</p></li>
+<li><p>✔ Safe</p></li>
+<li><p>✔ No extra setup</p></li>
+<li><p>✔ Recommended for 90% cases</p></li>
+</ul>
+<hr class="docutils" />
+<p><strong>Option B</strong> — Explicit Pashto-aware collation (advanced but clean)</p>
+<p>If you want <strong>full control:</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">COLLATION</span><span class="w"> </span><span class="n">ps_af</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">icu</span><span class="p">,</span>
+<span class="w">    </span><span class="n">locale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;ps-AF&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">deterministic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Then use it:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">pashto_words</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">word</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">COLLATE</span><span class="w"> </span><span class="n">ps_af</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Or per query:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">word</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pashto_words</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">word</span><span class="w"> </span><span class="k">COLLATE</span><span class="w"> </span><span class="n">ps_af</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><strong>Create a pashto_words table now</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">pashto_words</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">word</span><span class="w"> </span><span class="nb">TEXT</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Insert data:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">pashto_words</span><span class="w"> </span><span class="p">(</span><span class="n">word</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="p">(</span><span class="s1">&#39;افغان&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;پښتو&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;ټولنه&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;ښار&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;کتاب&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;ګل&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;کور&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><strong>❌ WRONG: ASCII / C collation</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">word</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pashto_words</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">word</span><span class="w"> </span><span class="k">COLLATE</span><span class="w"> </span><span class="s s-Name">&quot;C&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>What happens (WRONG behavior)</dt><dd><ul class="simple">
+<li><p>PostgreSQL compares raw byte values</p></li>
+<li><p>Arabic letters are ordered by Unicode codepoints</p></li>
+<li><p>RTL is ignored</p></li>
+<li><p>Pashto-specific order is ignored</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example result (❌ meaningless):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>word
+-------
+افغان
+ټولنه
+پښتو
+ښار
+کتاب
+کور
+ګل
+<span class="o">(</span><span class="m">7</span><span class="w"> </span>rows<span class="o">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>➡️ This order does NOT follow Pashto alphabet rules</p></li>
+<li><p>➡️ It’s just computer byte math</p></li>
+</ul>
+<hr class="docutils" />
+<p><strong>✅ CORRECT: ICU Pashto collation</strong></p>
+<p>First, create (or use existing) Pashto collation:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">COLLATION</span><span class="w"> </span><span class="n">ps_af</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">icu</span><span class="p">,</span>
+<span class="w">    </span><span class="n">locale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;ps-AF&#39;</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Now sort:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">word</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pashto_words</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">word</span><span class="w"> </span><span class="k">COLLATE</span><span class="w"> </span><span class="n">ps_af</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Correct Pashto order (✅)</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>word
+-------
+افغان
+پښتو
+ټولنه
+ښار
+کتاب
+کور
+ګل
+<span class="o">(</span><span class="m">7</span><span class="w"> </span>rows<span class="o">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>✔ Respects Pashto alphabet</p></li>
+<li><p>✔ Knows Arabic script</p></li>
+<li><p>✔ Correct RTL handling</p></li>
+<li><p>✔ Correct dictionary order</p></li>
+</ul>
+<hr class="docutils" />
+<p><strong>Super simple rule to remember</strong></p>
+<p>English-only → default collation OK</p>
+<p>Pashto / Arabic → ICU collation REQUIRED</p>
+<dl class="simple">
+<dt>But:</dt><dd><p><strong>ICU is already built-in</strong> → you usually don’t need to do anything extra.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>1️⃣ What is UTF-8?</strong></p>
+<p>UTF-8 = Universal text encoding</p>
+<dl class="simple">
+<dt>It answers the question:</dt><dd><p>How are characters saved in bytes?</p>
+</dd>
+<dt>UTF-8 supports:</dt><dd><ul class="simple">
+<li><p>English (A–Z)</p></li>
+<li><p>Pashto (پښتو)</p></li>
+<li><p>Arabic (العربية)</p></li>
+<li><p>Chinese (中文)</p></li>
+<li><p>Emojis 😄🔥</p></li>
+<li><p>Everything</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Hello
+پښتو
+سلام
+🙂
+</pre></div>
+</div>
+<p>All of these can exist in <strong>one column</strong> because UTF-8 supports them.</p>
+<p>In PostgreSQL</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SHOW</span><span class="w"> </span><span class="n">server_encoding</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Result:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>UTF8
+</pre></div>
+</div>
+<p>This means database can store Pashto correctly</p>
+<hr class="docutils" />
+<p><strong>2️⃣ What is ICU?</strong></p>
+<p>ICU = International Components for Unicode</p>
+<dl class="simple">
+<dt>It answers a different question:</dt><dd><p>How should text be compared, sorted, and searched?</p>
+</dd>
+</dl>
+<p>This is where <strong>language rules</strong> matter.</p>
+<hr class="docutils" />
+<p><strong>Why UTF-8 alone is NOT enough</strong></p>
+<p>UTF-8 only stores characters.</p>
+<dl class="simple">
+<dt>It does <strong>NOT</strong> know:</dt><dd><ul class="simple">
+<li><p>Which letter comes first</p></li>
+<li><p>How Pashto letters should be ordered</p></li>
+<li><p>Case rules</p></li>
+<li><p>Accent rules</p></li>
+<li><p>RTL languages</p></li>
+</ul>
+</dd>
+</dl>
+<p>That’s where <strong>ICU</strong> comes in.</p>
+<hr class="docutils" />
+<p>3️⃣ What ICU actually does</p>
+<dl class="simple">
+<dt>ICU understands:</dt><dd><ul class="simple">
+<li><p>Alphabet order per language</p></li>
+<li><p>Case sensitivity</p></li>
+<li><p>Accent sensitivity</p></li>
+<li><p>Unicode normalization</p></li>
+<li><p>RTL languages</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example (Pashto letters)</p>
+<p>Pashto letters:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ا<span class="w"> </span>ب<span class="w"> </span>پ<span class="w"> </span>ت<span class="w"> </span>ټ<span class="w"> </span>ث<span class="w"> </span>ج<span class="w"> </span>چ
+</pre></div>
+</div>
+<dl class="simple">
+<dt>ICU knows:</dt><dd><ul class="simple">
+<li><p>پ comes after ب</p></li>
+<li><p>ټ is different from ت</p></li>
+<li><p>Arabic rules ≠ English rules</p></li>
+</ul>
+</dd>
+</dl>
+<p>Without ICU → sorting breaks
+With ICU → sorting works</p>
+</section>
 </section>
 
 
@@ -530,6 +1043,24 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-collation">What is a Collation?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-collation-controls">What Collation Controls</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#real-world-analogy">Real-world analogy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pashto-is-special">Pashto is special</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

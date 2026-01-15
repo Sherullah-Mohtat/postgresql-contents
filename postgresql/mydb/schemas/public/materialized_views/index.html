@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,25 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#materialized-views-postgresql">Materialized Views (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-materialized-views-exist">1️⃣ Why Materialized Views exist</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#normal-view-vs-materialized-view">2️⃣ Normal View vs Materialized View</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example">3️⃣ Simple example</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#refreshing-a-materialized-view">4️⃣ Refreshing a materialized view</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#indexing-materialized-views-huge-benefit">5️⃣ Indexing Materialized Views (huge benefit)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-should-you-use-materialized-views">6️⃣ When should you use Materialized Views?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#typical-production-patterns">7️⃣ Typical production patterns</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permissions-security">8️⃣ Permissions &amp; security</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-mistakes">9️⃣ Common mistakes</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +510,199 @@ document.write(`
                   
   <section id="materialize-views-materialized-views">
 <h1><img alt="materialize_views" src="../../../../_images/materialize_views.png" /> Materialized Views<a class="headerlink" href="#materialize-views-materialized-views" title="Link to this heading">#</a></h1>
+<section id="materialized-views-postgresql">
+<h2>Materialized Views (PostgreSQL)<a class="headerlink" href="#materialized-views-postgresql" title="Link to this heading">#</a></h2>
+<p>A <strong>Materialized View</strong> is a <strong>stored, physical snapshot of a query result.</strong></p>
+<dl class="simple">
+<dt>Think of it as:</dt><dd><p>“A table that is automatically created from a SELECT query.”</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<section id="why-materialized-views-exist">
+<h3>1️⃣ Why Materialized Views exist<a class="headerlink" href="#why-materialized-views-exist" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>Normal VIEW:</dt><dd><ul class="simple">
+<li><p>Stores <strong>only the query</strong></p></li>
+<li><p>Executes the query <strong>every time</strong></p></li>
+<li><p>Always up to date</p></li>
+<li><p>Can be slow for heavy queries</p></li>
+</ul>
+</dd>
+<dt>MATERIALIZED VIEW:</dt><dd><ul class="simple">
+<li><p>Stores <strong>the query result</strong></p></li>
+<li><p>Query runs <strong>once</strong></p></li>
+<li><p>Data is <strong>cached</strong></p></li>
+<li><p>Extremely fast to read</p></li>
+<li><p>Must be <strong>manually refreshed</strong></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="normal-view-vs-materialized-view">
+<h3>2️⃣ Normal View vs Materialized View<a class="headerlink" href="#normal-view-vs-materialized-view" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>View</p></th>
+<th class="head"><p>Materialized View</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Data stored</p></td>
+<td><p>❌ No</p></td>
+<td><p>✅ Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Speed</p></td>
+<td><p>Slow (recomputed)</p></td>
+<td><p>Fast (precomputed)</p></td>
+</tr>
+<tr class="row-even"><td><p>Always fresh</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>❌ No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Can index</p></td>
+<td><p>❌ No</p></td>
+<td><p>✅ Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Needs refresh</p></td>
+<td><p>❌ No</p></td>
+<td><p>✅ Yes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="simple-example">
+<h3>3️⃣ Simple example<a class="headerlink" href="#simple-example" title="Link to this heading">#</a></h3>
+<p><strong>Base table</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">orders</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">serial</span><span class="p">,</span>
+<span class="w">    </span><span class="n">amount</span><span class="w"> </span><span class="nb">numeric</span><span class="p">,</span>
+<span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="nb">date</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Create a MATERIALIZED VIEW</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">daily_sales</span><span class="w"> </span><span class="k">AS</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">created_at</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SUM</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_sales</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">orders</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">created_at</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>✅ PostgreSQL runs this query once</p>
+<p>✅ Stores the result like a table</p>
+<hr class="docutils" />
+<p><strong>Query it</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">daily_sales</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Very fast — no aggregation happens now.</p>
+</section>
+<section id="refreshing-a-materialized-view">
+<h3>4️⃣ Refreshing a materialized view<a class="headerlink" href="#refreshing-a-materialized-view" title="Link to this heading">#</a></h3>
+<p>Because data is <strong>not automatic</strong>, you must refresh it.</p>
+<p><strong>Manual refresh</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">REFRESH</span><span class="w"> </span><span class="k">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">daily_sales</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><strong>Non-blocking refresh (important)</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">REFRESH</span><span class="w"> </span><span class="k">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="k">CONCURRENTLY</span><span class="w"> </span><span class="n">daily_sales</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Requires a <strong>unique index</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">daily_sales</span><span class="w"> </span><span class="p">(</span><span class="n">created_at</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="indexing-materialized-views-huge-benefit">
+<h3>5️⃣ Indexing Materialized Views (huge benefit)<a class="headerlink" href="#indexing-materialized-views-huge-benefit" title="Link to this heading">#</a></h3>
+<p>Unlike normal views, you <strong>CAN index</strong> materialized views.</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_daily_sales_date</span>
+<span class="k">ON</span><span class="w"> </span><span class="n">daily_sales</span><span class="w"> </span><span class="p">(</span><span class="n">created_at</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This makes reporting queries extremely fast.</p>
+</section>
+<hr class="docutils" />
+<section id="when-should-you-use-materialized-views">
+<h3>6️⃣ When should you use Materialized Views?<a class="headerlink" href="#when-should-you-use-materialized-views" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>✅ Use them when:</dt><dd><ul class="simple">
+<li><p>Heavy JOIN + GROUP BY</p></li>
+<li><p>Reporting dashboards</p></li>
+<li><p>Analytics queries</p></li>
+<li><p>Read-heavy systems</p></li>
+<li><p>Data changes less frequently</p></li>
+<li><p>You want predictable performance</p></li>
+</ul>
+</dd>
+<dt>❌ Avoid them when:</dt><dd><ul class="simple">
+<li><p>Data must always be real-time</p></li>
+<li><p>Writes are extremely frequent</p></li>
+<li><p>You forget to refresh</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="typical-production-patterns">
+<h3>7️⃣ Typical production patterns<a class="headerlink" href="#typical-production-patterns" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Nightly refresh (cron / scheduler)</p></li>
+</ol>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">REFRESH</span><span class="w"> </span><span class="k">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">daily_sales</span><span class="p">;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><dl class="simple">
+<dt>Event-based refresh</dt><dd><ul class="simple">
+<li><p>After ETL</p></li>
+<li><p>After batch imports</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Layered architecture</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Tables<span class="w"> </span>→<span class="w"> </span>Materialized<span class="w"> </span>Views<span class="w"> </span>→<span class="w"> </span>API<span class="w"> </span>/<span class="w"> </span>Dashboard
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="permissions-security">
+<h3>8️⃣ Permissions &amp; security<a class="headerlink" href="#permissions-security" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>Materialized views behave like tables:</dt><dd><ul class="simple">
+<li><p>You can GRANT SELECT</p></li>
+<li><p>You can apply <strong>RLS</strong></p></li>
+<li><p>You can hide base tables from users</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">daily_sales</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">reporting_role</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="common-mistakes">
+<h3>9️⃣ Common mistakes<a class="headerlink" href="#common-mistakes" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>❌ Forgetting to refresh</p></li>
+<li><p>❌ Using materialized views for transactional data</p></li>
+<li><p>❌ Not using CONCURRENTLY in production</p></li>
+<li><p>❌ Not indexing them</p></li>
+</ul>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Summary</dt><dd><p>A Materialized View is a stored, indexable snapshot of a query that trades freshness for speed and scalability.</p>
+</dd>
+</dl>
+</section>
+</section>
 </section>
 
 
@@ -530,6 +740,32 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#materialized-views-postgresql">Materialized Views (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-materialized-views-exist">1️⃣ Why Materialized Views exist</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#normal-view-vs-materialized-view">2️⃣ Normal View vs Materialized View</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example">3️⃣ Simple example</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#refreshing-a-materialized-view">4️⃣ Refreshing a materialized view</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#indexing-materialized-views-huge-benefit">5️⃣ Indexing Materialized Views (huge benefit)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-should-you-use-materialized-views">6️⃣ When should you use Materialized Views?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#typical-production-patterns">7️⃣ Typical production patterns</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permissions-security">8️⃣ Permissions &amp; security</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-mistakes">9️⃣ Common mistakes</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

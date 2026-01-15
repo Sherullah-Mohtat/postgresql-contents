@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,20 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-a-parser-does">What a parser does</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parser-vs-dictionary">Parser vs Dictionary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#built-in-parser-default">Built-in parser: default</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-parsers-are-used-indirectly">How parsers are used (indirectly)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-you-almost-never-change-parsers">Why you almost never change parsers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pgadmin-what-youre-seeing">pgAdmin: what you’re seeing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-would-someone-create-a-custom-parser-rare">When would someone create a custom parser? (rare)</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +505,178 @@ document.write(`
                   
   <section id="fts-parsers-fts-parsers">
 <h1><img alt="fts_parsers" src="../../../../_images/fts_parsers.png" /> FTS Parsers<a class="headerlink" href="#fts-parsers-fts-parsers" title="Link to this heading">#</a></h1>
+<section id="what-a-parser-does">
+<h2>What a parser does<a class="headerlink" href="#what-a-parser-does" title="Link to this heading">#</a></h2>
+<p>Given this text:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Email<span class="w"> </span>me<span class="w"> </span>at<span class="w"> </span>test@example.com<span class="w"> </span>on<span class="w"> </span><span class="m">2026</span>-01-01.
+</pre></div>
+</div>
+<dl class="simple">
+<dt>The parser:</dt><dd><ol class="arabic simple">
+<li><p>Walks through the text character by character</p></li>
+<li><p>Splits it into tokens</p></li>
+<li><p>Assigns each token a <strong>type</strong></p></li>
+</ol>
+</dd>
+<dt>Example tokens:</dt><dd><ul class="simple">
+<li><p>Email → word</p></li>
+<li><p>me → word</p></li>
+<li><p><a class="reference external" href="mailto:test&#37;&#52;&#48;example&#46;com">test<span>&#64;</span>example<span>&#46;</span>com</a> → email</p></li>
+<li><p>2026-01-01 → date</p></li>
+<li><p>. → punctuation</p></li>
+</ul>
+</dd>
+<dt>The parser does not:</dt><dd><ul class="simple">
+<li><p>Stem words</p></li>
+<li><p>Remove stop-words</p></li>
+<li><p>Normalize text</p></li>
+</ul>
+</dd>
+</dl>
+<p>That’s the <strong>dictionary’s job</strong>, later.</p>
+</section>
+<hr class="docutils" />
+<section id="parser-vs-dictionary">
+<h2>Parser vs Dictionary<a class="headerlink" href="#parser-vs-dictionary" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Responsibility</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Parser</p></td>
+<td><p>Splits text + labels token types</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dictionary</p></td>
+<td><p>Decides how each token is processed</p></td>
+</tr>
+<tr class="row-even"><td><p>Configuration</p></td>
+<td><p>Connects token types → dictionaries</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="built-in-parser-default">
+<h2>Built-in parser: default<a class="headerlink" href="#built-in-parser-default" title="Link to this heading">#</a></h2>
+<p>PostgreSQL ships with <strong>one main parser</strong> called default.</p>
+<dl class="simple">
+<dt>It understands:</dt><dd><ul class="simple">
+<li><p>Words</p></li>
+<li><p>Numbers</p></li>
+<li><p>URLs</p></li>
+<li><p>Emails</p></li>
+<li><p>Hyphenated words</p></li>
+<li><p>Punctuation</p></li>
+<li><p>Whitespace</p></li>
+</ul>
+</dd>
+<dt>In practice:</dt><dd><p>99% of databases use the default parser unchanged</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>Token types produced by the parser</p>
+<dl class="simple">
+<dt>Some common token types:</dt><dd><ul class="simple">
+<li><p>word</p></li>
+<li><p>numword</p></li>
+<li><p>email</p></li>
+<li><p>url</p></li>
+<li><p>host</p></li>
+<li><p>sfloat</p></li>
+<li><p>version</p></li>
+<li><p>hword (hyphenated word)</p></li>
+</ul>
+</dd>
+</dl>
+<p>You can see them with:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">alias</span><span class="p">,</span><span class="w"> </span><span class="n">tokid</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">ts_token_type</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="how-parsers-are-used-indirectly">
+<h2>How parsers are used (indirectly)<a class="headerlink" href="#how-parsers-are-used-indirectly" title="Link to this heading">#</a></h2>
+<p>You never call a parser directly.</p>
+<p>When you run:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">to_tsvector</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Some sample text&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Internally:</dt><dd><ol class="arabic simple">
+<li><p><strong>Parser</strong> splits the text into tokens</p></li>
+<li><p><strong>Configuration</strong> maps token types</p></li>
+<li><p><strong>Dictionaries</strong> normalize/filter words</p></li>
+<li><p>A tsvector is produced</p></li>
+</ol>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="why-you-almost-never-change-parsers">
+<h2>Why you almost never change parsers<a class="headerlink" href="#why-you-almost-never-change-parsers" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Parsers are:</dt><dd><ul class="simple">
+<li><p>Low-level</p></li>
+<li><p>Hard to customize</p></li>
+<li><p>Written in C (not SQL)</p></li>
+</ul>
+</dd>
+<dt>Most customization happens at:</dt><dd><ul class="simple">
+<li><p>Dictionary level</p></li>
+<li><p>Configuration level</p></li>
+</ul>
+</dd>
+<dt>If you want different behavior:</dt><dd><ul class="simple">
+<li><p>Change dictionaries</p></li>
+<li><p>Change token mappings</p></li>
+</ul>
+</dd>
+</dl>
+<p>—not the parser.</p>
+</section>
+<hr class="docutils" />
+<section id="pgadmin-what-youre-seeing">
+<h2>pgAdmin: what you’re seeing<a class="headerlink" href="#pgadmin-what-youre-seeing" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>In <strong>Schemas → public → FTS Parsers</strong>, pgAdmin shows:</dt><dd><ul class="simple">
+<li><p>Available parsers (usually just default)</p></li>
+<li><p>Their token types</p></li>
+<li><p>Internal metadata</p></li>
+</ul>
+</dd>
+</dl>
+<p>This mirrors:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_ts_parser</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="when-would-someone-create-a-custom-parser-rare">
+<h2>When would someone create a custom parser? (rare)<a class="headerlink" href="#when-would-someone-create-a-custom-parser-rare" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Only if:</dt><dd><ul class="simple">
+<li><p>Text is <strong>not natural language</strong></p></li>
+<li><p>You have custom syntax (logs, DSLs, code)</p></li>
+<li><p>Tokens must be split in a non-standard way</p></li>
+</ul>
+</dd>
+<dt>Examples:</dt><dd><ul class="simple">
+<li><p>Source code search</p></li>
+<li><p>Structured log formats</p></li>
+<li><p>Custom markup languages</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Summary:</dt><dd><p>FTS Parsers split text into labeled pieces; dictionaries decide what those pieces mean.</p>
+</dd>
+</dl>
+</section>
 </section>
 
 
@@ -530,6 +714,27 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-a-parser-does">What a parser does</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parser-vs-dictionary">Parser vs Dictionary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#built-in-parser-default">Built-in parser: default</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-parsers-are-used-indirectly">How parsers are used (indirectly)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-you-almost-never-change-parsers">Why you almost never change parsers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pgadmin-what-youre-seeing">pgAdmin: what you’re seeing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-would-someone-create-a-custom-parser-rare">When would someone create a custom parser? (rare)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

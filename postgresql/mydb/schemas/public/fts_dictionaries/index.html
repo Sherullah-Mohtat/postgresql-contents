@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,20 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-an-fts-dictionary">What is an FTS Dictionary?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-a-dictionary-actually-does">What a dictionary actually does</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-built-in-dictionary-types">Common built-in dictionary types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-dictionaries-are-wired">How dictionaries are wired</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#seeing-dictionaries-in-sql">Seeing dictionaries in SQL</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#typical-real-world-setups">Typical real-world setups</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pgadmin-view">pgAdmin view</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +505,225 @@ document.write(`
                   
   <section id="fts-dictionaries-fts-dictionaries">
 <h1><img alt="fts_dictionaries" src="../../../../_images/fts_dictionaries.png" /> FTS Dictionaries<a class="headerlink" href="#fts-dictionaries-fts-dictionaries" title="Link to this heading">#</a></h1>
+<section id="what-is-an-fts-dictionary">
+<h2>What is an FTS Dictionary?<a class="headerlink" href="#what-is-an-fts-dictionary" title="Link to this heading">#</a></h2>
+<p>An <strong>FTS dictionary</strong> is the component that <strong>processes each token</strong> (word-like piece) after the text is split by the parser.
+Its job is to decide <strong>what to keep, how to normalize it</strong>, or <strong>whether to drop it.</strong></p>
+<dl class="simple">
+<dt>In short:</dt><dd><ul class="simple">
+<li><p>Parser → splits text</p></li>
+<li><p><strong>Dictionary → understands words</strong></p></li>
+<li><p>Configuration → connects everything</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="what-a-dictionary-actually-does">
+<h2>What a dictionary actually does<a class="headerlink" href="#what-a-dictionary-actually-does" title="Link to this heading">#</a></h2>
+<p>For every token it receives, a dictionary can:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Normalize:
+- Lowercase
+- Remove punctuation
+- Convert variants to a base form</p></li>
+<li><dl class="simple">
+<dt>Reduce:</dt><dd><ul class="simple">
+<li><p>Convert related forms to one base form (stemming)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Filter:
+- Drop stop-words (the, is, and, etc.)
+- Drop tokens it doesn’t recognize</p></li>
+<li><dl class="simple">
+<dt>Accept as-is:</dt><dd><ul class="simple">
+<li><p>Keep the word unchanged</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="common-built-in-dictionary-types">
+<h2>Common built-in dictionary types<a class="headerlink" href="#common-built-in-dictionary-types" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>1️⃣ simple (most important to understand)</dt><dd><ul class="simple">
+<li><p>Keeps words <strong>as they are</strong></p></li>
+<li><p>No stemming</p></li>
+<li><p>No stop-words</p></li>
+<li><p>Just lowercases</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">to_tsvector</span><span class="p">(</span><span class="s1">&#39;simple&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Running runs runner&#39;</span><span class="p">);</span>
+<span class="c1">-- &#39;running&#39; &#39;runs&#39; &#39;runner&#39;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Use when:</dt><dd><ul class="simple">
+<li><p>Exact words matter</p></li>
+<li><p>You don’t want linguistic changes</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>2️⃣ Language stem dictionaries (e.g., english_stem)</dt><dd><ul class="simple">
+<li><p>Converts words to a root form</p></li>
+<li><p>Removes common stop-words</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">to_tsvector</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;running runs runner&#39;</span><span class="p">);</span>
+<span class="c1">-- &#39;run&#39;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Use when:</dt><dd><ul class="simple">
+<li><p>You want conceptual matching</p></li>
+<li><p>“run”, “running”, “runs” should match</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>3️⃣ synonym dictionary</dt><dd><ul class="simple">
+<li><p>Maps words to <strong>equivalent terms</strong></p></li>
+</ul>
+</dd>
+</dl>
+<p>Example synonym file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dbms<span class="w"> </span>database
+pgsql<span class="w"> </span>postgresql
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Result:</dt><dd><ul class="simple">
+<li><p>Searching for database also matches dbms</p></li>
+</ul>
+</dd>
+<dt>Used for:</dt><dd><ul class="simple">
+<li><p>Aliases</p></li>
+<li><p>Abbreviations</p></li>
+<li><p>Product names</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>4️⃣ thesaurus dictionary</dt><dd><ul class="simple">
+<li><p>More advanced synonyms</p></li>
+<li><p>Supports phrases</p></li>
+<li><p>Can expand terms into multiple tokens</p></li>
+</ul>
+</dd>
+<dt>Used for:</dt><dd><ul class="simple">
+<li><p>Advanced search UX</p></li>
+<li><p>Domain-specific vocabulary</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>5️⃣ ispell dictionary</dt><dd><ul class="simple">
+<li><p>Morphological analysis</p></li>
+<li><p>External dictionary + affix rules</p></li>
+</ul>
+</dd>
+<dt>Used when:</dt><dd><ul class="simple">
+<li><p>You need fine-grained linguistic control</p></li>
+<li><p>You have custom dictionary files</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="how-dictionaries-are-wired">
+<h2>How dictionaries are wired<a class="headerlink" href="#how-dictionaries-are-wired" title="Link to this heading">#</a></h2>
+<p>Dictionaries <strong>never work alone.</strong></p>
+<p>They are used <strong>by a configuration,</strong> mapped per token type.</p>
+<p>Example mapping:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>word<span class="w"> </span>→<span class="w"> </span>english_stem
+numword<span class="w"> </span>→<span class="w"> </span>simple
+email<span class="w"> </span>→<span class="w"> </span>simple
+url<span class="w"> </span>→<span class="w"> </span>simple
+</pre></div>
+</div>
+<p>That mapping lives inside the <strong>FTS Configuration.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="seeing-dictionaries-in-sql">
+<h2>Seeing dictionaries in SQL<a class="headerlink" href="#seeing-dictionaries-in-sql" title="Link to this heading">#</a></h2>
+<p>List dictionaries</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">dictname</span><span class="p">,</span><span class="w"> </span><span class="n">dicttemplate</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_ts_dict</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_ts_dict</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">dictname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;english_stem&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><strong>Using a dictionary indirectly (real life)</strong></p>
+<p>You <strong>don’t call dictionaries directly.</strong></p>
+<p>You use them through:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="n">to_tsvector</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">text</span><span class="p">)</span>
+<span class="n">to_tsquery</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The configuration decides which dictionary is used.</p>
+</section>
+<hr class="docutils" />
+<section id="typical-real-world-setups">
+<h2>Typical real-world setups<a class="headerlink" href="#typical-real-world-setups" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Exact-match search</dt><dd><ul class="simple">
+<li><p>Dictionary: simple</p></li>
+<li><p>No stemming</p></li>
+<li><p>Predictable behavior</p></li>
+</ul>
+</dd>
+<dt>Natural language search</dt><dd><ul class="simple">
+<li><p>Dictionary: english_stem</p></li>
+<li><p>Better recall</p></li>
+<li><p>Slightly less precision</p></li>
+</ul>
+</dd>
+<dt>Mixed content (IDs, emails, text)</dt><dd><ul class="simple">
+<li><p>simple for structured tokens</p></li>
+<li><p>english_stem for words</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="pgadmin-view">
+<h2>pgAdmin view<a class="headerlink" href="#pgadmin-view" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>In <strong>Schemas → public → FTS Dictionaries</strong>, pgAdmin shows:</dt><dd><ul class="simple">
+<li><p>Dictionary name</p></li>
+<li><p>Template (simple, ispell, synonym, etc.)</p></li>
+<li><p>Options</p></li>
+</ul>
+</dd>
+<dt>It’s just a visual layer over:</dt><dd><ul class="simple">
+<li><p>pg_ts_dict</p></li>
+<li><p>pg_ts_template</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Summary:</dt><dd><p>FTS Dictionaries decide what a “word” means, how it is normalized, and whether it is searchable at all.</p>
+</dd>
+</dl>
+</section>
 </section>
 
 
@@ -530,6 +761,27 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-an-fts-dictionary">What is an FTS Dictionary?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-a-dictionary-actually-does">What a dictionary actually does</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-built-in-dictionary-types">Common built-in dictionary types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-dictionaries-are-wired">How dictionaries are wired</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#seeing-dictionaries-in-sql">Seeing dictionaries in SQL</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#typical-real-world-setups">Typical real-world setups</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pgadmin-view">pgAdmin view</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

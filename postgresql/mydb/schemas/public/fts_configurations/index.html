@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,20 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-an-fts-configuration">What is an FTS Configuration?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-4-building-blocks-how-they-fit-together">The 4 building blocks (how they fit together)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#default-configuration-what-you-usually-see">Default configuration (what you usually see)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-fts-configurations-matter">Why FTS Configurations matter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-sql-you-should-know">Core SQL you should know</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-a-configuration-in-a-table">Using a configuration in a table</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-should-you-create-a-custom-configuration">When should you create a custom configuration?</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +505,181 @@ document.write(`
                   
   <section id="fts-configurations-fts-configurations">
 <h1><img alt="fts_configurations" src="../../../../_images/fts_configurations.png" /> FTS Configurations<a class="headerlink" href="#fts-configurations-fts-configurations" title="Link to this heading">#</a></h1>
+<section id="what-is-an-fts-configuration">
+<h2>What is an FTS Configuration?<a class="headerlink" href="#what-is-an-fts-configuration" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>An <strong>FTS configuration</strong> is the <strong>rulebook</strong> PostgreSQL uses to turn raw text into searchable terms and to interpret search queries. It answers questions like:</dt><dd><ul class="simple">
+<li><p>How is text <strong>tokenized</strong> (split into words)?</p></li>
+<li><p>Which <strong>dictionary</strong> processes each token?</p></li>
+<li><p>Are words <strong>normalized</strong> (e.g., case folding, stemming)?</p></li>
+<li><p>Which tokens are <strong>ignored</strong> (stop-words)?</p></li>
+</ul>
+</dd>
+</dl>
+<p>Think of it as the <strong>glue</strong> that connects parsers + dictionaries into one usable search behavior.</p>
+</section>
+<hr class="docutils" />
+<section id="the-4-building-blocks-how-they-fit-together">
+<h2>The 4 building blocks (how they fit together)<a class="headerlink" href="#the-4-building-blocks-how-they-fit-together" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Text
+↓
+Parser<span class="w">        </span><span class="o">(</span>splits<span class="w"> </span>text<span class="w"> </span>into<span class="w"> </span>tokens<span class="o">)</span>
+↓
+Token<span class="w"> </span><span class="nb">type</span><span class="w">    </span><span class="o">(</span>word,<span class="w"> </span>number,<span class="w"> </span>email,<span class="w"> </span>URL,<span class="w"> </span>etc.<span class="o">)</span>
+↓
+Dictionary<span class="w">    </span><span class="o">(</span>normalizes<span class="w"> </span>/<span class="w"> </span>filters<span class="w"> </span>tokens<span class="o">)</span>
+↓
+tsvector<span class="w">      </span><span class="o">(</span>indexed<span class="w"> </span>searchable<span class="w"> </span>form<span class="o">)</span>
+</pre></div>
+</div>
+<p>An <strong>FTS Configuration</strong> defines <strong>which dictionary is used for each token type</strong> produced by the parser.</p>
+</section>
+<hr class="docutils" />
+<section id="default-configuration-what-you-usually-see">
+<h2>Default configuration (what you usually see)<a class="headerlink" href="#default-configuration-what-you-usually-see" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Most databases come with something like:</dt><dd><ul class="simple">
+<li><p><strong>Configuration</strong>: english</p></li>
+<li><p><strong>Parser</strong>: default</p></li>
+<li><p><strong>Dictionaries</strong>: english_stem, simple</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example mapping (simplified):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Token type</p></th>
+<th class="head"><p>Dictionary used</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>word</p></td>
+<td><p>english_stem</p></td>
+</tr>
+<tr class="row-odd"><td><p>numword</p></td>
+<td><p>simple</p></td>
+</tr>
+<tr class="row-even"><td><p>email</p></td>
+<td><p>simple</p></td>
+</tr>
+<tr class="row-odd"><td><p>url</p></td>
+<td><p>simple</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="why-fts-configurations-matter">
+<h2>Why FTS Configurations matter<a class="headerlink" href="#why-fts-configurations-matter" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Without the right configuration:</dt><dd><ul class="simple">
+<li><p>Searches return <strong>unexpected results</strong></p></li>
+<li><p>Words don’t match because of <strong>case, form, or punctuation</strong></p></li>
+<li><p>Indexes are built but <strong>queries don’t hit them</strong></p></li>
+</ul>
+</dd>
+<dt>With the right configuration:</dt><dd><ul class="simple">
+<li><p>Searches are <strong>fast</strong> (GIN/GiST indexes)</p></li>
+<li><p>Queries are <strong>accurate</strong></p></li>
+<li><p>You can tune behavior <strong>per column, per query, or per index</strong></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="core-sql-you-should-know">
+<h2>Core SQL you should know<a class="headerlink" href="#core-sql-you-should-know" title="Link to this heading">#</a></h2>
+<p>1️⃣ List available configurations</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">cfgname</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_ts_config</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>2️⃣ Inspect a configuration</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_ts_config_map</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">mapcfg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;english&#39;</span><span class="o">::</span><span class="n">regconfig</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>3️⃣ Convert text into searchable form</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">to_tsvector</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PostgreSQL makes text searchable&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>4️⃣ Run a search query</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">to_tsquery</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;searchable &amp; text&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="using-a-configuration-in-a-table">
+<h2>Using a configuration in a table<a class="headerlink" href="#using-a-configuration-in-a-table" title="Link to this heading">#</a></h2>
+<p>Create a generated search column</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">articles</span>
+<span class="k">ADD</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="k">search</span><span class="w"> </span><span class="nb">tsvector</span>
+<span class="k">GENERATED</span><span class="w"> </span><span class="k">ALWAYS</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">to_tsvector</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">body</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="k">STORED</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Index it</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_articles_search</span>
+<span class="k">ON</span><span class="w"> </span><span class="n">articles</span>
+<span class="k">USING</span><span class="w"> </span><span class="n">GIN</span><span class="w"> </span><span class="p">(</span><span class="k">search</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Query it</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">articles</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="k">search</span><span class="w"> </span><span class="o">@@</span><span class="w"> </span><span class="n">to_tsquery</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;database &amp; indexing&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="when-should-you-create-a-custom-configuration">
+<h2>When should you create a custom configuration?<a class="headerlink" href="#when-should-you-create-a-custom-configuration" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Create your own when you need to:</dt><dd><ul class="simple">
+<li><p>Change <strong>dictionary order</strong></p></li>
+<li><p>Disable <strong>stemming</strong></p></li>
+<li><p>Treat special tokens differently</p></li>
+<li><p>Apply different behavior per schema/app</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example: clone and customize</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">SEARCH</span><span class="w"> </span><span class="k">CONFIGURATION</span><span class="w"> </span><span class="n">my_fts</span><span class="w"> </span><span class="p">(</span><span class="k">COPY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">english</span><span class="p">);</span>
+
+<span class="k">ALTER</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">SEARCH</span><span class="w"> </span><span class="k">CONFIGURATION</span><span class="w"> </span><span class="n">my_fts</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">MAPPING</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">word</span>
+<span class="k">WITH</span><span class="w"> </span><span class="k">simple</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This keeps words intact instead of stemming them.</p>
+<hr class="docutils" />
+<p>How this appears in pgAdmin</p>
+<dl class="simple">
+<dt>In pgAdmin, <strong>Schemas → public → FTS Configurations</strong> shows:</dt><dd><ul class="simple">
+<li><p>Each configuration</p></li>
+<li><p>Its parser</p></li>
+<li><p>Token-to-dictionary mappings</p></li>
+</ul>
+</dd>
+<dt>It’s just a <strong>UI view</strong> of what exists in:</dt><dd><ul class="simple">
+<li><p>pg_ts_config</p></li>
+<li><p>pg_ts_config_map</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Quick mental model</dt><dd><ul class="simple">
+<li><p><strong>Parser</strong> = splitter</p></li>
+<li><p><strong>Dictionary</strong> = normalizer/filter</p></li>
+<li><p><strong>Configuration</strong> = rulebook that connects them</p></li>
+<li><p><strong>tsvector / tsquery</strong> = what actually runs fast</p></li>
+</ul>
+</dd>
+</dl>
+</section>
 </section>
 
 
@@ -530,6 +717,27 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-an-fts-configuration">What is an FTS Configuration?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-4-building-blocks-how-they-fit-together">The 4 building blocks (how they fit together)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#default-configuration-what-you-usually-see">Default configuration (what you usually see)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-fts-configurations-matter">Why FTS Configurations matter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-sql-you-should-know">Core SQL you should know</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-a-configuration-in-a-table">Using a configuration in a table</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-should-you-create-a-custom-configuration">When should you create a custom configuration?</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

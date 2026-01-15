@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,23 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-view">1️⃣ What is a View?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example">2️⃣ Simple example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-views-exist-real-reasons">3️⃣ Why Views exist (real reasons)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#view-vs-materialized-view">4️⃣ View vs Materialized View</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#can-you-insert-update-through-a-view">5️⃣ Can you INSERT/UPDATE through a View?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#views-rls-powerful-combo">6️⃣ Views + RLS (powerful combo)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#views-vs-functions">7️⃣ Views vs Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-views-folder-shows">8️⃣ What pgAdmin “Views” folder shows</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-best-practices">9️⃣ Production best practices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mental-model-lock-this-in">🔟 Mental model (lock this in)</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +508,244 @@ document.write(`
                   
   <section id="views-views">
 <h1><img alt="views" src="../../../../_images/views.png" /> Views<a class="headerlink" href="#views-views" title="Link to this heading">#</a></h1>
+<section id="what-is-a-view">
+<h2>1️⃣ What is a View?<a class="headerlink" href="#what-is-a-view" title="Link to this heading">#</a></h2>
+<p>A <strong>View</strong> is a <strong>virtual table.</strong></p>
+<dl class="simple">
+<dt>It:</dt><dd><ul class="simple">
+<li><p>Stores <strong>no data</strong></p></li>
+<li><p>Stores <strong>a SQL query</strong></p></li>
+<li><p>Always shows <strong>up-to-date results</strong></p></li>
+</ul>
+</dd>
+<dt>Think of it as:</dt><dd><p>“A saved SELECT statement that behaves like a table”</p>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="simple-example">
+<h2>2️⃣ Simple example<a class="headerlink" href="#simple-example" title="Link to this heading">#</a></h2>
+<p>Base table</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">serial</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="nb">text</span><span class="p">,</span>
+<span class="w">    </span><span class="n">password_hash</span><span class="w"> </span><span class="nb">text</span><span class="p">,</span>
+<span class="w">    </span><span class="n">is_active</span><span class="w"> </span><span class="nb">boolean</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>View</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">active_users</span><span class="w"> </span><span class="k">AS</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">email</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">users</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">is_active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Use it like a table</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">active_users</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>✔ No password exposed</p>
+<p>✔ Cleaner queries</p>
+<p>✔ Reusable logic</p>
+</section>
+<hr class="docutils" />
+<section id="why-views-exist-real-reasons">
+<h2>3️⃣ Why Views exist (real reasons)<a class="headerlink" href="#why-views-exist-real-reasons" title="Link to this heading">#</a></h2>
+<p>🔹 Hide complexity</p>
+<p>Instead of:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="mf">...</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">a</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">b</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">c</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="mf">...</span>
+</pre></div>
+</div>
+<p>Use:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">user_profile_view</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><strong>Security (VERY important)</strong></p>
+<dl class="simple">
+<dt>Views can:</dt><dd><ul class="simple">
+<li><p>Hide sensitive columns</p></li>
+<li><p>Work with Row Level Security</p></li>
+<li><p>Restrict access without duplicating tables</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">active_users</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">app_user</span><span class="p">;</span>
+<span class="k">REVOKE</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">app_user</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The app <strong>never touches the base table.</strong></p>
+<hr class="docutils" />
+<p><strong>API-ready schemas</strong></p>
+<dl class="simple">
+<dt>Tools like:</dt><dd><ul class="simple">
+<li><p>PostgREST</p></li>
+<li><p>Hasura</p></li>
+<li><p>GraphQL engines</p></li>
+</ul>
+</dd>
+<dt>Love views because they:</dt><dd><ul class="simple">
+<li><p>Look like tables</p></li>
+<li><p>Are safe</p></li>
+<li><p>Are stable contracts</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="view-vs-materialized-view">
+<h2>4️⃣ View vs Materialized View<a class="headerlink" href="#view-vs-materialized-view" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>View</p></th>
+<th class="head"><p>Materialized View</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Storage</p></td>
+<td><p>❌ none</p></td>
+<td><p>✅ stored</p></td>
+</tr>
+<tr class="row-odd"><td><p>Always fresh</p></td>
+<td><p>✅ yes</p></td>
+<td><p>❌ until refresh</p></td>
+</tr>
+<tr class="row-even"><td><p>Fast reads</p></td>
+<td><p>❌ depends</p></td>
+<td><p>✅ very fast</p></td>
+</tr>
+<tr class="row-odd"><td><p>Suggest for</p></td>
+<td><p>APIs, security</p></td>
+<td><p>Analytics, reports</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="can-you-insert-update-through-a-view">
+<h2>5️⃣ Can you INSERT/UPDATE through a View?<a class="headerlink" href="#can-you-insert-update-through-a-view" title="Link to this heading">#</a></h2>
+<p><strong>Simple views → YES</strong></p>
+<dl class="simple">
+<dt>If:</dt><dd><ul class="simple">
+<li><p>One table</p></li>
+<li><p>No aggregates</p></li>
+<li><p>No joins</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">user_emails</span><span class="w"> </span><span class="k">AS</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">users</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>You can:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">user_emails</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;x@test.com&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Complex views → NO (by default)</strong></p>
+<dl class="simple">
+<dt>Unless you add:</dt><dd><ul class="simple">
+<li><p>INSTEAD OF triggers</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="views-rls-powerful-combo">
+<h2>6️⃣ Views + RLS (powerful combo)<a class="headerlink" href="#views-rls-powerful-combo" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>You can:</dt><dd><ul class="simple">
+<li><p>Enable RLS on base tables</p></li>
+<li><p>Expose only views to the app</p></li>
+<li><p>Keep business rules inside the DB</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">my_orders</span><span class="w"> </span><span class="k">AS</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_setting</span><span class="p">(</span><span class="s1">&#39;app.user_id&#39;</span><span class="p">)</span><span class="o">::</span><span class="nb">int</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This is <strong>production-grade security.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="views-vs-functions">
+<h2>7️⃣ Views vs Functions<a class="headerlink" href="#views-vs-functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Views</p></th>
+<th class="head"><p>Functions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Look like tables</p></td>
+<td><p>Look like calls</p></td>
+</tr>
+<tr class="row-odd"><td><p>Composable in SQL</p></td>
+<td><p>Procedural</p></td>
+</tr>
+<tr class="row-even"><td><p>Best for reads</p></td>
+<td><p>Best for logic</p></td>
+</tr>
+<tr class="row-odd"><td><p>API-friendly</p></td>
+<td><p>Backend-friendly</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="simple">
+<dt>Rule of thumb:</dt><dd><ul class="simple">
+<li><p>READ → View</p></li>
+<li><p>WRITE / LOGIC → Function</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="what-pgadmin-views-folder-shows">
+<h2>8️⃣ What pgAdmin “Views” folder shows<a class="headerlink" href="#what-pgadmin-views-folder-shows" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>In pgAdmin, under Views, you’ll see:</dt><dd><ul class="simple">
+<li><p>All user-created views</p></li>
+<li><p>System views (if enabled)</p></li>
+<li><p>Editable SQL definition</p></li>
+</ul>
+</dd>
+<dt>You can:</dt><dd><ul class="simple">
+<li><p>Right-click → View/Edit definition</p></li>
+<li><p>Grant permissions</p></li>
+<li><p>Drop / replace safely</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="production-best-practices">
+<h2>9️⃣ Production best practices<a class="headerlink" href="#production-best-practices" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>✔ Use views as API contracts</p></li>
+<li><p>✔ Never expose base tables directly</p></li>
+<li><p>✔ Use CREATE OR REPLACE VIEW</p></li>
+<li><p>✔ Name views clearly (v___, api___, public___)</p></li>
+<li><p>✔ Pair with RLS for real security</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="mental-model-lock-this-in">
+<h2>🔟 Mental model (lock this in)<a class="headerlink" href="#mental-model-lock-this-in" title="Link to this heading">#</a></h2>
+<p><strong>Table</strong> = truth</p>
+<p><strong>View</strong> = perspective</p>
+<p><strong>Materialized View</strong> = snapshot</p>
+</section>
 </section>
 
 
@@ -530,6 +783,30 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-view">1️⃣ What is a View?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example">2️⃣ Simple example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-views-exist-real-reasons">3️⃣ Why Views exist (real reasons)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#view-vs-materialized-view">4️⃣ View vs Materialized View</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#can-you-insert-update-through-a-view">5️⃣ Can you INSERT/UPDATE through a View?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#views-rls-powerful-combo">6️⃣ Views + RLS (powerful combo)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#views-vs-functions">7️⃣ Views vs Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-views-folder-shows">8️⃣ What pgAdmin “Views” folder shows</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-best-practices">9️⃣ Production best practices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mental-model-lock-this-in">🔟 Mental model (lock this in)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

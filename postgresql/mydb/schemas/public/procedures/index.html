@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,25 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#procedures-postgresql">Procedures (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procedure-vs-function">2️⃣ Procedure vs Function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-postgresql-added-procedures-pg-11">3️⃣ Why PostgreSQL added Procedures (PG 11+)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-procedure-example">4️⃣ Simple Procedure Example</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procedure-with-transaction-control">5️⃣ Procedure with transaction control</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procedure-with-out-parameters">6️⃣ Procedure with OUT parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-procedures-appear-in-pgadmin">7️⃣ Why Procedures appear in pgAdmin</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permissions-security">8️⃣ Permissions &amp; security</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procedures-vs-triggers-vs-jobs">9️⃣ Procedures vs Triggers vs Jobs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-should-you-use-procedures">🔟 When should you use Procedures?</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +510,224 @@ document.write(`
                   
   <section id="procedures-procedures">
 <h1><img alt="procedures" src="../../../../_images/procedures.png" /> Procedures<a class="headerlink" href="#procedures-procedures" title="Link to this heading">#</a></h1>
+<section id="procedures-postgresql">
+<h2>Procedures (PostgreSQL)<a class="headerlink" href="#procedures-postgresql" title="Link to this heading">#</a></h2>
+<p><strong>1️⃣ What is a Procedure?</strong></p>
+<dl class="simple">
+<dt>A <strong>procedure</strong> is a database object that:</dt><dd><ul class="simple">
+<li><p>Runs <strong>server-side logic</strong></p></li>
+<li><p>Can contain <strong>multiple SQL statements</strong></p></li>
+<li><p>Can <strong>control transactions</strong> (COMMIT, ROLLBACK)</p></li>
+<li><p>Is called using <strong>CALL</strong>, not SELECT</p></li>
+</ul>
+</dd>
+</dl>
+<p>Procedures are for <strong>doing things</strong>, not for returning values.</p>
+<hr class="docutils" />
+<section id="procedure-vs-function">
+<h3>2️⃣ Procedure vs Function<a class="headerlink" href="#procedure-vs-function" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Function</p></th>
+<th class="head"><p>Procedure</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Invocation</p></td>
+<td><p>SELECT my_func()</p></td>
+<td><p>CALL my_proc()</p></td>
+</tr>
+<tr class="row-odd"><td><p>Returns value</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>❌ No (can use OUT params)</p></td>
+</tr>
+<tr class="row-even"><td><p>Can use COMMIT / ROLLBACK</p></td>
+<td><p>❌ No</p></td>
+<td><p>✅ Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Used in queries</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>❌ No</p></td>
+</tr>
+<tr class="row-even"><td><p>Typical use</p></td>
+<td><p>Calculations, transformations</p></td>
+<td><p>Business workflows</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="simple">
+<dt>Rule of thumb</dt><dd><ul class="simple">
+<li><p><strong>Functions</strong> → compute</p></li>
+<li><p><strong>Procedures</strong> → operate</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="why-postgresql-added-procedures-pg-11">
+<h3>3️⃣ Why PostgreSQL added Procedures (PG 11+)<a class="headerlink" href="#why-postgresql-added-procedures-pg-11" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>Before PostgreSQL 11:</dt><dd><ul class="simple">
+<li><p>Everything had to be a function</p></li>
+<li><p>No transaction control inside logic</p></li>
+</ul>
+</dd>
+<dt>Procedures were added to support:</dt><dd><ul class="simple">
+<li><p>Multi-step workflows</p></li>
+<li><p>Batch jobs</p></li>
+<li><p>Data migrations</p></li>
+<li><p>ETL logic</p></li>
+<li><p>Admin tasks</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="simple-procedure-example">
+<h3>4️⃣ Simple Procedure Example<a class="headerlink" href="#simple-procedure-example" title="Link to this heading">#</a></h3>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">log_message</span><span class="p">(</span><span class="n">msg</span><span class="w"> </span><span class="nb">text</span><span class="p">)</span>
+<span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span>
+<span class="k">AS</span><span class="w"> </span><span class="s">$$</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">logs</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="p">)</span>
+<span class="w">    </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">now</span><span class="p">());</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="s">$$</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Call it:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CALL</span><span class="w"> </span><span class="n">log_message</span><span class="p">(</span><span class="s1">&#39;System started&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="procedure-with-transaction-control">
+<h3>5️⃣ Procedure with transaction control<a class="headerlink" href="#procedure-with-transaction-control" title="Link to this heading">#</a></h3>
+<p>This is <strong>the killer feature.</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">transfer_money</span><span class="p">(</span>
+<span class="w">    </span><span class="n">from_id</span><span class="w"> </span><span class="nb">int</span><span class="p">,</span>
+<span class="w">    </span><span class="n">to_id</span><span class="w"> </span><span class="nb">int</span><span class="p">,</span>
+<span class="w">    </span><span class="n">amount</span><span class="w"> </span><span class="nb">numeric</span>
+<span class="p">)</span>
+<span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span>
+<span class="k">AS</span><span class="w"> </span><span class="s">$$</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="k">UPDATE</span><span class="w"> </span><span class="n">accounts</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">balance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">balance</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">from_id</span><span class="p">;</span>
+<span class="w">    </span><span class="k">UPDATE</span><span class="w"> </span><span class="n">accounts</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">balance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">balance</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">to_id</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">COMMIT</span><span class="p">;</span>
+<span class="k">EXCEPTION</span>
+<span class="k">WHEN</span><span class="w"> </span><span class="k">OTHERS</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">    </span><span class="k">ROLLBACK</span><span class="p">;</span>
+<span class="w">    </span><span class="k">RAISE</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="s">$$</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Functions cannot do this</strong></p>
+</section>
+<hr class="docutils" />
+<section id="procedure-with-out-parameters">
+<h3>6️⃣ Procedure with OUT parameters<a class="headerlink" href="#procedure-with-out-parameters" title="Link to this heading">#</a></h3>
+<p>Procedures can <strong>output values</strong>, but not like functions.</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">get_stats</span><span class="p">(</span>
+<span class="w">    </span><span class="k">OUT</span><span class="w"> </span><span class="n">total_users</span><span class="w"> </span><span class="nb">int</span><span class="p">,</span>
+<span class="w">    </span><span class="k">OUT</span><span class="w"> </span><span class="n">total_orders</span><span class="w"> </span><span class="nb">int</span>
+<span class="p">)</span>
+<span class="k">LANGUAGE</span><span class="w"> </span><span class="k">sql</span>
+<span class="k">AS</span><span class="w"> </span><span class="s">$$</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">users</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">orders</span><span class="p">);</span>
+<span class="s">$$</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Call:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CALL</span><span class="w"> </span><span class="n">get_stats</span><span class="p">(</span><span class="k">NULL</span><span class="p">,</span><span class="w"> </span><span class="k">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="why-procedures-appear-in-pgadmin">
+<h3>7️⃣ Why Procedures appear in pgAdmin<a class="headerlink" href="#why-procedures-appear-in-pgadmin" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>They are stored in system catalogs:</dt><dd><ul class="simple">
+<li><p>pg_proc</p></li>
+<li><p>Differentiated by prokind = ‘p’</p></li>
+</ul>
+</dd>
+<dt>pgAdmin shows them separately because:</dt><dd><ul class="simple">
+<li><p>Different execution model</p></li>
+<li><p>Different permissions</p></li>
+<li><p>Different use cases</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="permissions-security">
+<h3>8️⃣ Permissions &amp; security<a class="headerlink" href="#permissions-security" title="Link to this heading">#</a></h3>
+<p>You can control who can call procedures:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">REVOKE</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">transfer_money</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">PUBLIC</span><span class="p">;</span>
+<span class="k">GRANT</span><span class="w"> </span><span class="k">EXECUTE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">transfer_money</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">app_role</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This is <strong>very important for production safety.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="procedures-vs-triggers-vs-jobs">
+<h3>9️⃣ Procedures vs Triggers vs Jobs<a class="headerlink" href="#procedures-vs-triggers-vs-jobs" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Use case</p></th>
+<th class="head"><p>Best choice</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Inline logic per row</p></td>
+<td><p>Trigger</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reusable computation</p></td>
+<td><p>Function</p></td>
+</tr>
+<tr class="row-even"><td><p>Multi-step workflow</p></td>
+<td><p>Procedure</p></td>
+</tr>
+<tr class="row-odd"><td><p>Scheduled task</p></td>
+<td><p>Procedure + cron/pg_cron</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="when-should-you-use-procedures">
+<h3>🔟 When should you use Procedures?<a class="headerlink" href="#when-should-you-use-procedures" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>Use procedures when you need:</dt><dd><ul class="simple">
+<li><p>Multi-step database workflows</p></li>
+<li><p>xplicit transaction control</p></li>
+<li><p>Admin or maintenance tasks</p></li>
+<li><p>Controlled side-effects</p></li>
+<li><p>Clean separation of business logic</p></li>
+</ul>
+</dd>
+<dt>Avoid procedures when:</dt><dd><ul class="simple">
+<li><p>You need values inside queries</p></li>
+<li><p>You need immutability</p></li>
+<li><p>You need index usage</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Summary</dt><dd><p>A PostgreSQL procedure is a transaction-capable server-side routine designed for executing workflows, not returning values.</p>
+</dd>
+</dl>
+</section>
+</section>
 </section>
 
 
@@ -530,6 +765,32 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#procedures-postgresql">Procedures (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procedure-vs-function">2️⃣ Procedure vs Function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-postgresql-added-procedures-pg-11">3️⃣ Why PostgreSQL added Procedures (PG 11+)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-procedure-example">4️⃣ Simple Procedure Example</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procedure-with-transaction-control">5️⃣ Procedure with transaction control</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procedure-with-out-parameters">6️⃣ Procedure with OUT parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-procedures-appear-in-pgadmin">7️⃣ Why Procedures appear in pgAdmin</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permissions-security">8️⃣ Permissions &amp; security</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procedures-vs-triggers-vs-jobs">9️⃣ Procedures vs Triggers vs Jobs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-should-you-use-procedures">🔟 When should you use Procedures?</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

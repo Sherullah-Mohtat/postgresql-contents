@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,20 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-types-in-postgresql">1️⃣ What are “Types” in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#categories-of-types-youll-see">2️⃣ Categories of Types you’ll see</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-types-fit-in-schema-design">3️⃣ Where “Types” fit in schema design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#types-vs-tables-vs-domains">4️⃣ Types vs Tables vs Domains</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-shows-under-types">5️⃣ What pgAdmin shows under “Types”</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-best-practices">6️⃣ Production best practices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mental-model-remember-this">7️⃣ Mental model (remember this)</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +505,262 @@ document.write(`
                   
   <section id="types-types">
 <h1><img alt="types" src="../../../../_images/types.png" /> Types<a class="headerlink" href="#types-types" title="Link to this heading">#</a></h1>
+<section id="what-are-types-in-postgresql">
+<h2>1️⃣ What are “Types” in PostgreSQL?<a class="headerlink" href="#what-are-types-in-postgresql" title="Link to this heading">#</a></h2>
+<p>A <strong>Type</strong> defines <strong>what kind of data</strong> a column, variable, or function can hold.</p>
+<dl class="simple">
+<dt>You already know built-in types like:</dt><dd><ul class="simple">
+<li><p>integer</p></li>
+<li><p>text</p></li>
+<li><p>boolean</p></li>
+<li><p>timestamp</p></li>
+</ul>
+</dd>
+</dl>
+<p>The <strong>Types</strong> section in pgAdmin is about <strong>user-defined and advanced types</strong>, not the basic ones.</p>
+</section>
+<hr class="docutils" />
+<section id="categories-of-types-youll-see">
+<h2>2️⃣ Categories of Types you’ll see<a class="headerlink" href="#categories-of-types-youll-see" title="Link to this heading">#</a></h2>
+<p>In PostgreSQL, types fall into these groups:</p>
+<p><strong>Built-in (system) types</strong></p>
+<dl class="simple">
+<dt>Provided by PostgreSQL itself:</dt><dd><ul class="simple">
+<li><p>int, bigint</p></li>
+<li><p>text, varchar</p></li>
+<li><p>json, jsonb</p></li>
+<li><p>uuid</p></li>
+<li><p>numeric</p></li>
+</ul>
+</dd>
+</dl>
+<p>These don’t usually appear under Types in pgAdmin because they’re global/system-level.</p>
+<hr class="docutils" />
+<p><strong>Composite types (custom row structures)</strong></p>
+<p>A <strong>composite type</strong> is like a <strong>struct</strong> or <strong>record.</strong></p>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">address_type</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">street</span><span class="w"> </span><span class="nb">text</span><span class="p">,</span>
+<span class="w">    </span><span class="n">city</span><span class="w"> </span><span class="nb">text</span><span class="p">,</span>
+<span class="w">    </span><span class="n">zip_code</span><span class="w"> </span><span class="nb">text</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Usage:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">serial</span><span class="p">,</span>
+<span class="w">    </span><span class="n">address</span><span class="w"> </span><span class="n">address_type</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Think:</dt><dd><p>“A reusable row shape”</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>Enum types (fixed values)</strong></p>
+<p>ENUM = <strong>limited set of allowed values</strong></p>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">order_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">ENUM</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s1">&#39;pending&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;paid&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;shipped&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;cancelled&#39;</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Usage:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">orders</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">serial</span><span class="p">,</span>
+<span class="w">    </span><span class="n">status</span><span class="w"> </span><span class="n">order_status</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>✔ Enforces correctness</p>
+<p>❌ Hard to change later (requires migrations)</p>
+<hr class="docutils" />
+<p><strong>Domain types (restricted base types)</strong></p>
+<dl class="simple">
+<dt>A domain is:</dt><dd><p>A base type + rules</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">DOMAIN</span><span class="w"> </span><span class="n">positive_int</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="nb">integer</span>
+<span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="k">VALUE</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Usage:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">quantity</span><span class="w"> </span><span class="n">positive_int</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Domains:</dt><dd><ul class="simple">
+<li><p>Centralize validation</p></li>
+<li><p>Improve schema readability</p></li>
+<li><p>Are safer than repeating CHECK constraints</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>Range types</strong></p>
+<dl class="simple">
+<dt>Used for ranges like:</dt><dd><ul class="simple">
+<li><p>dates</p></li>
+<li><p>numbers</p></li>
+<li><p>timestamps</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">bookings</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">period</span><span class="w"> </span><span class="n">daterange</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Query:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">bookings</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">period</span><span class="w"> </span><span class="o">@&gt;</span><span class="w"> </span><span class="nb">DATE</span><span class="w"> </span><span class="s1">&#39;2026-01-10&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Very powerful for:</dt><dd><ul class="simple">
+<li><p>availability</p></li>
+<li><p>scheduling</p></li>
+<li><p>time windows</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>Array types</strong></p>
+<p>Any type can become an array:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">posts</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">tags</span><span class="w"> </span><span class="nb">text</span><span class="p">[]</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Usage:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">posts</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="s1">&#39;sql&#39;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">ANY</span><span class="p">(</span><span class="n">tags</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><strong>Pseudo-types (advanced / internal)</strong></p>
+<dl class="simple">
+<dt>Examples:</dt><dd><ul class="simple">
+<li><p>record</p></li>
+<li><p>anyelement</p></li>
+<li><p>trigger</p></li>
+</ul>
+</dd>
+<dt>Used mainly in:</dt><dd><ul class="simple">
+<li><p>functions</p></li>
+<li><p>triggers</p></li>
+<li><p>system internals</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">RETURNS</span><span class="w"> </span><span class="k">trigger</span>
+</pre></div>
+</div>
+<p>You don’t store these in tables.</p>
+</section>
+<hr class="docutils" />
+<section id="where-types-fit-in-schema-design">
+<h2>3️⃣ Where “Types” fit in schema design<a class="headerlink" href="#where-types-fit-in-schema-design" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Use case</p></th>
+<th class="head"><p>Best type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Reusable structure</p></td>
+<td><p>Composite type</p></td>
+</tr>
+<tr class="row-odd"><td><p>Limited states</p></td>
+<td><p>ENUM</p></td>
+</tr>
+<tr class="row-even"><td><p>Shared validation</p></td>
+<td><p>DOMAIN</p></td>
+</tr>
+<tr class="row-odd"><td><p>Time ranges</p></td>
+<td><p>RANGE</p></td>
+</tr>
+<tr class="row-even"><td><p>Multiple values</p></td>
+<td><p>ARRAY</p></td>
+</tr>
+<tr class="row-odd"><td><p>Logic plumbing</p></td>
+<td><p>Pseudo-types</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="types-vs-tables-vs-domains">
+<h2>4️⃣ Types vs Tables vs Domains<a class="headerlink" href="#types-vs-tables-vs-domains" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Table</p></td>
+<td><p>Stores data</p></td>
+</tr>
+<tr class="row-odd"><td><p>Type</p></td>
+<td><p>Defines shape</p></td>
+</tr>
+<tr class="row-even"><td><p>Domain</p></td>
+<td><p>Constrained type</p></td>
+</tr>
+<tr class="row-odd"><td><p>Function</p></td>
+<td><p>Behavior</p></td>
+</tr>
+<tr class="row-even"><td><p>Trigger</p></td>
+<td><p>Automation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Types are <strong>building blocks</strong>, not storage.</p>
+</section>
+<hr class="docutils" />
+<section id="what-pgadmin-shows-under-types">
+<h2>5️⃣ What pgAdmin shows under “Types”<a class="headerlink" href="#what-pgadmin-shows-under-types" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>When you expand Types, pgAdmin lists:</dt><dd><ul class="simple">
+<li><p>ENUMs</p></li>
+<li><p>Composite types</p></li>
+<li><p>Domains (sometimes grouped separately)</p></li>
+<li><p>Custom range types</p></li>
+</ul>
+</dd>
+</dl>
+<p>System types are hidden.</p>
+</section>
+<hr class="docutils" />
+<section id="production-best-practices">
+<h2>6️⃣ Production best practices<a class="headerlink" href="#production-best-practices" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>✔ Use <strong>DOMAIN</strong> for shared validation</p></li>
+<li><p>✔ Use <strong>ENUM</strong> only for stable values</p></li>
+<li><p>✔ Prefer <strong>lookup tables</strong> if values change often</p></li>
+<li><p>✔ Avoid overusing composite types in APIs</p></li>
+<li><p>✔ Document every custom type clearly</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="mental-model-remember-this">
+<h2>7️⃣ Mental model (remember this)<a class="headerlink" href="#mental-model-remember-this" title="Link to this heading">#</a></h2>
+<p><strong>Type</strong> = shape of data</p>
+<p><strong>Table</strong> = storage of data</p>
+<p><strong>Function</strong> = behavior</p>
+</section>
 </section>
 
 
@@ -530,6 +798,27 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-types-in-postgresql">1️⃣ What are “Types” in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#categories-of-types-youll-see">2️⃣ Categories of Types you’ll see</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-types-fit-in-schema-design">3️⃣ Where “Types” fit in schema design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#types-vs-tables-vs-domains">4️⃣ Types vs Tables vs Domains</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-pgadmin-shows-under-types">5️⃣ What pgAdmin shows under “Types”</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-best-practices">6️⃣ Production best practices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mental-model-remember-this">7️⃣ Mental model (remember this)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,20 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-public-in-postgresql">1. What is public in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-does-public-exist">2. Why does public exist?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#default-behavior-of-public">3. Default behavior of public</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-public-is-dangerous-in-real-systems">4. Why public is dangerous in real systems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#who-owns-public">5. Who owns public?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practice-what-professionals-do">6. Best Practice (what professionals do)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-public-is-still-useful-for">7. What public is still useful for</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,8 +505,183 @@ document.write(`
                   
   <section id="public-public">
 <h1><img alt="public" src="../../../_images/public.png" /> public<a class="headerlink" href="#public-public" title="Link to this heading">#</a></h1>
+<section id="what-is-public-in-postgresql">
+<h2>1. What is public in PostgreSQL?<a class="headerlink" href="#what-is-public-in-postgresql" title="Link to this heading">#</a></h2>
+<p>public is a schema, not a database, not a table.</p>
+<p>📦 Database → 📁 Schemas → 📄 Tables</p>
+<p>So here:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>MyDB
+└──<span class="w"> </span>Schemas<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="o">)</span>
+<span class="w">   </span>└──<span class="w"> </span>public
+</pre></div>
+</div>
+<p>public is <strong>the default schema inside every PostgreSQL database.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="why-does-public-exist">
+<h2>2. Why does public exist?<a class="headerlink" href="#why-does-public-exist" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>PostgreSQL creates public automatically so beginners can:</dt><dd><ul class="simple">
+<li><p>Create tables immediately</p></li>
+<li><p>Avoid learning schemas at the start</p></li>
+<li><p>Run SQL without qualification</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="p">(</span><span class="mf">...</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Postgres silently does:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">public</span><span class="mf">.</span><span class="n">users</span><span class="w"> </span><span class="p">(</span><span class="mf">...</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="default-behavior-of-public">
+<h2>3. Default behavior of public<a class="headerlink" href="#default-behavior-of-public" title="Link to this heading">#</a></h2>
+<p>By default:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Behavior</p></th>
+<th class="head"><p>Status</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Exists automatically</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>In every database</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Writable by everyone</p></td>
+<td><p>⚠️ YES</p></td>
+</tr>
+<tr class="row-odd"><td><p>In search_path</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Beginner-friendly</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Production-safe</p></td>
+<td><p>❌</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="why-public-is-dangerous-in-real-systems">
+<h2>4. Why public is dangerous in real systems<a class="headerlink" href="#why-public-is-dangerous-in-real-systems" title="Link to this heading">#</a></h2>
+<p>This is <strong>very important.</strong></p>
+<dl class="simple">
+<dt>Problems with public</dt><dd><ol class="arabic simple">
+<li><p>Everyone can create tables</p></li>
+<li><p>No ownership boundaries</p></li>
+<li><p>Name collisions</p></li>
+<li><p>Security risks</p></li>
+<li><p>Hard to audit</p></li>
+<li><p>Bad multi-app support</p></li>
+</ol>
+</dd>
+</dl>
+<p>Example nightmare:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="p">(</span><span class="mf">...</span><span class="p">);</span><span class="w">   </span><span class="c1">-- app A</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="p">(</span><span class="mf">...</span><span class="p">);</span><span class="w">   </span><span class="c1">-- app B</span>
+</pre></div>
+</div>
+<p>Same schema → conflict.</p>
+<hr class="docutils" />
+<p>How PostgreSQL finds public (search_path)</p>
+<p>Check:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SHOW</span><span class="w"> </span><span class="n">search_path</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Default:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="s s-Name">&quot;$user&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">public</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Meaning:</dt><dd><ol class="arabic simple">
+<li><p>Look in schema named after user</p></li>
+<li><p>Then look in public</p></li>
+</ol>
+</dd>
+</dl>
+<p>That’s why tables “magically” work without schema names.</p>
+</section>
+<hr class="docutils" />
+<section id="who-owns-public">
+<h2>5. Who owns public?<a class="headerlink" href="#who-owns-public" title="Link to this heading">#</a></h2>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">nspname</span><span class="p">,</span><span class="w"> </span><span class="n">nspowner</span><span class="o">::</span><span class="n">regrole</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_namespace</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">nspname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;public&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Usually:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="n">public</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">postgres</span>
+</pre></div>
+</div>
+<p>But <strong>permissions</strong> are open unless you change them.</p>
+</section>
+<hr class="docutils" />
+<section id="best-practice-what-professionals-do">
+<h2>6. Best Practice (what professionals do)<a class="headerlink" href="#best-practice-what-professionals-do" title="Link to this heading">#</a></h2>
+<p>1️⃣ Keep public EMPTY</p>
+<p>Do not put app tables there.</p>
+<p>2️⃣ Lock it down</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">REVOKE</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">PUBLIC</span><span class="p">;</span>
+<span class="k">REVOKE</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">PUBLIC</span><span class="p">;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Now:</dt><dd><ul class="simple">
+<li><p>No accidental tables</p></li>
+<li><p>No unauthorized access</p></li>
+</ul>
+</dd>
+</dl>
+<p>3️⃣ Create real schemas</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">app</span><span class="p">;</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">auth</span><span class="p">;</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">audit</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>4️⃣ Use explicit schema names</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">app</span><span class="mf">.</span><span class="n">users</span><span class="w"> </span><span class="p">(</span><span class="mf">...</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">auth</span><span class="mf">.</span><span class="n">accounts</span><span class="w"> </span><span class="p">(</span><span class="mf">...</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="what-public-is-still-useful-for">
+<h2>7. What public is still useful for<a class="headerlink" href="#what-public-is-still-useful-for" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>You can keep public for:</dt><dd><ul class="simple">
+<li><p>Extensions (sometimes)</p></li>
+<li><p>Shared utility views</p></li>
+<li><p>Temporary experiments (dev only)</p></li>
+</ul>
+</dd>
+</dl>
+<p>But <strong>never core business tables.</strong></p>
+<hr class="docutils" />
+<p>Important rule to remember</p>
+<p>public is for learning — not for production.</p>
+<hr class="docutils" />
+<p>Summary</p>
+<ul class="simple">
+<li><p>✔ public = default schema</p></li>
+<li><p>✔ Exists in every database</p></li>
+<li><p>✔ Auto-used by SQL</p></li>
+<li><p>❌ Open permissions by default</p></li>
+<li><p>❌ Not production-safe</p></li>
+<li><p>✅ Lock it down</p></li>
+<li><p>✅ Create app-specific schemas</p></li>
+</ul>
 <div class="toctree-wrapper compound">
 </div>
+</section>
 </section>
 
 
@@ -532,6 +719,27 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-public-in-postgresql">1. What is public in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-does-public-exist">2. Why does public exist?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#default-behavior-of-public">3. Default behavior of public</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-public-is-dangerous-in-real-systems">4. Why public is dangerous in real systems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#who-owns-public">5. Who owns public?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practice-what-professionals-do">6. Best Practice (what professionals do)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-public-is-still-useful-for">7. What public is still useful for</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,28 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tables-postgresql">Tables (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-table">1️⃣ What is a table?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tables-live-inside-schemas">2️⃣ Tables live inside schemas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-table-basic">3️⃣ Creating a table (basic)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#columns-what-you-see-under-columns">4️⃣ Columns (what you see under “Columns”)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constraints-data-rules">5️⃣ Constraints (data rules)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#indexes-performance">6️⃣ Indexes (performance)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#triggers-automatic-behavior">7️⃣ Triggers (automatic behavior)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rules-advanced-rarely-used">8️⃣ Rules (advanced, rarely used)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rls-policies-row-level-security">9️⃣ RLS Policies (Row Level Security)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#table-storage-facts-important">1️⃣1️⃣ Table storage facts (important)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tables-vs-views-vs-materialized-views">1️⃣2️⃣ Tables vs Views vs Materialized Views</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#production-table-checklist">1️⃣3️⃣ Production table checklist</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +513,292 @@ document.write(`
                   
   <section id="tables-tables">
 <h1><img alt="tables" src="../../../../_images/tables.png" /> Tables<a class="headerlink" href="#tables-tables" title="Link to this heading">#</a></h1>
+<section id="tables-postgresql">
+<h2>Tables (PostgreSQL)<a class="headerlink" href="#tables-postgresql" title="Link to this heading">#</a></h2>
+<section id="what-is-a-table">
+<h3>1️⃣ What is a table?<a class="headerlink" href="#what-is-a-table" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>A <strong>table</strong> is a structured container that stores data in <strong>rows and columns.</strong></dt><dd><ul class="simple">
+<li><p><strong>Column</strong> → defines what kind of data can be stored</p></li>
+<li><p><strong>Row</strong> → one record / entry</p></li>
+<li><p><strong>Table</strong> → collection of related records</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>users
+├──<span class="w"> </span>id
+├──<span class="w"> </span>email
+├──<span class="w"> </span>created_at
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="tables-live-inside-schemas">
+<h3>2️⃣ Tables live inside schemas<a class="headerlink" href="#tables-live-inside-schemas" title="Link to this heading">#</a></h3>
+<p>From your tree:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>MyDB
+└──<span class="w"> </span>Schemas
+<span class="w">    </span>└──<span class="w"> </span>public
+<span class="w">        </span>└──<span class="w"> </span>Tables
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Important:</dt><dd><ul class="simple">
+<li><p>Tables are <strong>not global</strong></p></li>
+<li><p>Their full name is:</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="n">schema_name</span><span class="mf">.</span><span class="n">table_name</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="n">public</span><span class="mf">.</span><span class="n">users</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="creating-a-table-basic">
+<h3>3️⃣ Creating a table (basic)<a class="headerlink" href="#creating-a-table-basic" title="Link to this heading">#</a></h3>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">public</span><span class="mf">.</span><span class="n">users</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">BIGINT</span><span class="w"> </span><span class="k">GENERATED</span><span class="w"> </span><span class="k">ALWAYS</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">IDENTITY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="nb">TIMESTAMPTZ</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">now</span><span class="p">()</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>What happened:</dt><dd><ul class="simple">
+<li><p>A table was created</p></li>
+<li><p>A sequence was auto-created for id</p></li>
+<li><p>Defaults and constraints are enforced by PostgreSQL</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="columns-what-you-see-under-columns">
+<h3>4️⃣ Columns (what you see under “Columns”)<a class="headerlink" href="#columns-what-you-see-under-columns" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>Each column has:</dt><dd><ul class="simple">
+<li><p><strong>Data type</strong></p></li>
+<li><p><strong>NULL / NOT NULL</strong></p></li>
+<li><p><strong>Default</strong></p></li>
+<li><p>Optional constraints</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="n">email</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>This guarantees:</dt><dd><ul class="simple">
+<li><p>Email must exist</p></li>
+<li><p>Cannot be NULL</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="constraints-data-rules">
+<h3>5️⃣ Constraints (data rules)<a class="headerlink" href="#constraints-data-rules" title="Link to this heading">#</a></h3>
+<p>Under <strong>Constraints</strong> in pgAdmin you’ll see:</p>
+<p>Primary Key</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Uniqueness</p></li>
+<li><p>Index-backed</p></li>
+<li><p>Identifies the row</p></li>
+</ul>
+<hr class="docutils" />
+<p>Unique</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">UNIQUE</span><span class="w"> </span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Prevents duplicates</p></li>
+</ul>
+<p>Check</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">email</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Enforces rules on data</p></li>
+</ul>
+<p>Foreign Key</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="n">user_id</span><span class="w"> </span><span class="nb">BIGINT</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Ensures relational integrity</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="indexes-performance">
+<h3>6️⃣ Indexes (performance)<a class="headerlink" href="#indexes-performance" title="Link to this heading">#</a></h3>
+<p>Indexes speed up reads.</p>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_users_email</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="n">email</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Faster WHERE email = …</p></li>
+<li><p>Slightly slower writes (normal tradeoff)</p></li>
+</ul>
+<p>In pgAdmin:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Tables<span class="w"> </span>→<span class="w"> </span>users<span class="w"> </span>→<span class="w"> </span>Indexes
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="triggers-automatic-behavior">
+<h3>7️⃣ Triggers (automatic behavior)<a class="headerlink" href="#triggers-automatic-behavior" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>Triggers are actions that fire:</dt><dd><ul class="simple">
+<li><p>BEFORE INSERT</p></li>
+<li><p>AFTER UPDATE</p></li>
+<li><p>BEFORE DELETE</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">set_updated_at</span>
+<span class="k">BEFORE</span><span class="w"> </span><span class="k">UPDATE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">users</span>
+<span class="k">FOR</span><span class="w"> </span><span class="k">EACH</span><span class="w"> </span><span class="k">ROW</span>
+<span class="k">EXECUTE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">set_updated_at</span><span class="p">();</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Used for:</dt><dd><ul class="simple">
+<li><p>Audit fields</p></li>
+<li><p>Validation</p></li>
+<li><p>Business rules</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="rules-advanced-rarely-used">
+<h3>8️⃣ Rules (advanced, rarely used)<a class="headerlink" href="#rules-advanced-rarely-used" title="Link to this heading">#</a></h3>
+<p>Rules rewrite queries internally.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><ul class="simple">
+<li><p>Used historically for updatable views</p></li>
+<li><p>Avoid for new systems</p></li>
+<li><p>Triggers are preferred</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="rls-policies-row-level-security">
+<h3>9️⃣ RLS Policies (Row Level Security)<a class="headerlink" href="#rls-policies-row-level-security" title="Link to this heading">#</a></h3>
+<p>Under RLS Policies:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">ENABLE</span><span class="w"> </span><span class="k">ROW</span><span class="w"> </span><span class="k">LEVEL</span><span class="w"> </span><span class="k">SECURITY</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Example policy:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">POLICY</span><span class="w"> </span><span class="n">user_isolation</span>
+<span class="k">ON</span><span class="w"> </span><span class="n">users</span>
+<span class="k">USING</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_setting</span><span class="p">(</span><span class="s1">&#39;app.user_id&#39;</span><span class="p">)</span><span class="o">::</span><span class="nb">bigint</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>This is production-grade security:</dt><dd><ul class="simple">
+<li><p>Database enforces access</p></li>
+<li><p>Application cannot bypass it</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>🔟 Table ownership &amp; permissions</p>
+<dl class="simple">
+<dt>Every table has:</dt><dd><ul class="simple">
+<li><p>Owner</p></li>
+<li><p>Privileges</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="p">,</span><span class="w"> </span><span class="k">INSERT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">app_role</span><span class="p">;</span>
+<span class="k">REVOKE</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">PUBLIC</span><span class="p">;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Best practice:</dt><dd><ul class="simple">
+<li><p>Apps use <strong>roles</strong></p></li>
+<li><p>Humans use <strong>admin roles</strong></p></li>
+<li><p>No superuser in prod apps</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="table-storage-facts-important">
+<h3>1️⃣1️⃣ Table storage facts (important)<a class="headerlink" href="#table-storage-facts-important" title="Link to this heading">#</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Tables are stored as heap files</p></li>
+<li><p>PostgreSQL uses MVCC</p></li>
+<li><p>Updates create new row versions</p></li>
+<li><p>VACUUM cleans old ones</p></li>
+</ul>
+</div></blockquote>
+<p>You don’t manage files — PostgreSQL does.</p>
+</section>
+<hr class="docutils" />
+<section id="tables-vs-views-vs-materialized-views">
+<h3>1️⃣2️⃣ Tables vs Views vs Materialized Views<a class="headerlink" href="#tables-vs-views-vs-materialized-views" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Object</p></th>
+<th class="head"><p>Stores data</p></th>
+<th class="head"><p>Fast reads</p></th>
+<th class="head"><p>Auto updates</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Table</p></td>
+<td><p>✅</p></td>
+<td><p>Medium</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>View</p></td>
+<td><p>❌</p></td>
+<td><p>Slow</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Materialized View</p></td>
+<td><p>✅</p></td>
+<td><p>Fast</p></td>
+<td><p>❌ (manual refresh)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="production-table-checklist">
+<h3>1️⃣3️⃣ Production table checklist<a class="headerlink" href="#production-table-checklist" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>A good production table usually has:</dt><dd><ul class="simple">
+<li><p>Primary key</p></li>
+<li><p>Proper data types</p></li>
+<li><p>Constraints</p></li>
+<li><p>Indexes</p></li>
+<li><p>Ownership set</p></li>
+<li><p>RLS (if multi-tenant or API-driven)</p></li>
+</ul>
+</dd>
+<dt>Summary</dt><dd><p>A table is a schema-scoped, rule-enforced, indexed data structure that stores records safely and efficiently in PostgreSQL.</p>
+</dd>
+</dl>
+</section>
+</section>
 </section>
 
 
@@ -530,6 +836,35 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tables-postgresql">Tables (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-table">1️⃣ What is a table?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tables-live-inside-schemas">2️⃣ Tables live inside schemas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-table-basic">3️⃣ Creating a table (basic)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#columns-what-you-see-under-columns">4️⃣ Columns (what you see under “Columns”)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constraints-data-rules">5️⃣ Constraints (data rules)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#indexes-performance">6️⃣ Indexes (performance)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#triggers-automatic-behavior">7️⃣ Triggers (automatic behavior)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rules-advanced-rarely-used">8️⃣ Rules (advanced, rarely used)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rls-policies-row-level-security">9️⃣ RLS Policies (Row Level Security)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#table-storage-facts-important">1️⃣1️⃣ Table storage facts (important)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tables-vs-views-vs-materialized-views">1️⃣2️⃣ Tables vs Views vs Materialized Views</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#production-table-checklist">1️⃣3️⃣ Production table checklist</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

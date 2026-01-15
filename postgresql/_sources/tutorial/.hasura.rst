@@ -1,0 +1,278 @@
+:orphan:
+
+--------
+Hasura 
+--------
+
+**Hasura** is an **instant GraphQL API engine** that sits in front of your database (most commonly PostgreSQL) and automatically exposes your data as a **real-time GraphQL API** with built-in **authorization, filtering, relationships, and subscriptions.**
+
+Think of it as:
+    “PostgREST for GraphQL + real-time + UI-driven configuration.”
+
+=============================================================================================================================================================================================================================================================================
+
+---------------------------------------
+1) What Hasura does (in simple terms)
+---------------------------------------
+
+When you connect Hasura to a database:
+	- It **introspects tables, views, and functions**
+	- Automatically generates:
+        - GraphQL **queries**
+        - GraphQL **mutations**
+        - GraphQL **subscriptions** (real-time via WebSockets)
+	- You control **who can see what** using **roles + permissions**
+	- No backend code required for CRUD APIs
+
+=============================================================================================================================================================================================================================================================================
+
+------------------------------
+2) Core components of Hasura
+------------------------------
+
+**1️⃣ GraphQL Engine**
+
+The main server that:
+	- Translates GraphQL → SQL
+	- Enforces permissions
+	- Manages caching and subscriptions
+
+**2️⃣ Metadata**
+
+Configuration stored as metadata:
+	- Table permissions
+	- Relationships
+	- Remote schemas
+	- Actions
+	- Event triggers
+
+(You can version-control this)
+
+**3️⃣ Admin Console (UI)**
+
+A web UI to:
+	- Browse tables
+	- Set permissions
+	- Define relationships
+	- Test GraphQL queries
+
+=============================================================================================================================================================================================================================================================================
+
+--------------------------------
+3) What you get out of the box
+--------------------------------
+
+**✅ Instant GraphQL API**
+
+.. code-block:: graphql 
+
+    query {
+        orders {
+            id
+            item
+            created_at
+        }
+    }
+
+No SQL. No resolvers.
+
+=============================================================================================================================================================================================================================================================================
+
+**✅ Role-based authorization (very important)**
+
+Permissions are defined **per role, per table, per operation.**
+
+Example:
+	- Role: user
+	- Table: orders
+	- Rule: user_id = X-Hasura-User-Id
+
+Hasura automatically injects this filter into SQL.
+
+=============================================================================================================================================================================================================================================================================
+
+✅ Row-level security (RLS-like, but at GraphQL level)
+
+Example permission rule:
+
+.. code-block:: json 
+
+    {
+        "user_id": {
+            "_eq": "X-Hasura-User-Id"
+        }
+    }
+
+Hasura ensures:
+	- Users can only access their own rows
+	- Even if they try to query more data
+
+(You can also combine with **Postgres RLS** for defense-in-depth)
+
+=============================================================================================================================================================================================================================================================================
+
+✅ Real-time subscriptions
+
+.. code-block:: graphql 
+
+    subscription {
+        orders {
+            id
+            item
+        }
+    }
+
+When a row changes → clients get updates **instantly.**
+
+No polling. No custom WebSocket code.
+
+=============================================================================================================================================================================================================================================================================
+
+✅ Relationships without joins
+
+Define relationships once:
+	- orders → users
+	- users → roles
+
+Then query like:
+
+.. code-block:: graphql 
+
+    query {
+        orders {
+            item
+            user {
+            name
+            email
+            }
+        }
+    }
+
+Hasura generates efficient SQL joins automatically.
+
+=============================================================================================================================================================================================================================================================================
+
+----------------------------------------------
+4) Authentication model (important concept)
+----------------------------------------------
+
+Hasura itself does **NOT** authenticate users.
+
+Instead:
+	- You use **JWT**, OAuth, or an external auth service
+	- JWT contains claims like:
+        - x-hasura-user-id
+        - x-hasura-role
+        - x-hasura-allowed-roles
+
+Hasura reads these headers and enforces permissions.
+
+=============================================================================================================================================================================================================================================================================
+
+--------------------------------------------------
+5) How Hasura compares to PostgREST (high level)
+--------------------------------------------------
+
+.. list-table::
+    :header-rows: 1
+
+    * - Feature
+      - Hasura
+      - PostgREST
+    * - API style
+      - GraphQL
+      - REST
+    * - Auto API
+      - ✅
+      - ✅
+    * - Real-time
+      - ✅ Built-in
+      - ❌
+    * - Authorization
+      - GraphQL permissions
+      - PostgreSQL RLS
+    * - Admin UI
+      - ✅
+      - ❌
+    * - Custom logic
+      - Actions / Functions
+      - SQL / Functions
+    * - Complexity
+      - Medium
+      - Low
+    * - Control via SQL
+      - Less
+      - More
+
+Rule of thumb
+	- Want **GraphQL + real-time + UI** → Hasura
+	- Want **pure SQL + REST + minimal layer** → PostgREST
+
+=============================================================================================================================================================================================================================================================================
+
+6) Where Hasura is commonly used
+	- SaaS backends
+	- Dashboards
+	- Mobile apps
+	- Rapid prototypes
+	- Internal tools
+	- Event-driven systems
+
+Especially popular when:
+	- Frontend teams want GraphQL
+	- You want fast iteration
+	- You don’t want to write resolvers
+
+=============================================================================================================================================================================================================================================================================
+
+7) How Hasura executes a request (flow)
+	#.	Client sends GraphQL query + JWT
+
+	#.	Hasura:
+        - Validates JWT
+        - Extracts role + user id
+        - Applies permission rules
+        
+	#.	Generates SQL
+	#.	Runs SQL on PostgreSQL
+	#.	Returns GraphQL response
+
+All in milliseconds.
+
+=============================================================================================================================================================================================================================================================================
+
+----------------------------------------------
+8) Is Hasura a replacement for backend code?
+----------------------------------------------
+
+No — but it replaces a LOT of boilerplate.
+
+You still may need:
+	- Business logic
+	- Payment processing
+	- External APIs
+	- Complex workflows
+
+Hasura integrates these via:
+	- **Actions** (custom resolvers)
+	- **Event triggers**
+	- **Remote schemas**
+
+=============================================================================================================================================================================================================================================================================
+
+9) When NOT to use Hasura
+	- You want full SQL-only control
+	- You don’t want GraphQL
+	- You need extremely custom query planning
+	- You already rely heavily on stored procedures + RLS
+
+=============================================================================================================================================================================================================================================================================
+
+Summary:
+    Hasura is a production-ready GraphQL engine that instantly turns your PostgreSQL database into a secure, real-time API with role-based access control — without writing backend CRUD code.
+
+
+
+
+
+

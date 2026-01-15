@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,27 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sequences-postgresql">Sequences (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-sequence">1️⃣ What is a Sequence?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-sequences-exist">2️⃣ Why Sequences exist</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-classic-use-case-primary-keys">3️⃣ The classic use case: primary keys</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manual-sequence-creation">4️⃣ Manual sequence creation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attaching-a-sequence-to-a-column">5️⃣ Attaching a sequence to a column</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sequences-vs-serial-vs-identity">8️⃣ Sequences vs SERIAL vs IDENTITY</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sequence-ownership">9️⃣ Sequence ownership</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permissions-security">🔟 Permissions &amp; security</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-tuning-advanced">1️⃣1️⃣ Performance tuning (advanced)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-not-to-use-sequences">1️⃣2️⃣ When NOT to use sequences</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sequences-vs-uuids">1️⃣3️⃣ Sequences vs UUIDs</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +512,267 @@ document.write(`
                   
   <section id="sequences-sequences">
 <h1><img alt="sequences" src="../../../../_images/sequences.png" /> Sequences<a class="headerlink" href="#sequences-sequences" title="Link to this heading">#</a></h1>
+<section id="sequences-postgresql">
+<h2>Sequences (PostgreSQL)<a class="headerlink" href="#sequences-postgresql" title="Link to this heading">#</a></h2>
+<section id="what-is-a-sequence">
+<h3>1️⃣ What is a Sequence?<a class="headerlink" href="#what-is-a-sequence" title="Link to this heading">#</a></h3>
+<p>A <strong>sequence</strong> is a <strong>database object that generates unique numbers</strong>, usually for IDs.</p>
+<dl class="simple">
+<dt>Think of it as:</dt><dd><p>a safe, concurrent counter managed by PostgreSQL itself.</p>
+</dd>
+<dt>PostgreSQL guarantees that:</dt><dd><ul class="simple">
+<li><p>Two sessions never get the same value</p></li>
+<li><p>Values are generated <strong>without locking tables</strong></p></li>
+<li><p>Performance stays high even under load</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="why-sequences-exist">
+<h3>2️⃣ Why Sequences exist<a class="headerlink" href="#why-sequences-exist" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>Without sequences, generating IDs safely would require:</dt><dd><ul class="simple">
+<li><p>Locks</p></li>
+<li><p>Transactions</p></li>
+<li><p>Race-condition handling</p></li>
+</ul>
+</dd>
+</dl>
+<p>Sequences solve this problem <strong>at the engine level.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="the-classic-use-case-primary-keys">
+<h3>3️⃣ The classic use case: primary keys<a class="headerlink" href="#the-classic-use-case-primary-keys" title="Link to this heading">#</a></h3>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">BIGINT</span><span class="w"> </span><span class="k">GENERATED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">IDENTITY</span><span class="p">,</span>
+<span class="w">    </span><span class="k">name</span><span class="w"> </span><span class="nb">TEXT</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Behind the scenes, PostgreSQL creates:</dt><dd><ul class="simple">
+<li><p>a <strong>sequence</strong></p></li>
+<li><p>links it to users.id</p></li>
+</ul>
+</dd>
+</dl>
+<p>You usually don’t see it, but it exists.</p>
+</section>
+<hr class="docutils" />
+<section id="manual-sequence-creation">
+<h3>4️⃣ Manual sequence creation<a class="headerlink" href="#manual-sequence-creation" title="Link to this heading">#</a></h3>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">SEQUENCE</span><span class="w"> </span><span class="n">order_id_seq</span>
+<span class="w">    </span><span class="k">START</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="mf">1</span>
+<span class="w">    </span><span class="k">INCREMENT</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="mf">1</span>
+<span class="w">    </span><span class="k">NO</span><span class="w"> </span><span class="k">MINVALUE</span>
+<span class="w">    </span><span class="k">NO</span><span class="w"> </span><span class="k">MAXVALUE</span>
+<span class="w">    </span><span class="k">CACHE</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Get the next value:</p>
+<blockquote>
+<div><div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">nextval</span><span class="p">(</span><span class="s1">&#39;order_id_seq&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="attaching-a-sequence-to-a-column">
+<h3>5️⃣ Attaching a sequence to a column<a class="headerlink" href="#attaching-a-sequence-to-a-column" title="Link to this heading">#</a></h3>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">orders</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">nextval</span><span class="p">(</span><span class="s1">&#39;order_id_seq&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Now:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">orders</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">VALUES</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>→ ID is auto-generated.</p>
+<hr class="docutils" />
+<p>6️⃣ nextval, currval, setval (important!)</p>
+<p>nextval()</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">nextval</span><span class="p">(</span><span class="s1">&#39;order_id_seq&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>✔ Advances sequence</p>
+<p>✔ Returns a new value</p>
+<hr class="docutils" />
+<p>currval()</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">currval</span><span class="p">(</span><span class="s1">&#39;order_id_seq&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>✔ Returns <strong>last value used in this session</strong></p>
+<p>❌ Errors if nextval() was never called</p>
+<hr class="docutils" />
+<p>setval()</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">setval</span><span class="p">(</span><span class="s1">&#39;order_id_seq&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>✔ Manually resets the sequence</p>
+<p>Very useful after bulk imports.</p>
+<hr class="docutils" />
+<p>7️⃣ Sequences are NOT transactional</p>
+<p>This is critical:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">BEGIN</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">nextval</span><span class="p">(</span><span class="s1">&#39;order_id_seq&#39;</span><span class="p">);</span>
+<span class="k">ROLLBACK</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The number is <strong>lost forever</strong></p>
+<p>This is <strong>by design</strong> to ensure performance and concurrency.</p>
+</section>
+<hr class="docutils" />
+<section id="sequences-vs-serial-vs-identity">
+<h3>8️⃣ Sequences vs SERIAL vs IDENTITY<a class="headerlink" href="#sequences-vs-serial-vs-identity" title="Link to this heading">#</a></h3>
+<p>Old style (SERIAL)</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Problems:</dt><dd><ul class="simple">
+<li><p>Hidden sequence</p></li>
+<li><p>Harder to control</p></li>
+<li><p>Not SQL-standard</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>Modern style (IDENTITY)</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="n">id</span><span class="w"> </span><span class="nb">BIGINT</span><span class="w"> </span><span class="k">GENERATED</span><span class="w"> </span><span class="k">ALWAYS</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">IDENTITY</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Advantages:</dt><dd><ul class="simple">
+<li><p>SQL standard</p></li>
+<li><p>Explicit ownership</p></li>
+<li><p>Safer schema migrations</p></li>
+</ul>
+</dd>
+<dt>Recommendation:</dt><dd><p>Use <strong>IDENTITY</strong>, not SERIAL.</p>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="sequence-ownership">
+<h3>9️⃣ Sequence ownership<a class="headerlink" href="#sequence-ownership" title="Link to this heading">#</a></h3>
+<p>Sequences should be <strong>owned by a column:</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="k">SEQUENCE</span><span class="w"> </span><span class="n">order_id_seq</span>
+<span class="k">OWNED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">orders</span><span class="mf">.</span><span class="n">id</span><span class="p">;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Why this matters:</dt><dd><ul class="simple">
+<li><p>Dropping table drops sequence</p></li>
+<li><p>Cleaner schema</p></li>
+<li><p>Fewer orphan objects</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="permissions-security">
+<h3>🔟 Permissions &amp; security<a class="headerlink" href="#permissions-security" title="Link to this heading">#</a></h3>
+<p>You can restrict sequence usage:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">REVOKE</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">SEQUENCE</span><span class="w"> </span><span class="n">order_id_seq</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">PUBLIC</span><span class="p">;</span>
+<span class="k">GRANT</span><span class="w"> </span><span class="n">USAGE</span><span class="p">,</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">SEQUENCE</span><span class="w"> </span><span class="n">order_id_seq</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">app_role</span><span class="p">;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>In production:</dt><dd><ul class="simple">
+<li><p>Applications usually <strong>don’t call sequences directly</strong></p></li>
+<li><p>They rely on DEFAULT values</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="performance-tuning-advanced">
+<h3>1️⃣1️⃣ Performance tuning (advanced)<a class="headerlink" href="#performance-tuning-advanced" title="Link to this heading">#</a></h3>
+<p>CACHE</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CACHE</span><span class="w"> </span><span class="mf">100</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Improves performance</p></li>
+<li><p>May skip numbers on crash</p></li>
+<li><p>Usually safe</p></li>
+</ul>
+<p>NO CYCLE (default)</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">NO</span><span class="w"> </span><span class="k">CYCLE</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Prevents reuse of IDs</p></li>
+<li><p>Almost always what you want</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="when-not-to-use-sequences">
+<h3>1️⃣2️⃣ When NOT to use sequences<a class="headerlink" href="#when-not-to-use-sequences" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>Avoid sequences if:</dt><dd><ul class="simple">
+<li><p>IDs must be gapless (accounting numbers)</p></li>
+<li><p>Ordering must reflect commit order</p></li>
+<li><p>IDs must be meaningful</p></li>
+</ul>
+</dd>
+<dt>Use:</dt><dd><ul class="simple">
+<li><p>Explicit locking</p></li>
+<li><p>Custom logic</p></li>
+<li><p>Separate numbering tables</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="sequences-vs-uuids">
+<h3>1️⃣3️⃣ Sequences vs UUIDs<a class="headerlink" href="#sequences-vs-uuids" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Sequence</p></th>
+<th class="head"><p>UUID</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Readability</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>Index size</p></td>
+<td><p>Small</p></td>
+<td><p>Large</p></td>
+</tr>
+<tr class="row-even"><td><p>Ordering</p></td>
+<td><p>Natural</p></td>
+<td><p>Random</p></td>
+</tr>
+<tr class="row-odd"><td><p>Distributed-safe</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Performance</p></td>
+<td><p>Fast</p></td>
+<td><p>Slower</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="simple">
+<dt>Many systems use:</dt><dd><ul class="simple">
+<li><p>Sequence for internal PK</p></li>
+<li><p>UUID for public/external IDs</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Summary</dt><dd><p>A sequence is a high-performance, concurrency-safe number generator used primarily for primary keys in PostgreSQL.</p>
+</dd>
+</dl>
+</section>
+</section>
 </section>
 
 
@@ -530,6 +810,34 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sequences-postgresql">Sequences (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-sequence">1️⃣ What is a Sequence?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-sequences-exist">2️⃣ Why Sequences exist</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-classic-use-case-primary-keys">3️⃣ The classic use case: primary keys</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manual-sequence-creation">4️⃣ Manual sequence creation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attaching-a-sequence-to-a-column">5️⃣ Attaching a sequence to a column</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sequences-vs-serial-vs-identity">8️⃣ Sequences vs SERIAL vs IDENTITY</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sequence-ownership">9️⃣ Sequence ownership</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permissions-security">🔟 Permissions &amp; security</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-tuning-advanced">1️⃣1️⃣ Performance tuning (advanced)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-not-to-use-sequences">1️⃣2️⃣ When NOT to use sequences</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sequences-vs-uuids">1️⃣3️⃣ Sequences vs UUIDs</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

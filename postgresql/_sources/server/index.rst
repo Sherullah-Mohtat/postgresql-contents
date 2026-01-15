@@ -10,7 +10,7 @@
 .. |server_icon| image:: /_static/images/sidebar_icons/server.png
 
 
-In pgAdmin, **Server (1)** represents the number of PostgreSQL server instances
+In `pgAdmin <../tutorial/.pgadmin.html>`_, **Server (1)** represents the number of PostgreSQL server instances
 currently registered and available for connection. Each server entry corresponds
 to a running PostgreSQL service, whether it is local, remote, or cloud-based.
 

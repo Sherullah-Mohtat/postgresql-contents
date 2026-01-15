@@ -85,13 +85,13 @@ This mirrors how PostgreSQL is organized internally and how it appears in pgAdmi
    mydb/index
 
 
-.. toctree::
-   :hidden:
-   :maxdepth: 1
-   :caption: Tutorials
-      
-   tutorial/index
-      
+..
+   .. toctree::
+      :hidden:
+      :maxdepth: 1
+      :caption: Tutorial 
+         
+      tutorial/index
 
 ..
    PSQL <psql/index>
@@ -117,40 +117,4 @@ This mirrors how PostgreSQL is organized internally and how it appears in pgAdmi
 
 
 
-
-
-
-
-..
-   .. toctree::
-      :maxdepth: 2
-      :caption: Get Started
-
-      tutorials/index
-      guides/index
-
-   .. toctree::
-      :maxdepth: 2
-      :caption: Explanations
-
-      explanation/index
-
-   .. toctree::
-      :maxdepth: 2
-      :caption: How-To Recipes
-
-      howto/index
-
-   .. toctree::
-      :maxdepth: 2
-      :caption: Reference
-
-      reference/index
-
-   .. toctree::
-      :maxdepth: 2
-      :caption: Project Info
-
-      pages/index.rst 
-   
 

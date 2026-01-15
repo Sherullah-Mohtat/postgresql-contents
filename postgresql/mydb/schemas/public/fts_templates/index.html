@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,19 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-an-fts-template">What is an FTS Template?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-templates-fit-in-the-fts-pipeline">Where templates fit in the FTS pipeline</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#built-in-fts-templates">Built-in FTS templates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#templates-vs-dictionaries">Templates vs Dictionaries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-templates-matter">Why templates matter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-you-almost-never-create-templates-yourself">Why you almost never create templates yourself</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +504,213 @@ document.write(`
                   
   <section id="fts-templates-fts-templates">
 <h1><img alt="fts_templates" src="../../../../_images/fts_templates.png" /> FTS Templates<a class="headerlink" href="#fts-templates-fts-templates" title="Link to this heading">#</a></h1>
+<section id="what-is-an-fts-template">
+<h2>What is an FTS Template?<a class="headerlink" href="#what-is-an-fts-template" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>An <strong>FTS template</strong> is the <strong>blueprint for a dictionary.</strong></dt><dd><ul class="simple">
+<li><p>It defines <strong>how a dictionary behaves</strong></p></li>
+<li><p>It does <strong>not</strong> contain language rules itself</p></li>
+<li><p>Dictionaries are <strong>instances</strong> created from templates</p></li>
+</ul>
+</dd>
+</dl>
+<p>Think of it like this:</p>
+<blockquote>
+<div><p><strong>Template = class</strong></p>
+<p><strong>Dictionary = object created from that class</strong></p>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="where-templates-fit-in-the-fts-pipeline">
+<h2>Where templates fit in the FTS pipeline<a class="headerlink" href="#where-templates-fit-in-the-fts-pipeline" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Text
+↓
+Parser
+↓
+Token<span class="w"> </span>types
+↓
+Configuration
+↓
+Dictionary<span class="w"> </span><span class="o">(</span>built<span class="w"> </span>from<span class="w"> </span>a<span class="w"> </span>template<span class="o">)</span>
+↓
+tsvector
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Parser</strong> splits text</p></li>
+<li><p><strong>Configuration</strong> decides which dictionary to use</p></li>
+<li><p><strong>Dictionary</strong> processes tokens</p></li>
+<li><p><strong>Template</strong> defines how that dictionary works internally</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="built-in-fts-templates">
+<h2>Built-in FTS templates<a class="headerlink" href="#built-in-fts-templates" title="Link to this heading">#</a></h2>
+<p>You’ll see these under Schemas → public → FTS Templates:</p>
+<ol class="arabic simple">
+<li><p>simple</p></li>
+</ol>
+<dl class="simple">
+<dt>What it does</dt><dd><ul class="simple">
+<li><p>Accepts tokens as-is</p></li>
+<li><p>Lowercases text</p></li>
+<li><p>No stemming</p></li>
+<li><p>No stop-word removal</p></li>
+</ul>
+</dd>
+<dt>Use when</dt><dd><ul class="simple">
+<li><p>You want exact word matching</p></li>
+<li><p>You don’t want linguistic changes</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<ol class="arabic simple" start="2">
+<li><p>snowball</p></li>
+</ol>
+<dl class="simple">
+<dt>What it does</dt><dd><ul class="simple">
+<li><p>Uses Snowball stemming algorithms</p></li>
+<li><p>Reduces words to a root form</p></li>
+<li><p>Removes stop words</p></li>
+</ul>
+</dd>
+<dt>Use when</dt><dd><ul class="simple">
+<li><p>You want linguistic search</p></li>
+<li><p>“running”, “ran”, “runs” → same root</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<ol class="arabic simple" start="3">
+<li><p>ispell</p></li>
+</ol>
+<dl class="simple">
+<dt>What it does</dt><dd><ul class="simple">
+<li><p>Uses dictionary + affix files</p></li>
+<li><p>Very accurate linguistic processing</p></li>
+<li><p>Heavier to manage</p></li>
+</ul>
+</dd>
+<dt>Use when</dt><dd><ul class="simple">
+<li><p>You need strict dictionary-based normalization</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<ol class="arabic simple" start="4">
+<li><p>thesaurus</p></li>
+</ol>
+<dl class="simple">
+<dt>What it does</dt><dd><ul class="simple">
+<li><p>Maps words/phrases to synonyms</p></li>
+<li><p>Expands search meaning</p></li>
+</ul>
+</dd>
+<dt>Use when</dt><dd><ul class="simple">
+<li><p>You want synonym-aware search</p></li>
+<li><p>Example: “car” → “automobile”</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="templates-vs-dictionaries">
+<h2>Templates vs Dictionaries<a class="headerlink" href="#templates-vs-dictionaries" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Concept</p></th>
+<th class="head"><p>What it is</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Template</p></td>
+<td><p>Processing engine</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dictionary</p></td>
+<td><p>Configured instance of a template</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">SEARCH</span><span class="w"> </span><span class="k">DICTIONARY</span><span class="w"> </span><span class="n">my_simple_dict</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">TEMPLATE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">simple</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Here:</dt><dd><ul class="simple">
+<li><p>simple = template</p></li>
+<li><p>my_simple_dict = dictionary</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="why-templates-matter">
+<h2>Why templates matter<a class="headerlink" href="#why-templates-matter" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Templates define:</dt><dd><ul class="simple">
+<li><p>Whether stemming is applied</p></li>
+<li><p>Whether stop words are removed</p></li>
+<li><p>Whether normalization happens</p></li>
+<li><p>Whether external files are used</p></li>
+</ul>
+</dd>
+</dl>
+<p>You <strong>cannot</strong> change behavior directly in a dictionary
+→ You choose the correct <strong>template</strong></p>
+</section>
+<hr class="docutils" />
+<section id="why-you-almost-never-create-templates-yourself">
+<h2>Why you almost never create templates yourself<a class="headerlink" href="#why-you-almost-never-create-templates-yourself" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Templates:</dt><dd><ul class="simple">
+<li><p>Are low-level</p></li>
+<li><p>Are implemented in C</p></li>
+<li><p>Are part of PostgreSQL internals</p></li>
+</ul>
+</dd>
+<dt>In real systems:</dt><dd><ul class="simple">
+<li><p>✅ You create dictionaries</p></li>
+<li><p>❌ You do not create templates</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>How pgAdmin shows templates</p>
+<dl class="simple">
+<dt>pgAdmin lists:</dt><dd><ul class="simple">
+<li><p>Template name</p></li>
+<li><p>Underlying implementation</p></li>
+<li><p>Whether it supports lexeme filtering</p></li>
+</ul>
+</dd>
+</dl>
+<p>This mirrors:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_ts_template</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><strong>Practical example (template → dictionary → config)</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Dictionary from template</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">SEARCH</span><span class="w"> </span><span class="k">DICTIONARY</span><span class="w"> </span><span class="n">my_dict</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">TEMPLATE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">simple</span>
+<span class="p">);</span>
+
+<span class="c1">-- Configuration using the dictionary</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">SEARCH</span><span class="w"> </span><span class="k">CONFIGURATION</span><span class="w"> </span><span class="n">pg_catalog</span><span class="mf">.</span><span class="n">english</span>
+<span class="w">    </span><span class="k">ALTER</span><span class="w"> </span><span class="k">MAPPING</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">word</span>
+<span class="w">    </span><span class="k">WITH</span><span class="w"> </span><span class="n">my_dict</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Summary:</dt><dd><p>FTS templates define how dictionaries work; dictionaries do the actual text processing.</p>
+</dd>
+</dl>
+</section>
 </section>
 
 
@@ -530,6 +748,26 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-an-fts-template">What is an FTS Template?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-templates-fit-in-the-fts-pipeline">Where templates fit in the FTS pipeline</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#built-in-fts-templates">Built-in FTS templates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#templates-vs-dictionaries">Templates vs Dictionaries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-templates-matter">Why templates matter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-you-almost-never-create-templates-yourself">Why you almost never create templates yourself</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

@@ -386,10 +386,6 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/index.html">What is pgAdmin?</a></li>
-</ul>
 
     </div>
 </nav></div>
@@ -466,7 +462,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -482,6 +480,26 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#operators-postgresql">Operators (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-makes-postgresql-operators-special">1️⃣ What makes PostgreSQL operators special?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-operator-categories">2️⃣ Basic operator categories</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#array-operators-very-postgresql-specific">3️⃣ Array operators (very PostgreSQL-specific)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#json-jsonb-operators-huge-feature">4️⃣ JSON / JSONB operators (huge feature)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#range-operators">5️⃣ Range operators</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pattern-matching-operators">6️⃣ Pattern matching operators</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-operators-appear-in-pgadmin">7️⃣ Why Operators appear in pgAdmin</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-your-own-operator-advanced">8️⃣ Creating your own operator (advanced)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#operators-indexes-important">9️⃣ Operators + Indexes (important)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-should-you-care-deeply-about-operators">🔟 When should you care deeply about operators?</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -493,6 +511,213 @@ document.write(`
                   
   <section id="operators-operators">
 <h1><img alt="operators" src="../../../../_images/operators.png" /> Operators<a class="headerlink" href="#operators-operators" title="Link to this heading">#</a></h1>
+<section id="operators-postgresql">
+<h2>Operators (PostgreSQL)<a class="headerlink" href="#operators-postgresql" title="Link to this heading">#</a></h2>
+<p>In PostgreSQL, an <strong>operator</strong> is a <strong>symbol or keyword that performs an operation between values.</strong></p>
+<p>Examples you already know:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>
+<span class="o">&gt;</span>
+<span class="o">&lt;</span>
+<span class="o">+</span>
+<span class="o">||</span>
+<span class="o">@&gt;</span>
+<span class="o">-&gt;</span>
+</pre></div>
+</div>
+<p>PostgreSQL treats operators as <strong>first-class database objects,</strong> not just syntax.</p>
+<p>That’s why you see <strong>Operators</strong> as a node in pgAdmin.</p>
+<hr class="docutils" />
+<section id="what-makes-postgresql-operators-special">
+<h3>1️⃣ What makes PostgreSQL operators special?<a class="headerlink" href="#what-makes-postgresql-operators-special" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>Unlike many databases:</dt><dd><ul class="simple">
+<li><p>Operators are <strong>typed</strong></p></li>
+<li><p>Operators can be <strong>overloaded</strong></p></li>
+<li><p>You can <strong>create your own operators</strong></p></li>
+<li><p>Operators are backed by <strong>functions</strong></p></li>
+<li><p>Operators can be indexed</p></li>
+<li><p>Operators integrate deeply with <strong>indexes, JSON, arrays, FTS, GIS</strong></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="basic-operator-categories">
+<h3>2️⃣ Basic operator categories<a class="headerlink" href="#basic-operator-categories" title="Link to this heading">#</a></h3>
+<p><strong>Comparison operators</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="o">=</span><span class="w">   </span><span class="o">&lt;&gt;</span><span class="w">   </span><span class="o">!=</span><span class="w">   </span><span class="o">&lt;</span><span class="w">   </span><span class="o">&lt;=</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;=</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">18</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><strong>Logical operators</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">AND</span><span class="w">   </span><span class="k">OR</span><span class="w">   </span><span class="k">NOT</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">WHERE</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">deleted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><strong>String operators</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="o">||</span><span class="w">     </span><span class="c1">-- concatenate</span>
+<span class="k">LIKE</span>
+<span class="k">ILIKE</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">first_name</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">last_name</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">users</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="array-operators-very-postgresql-specific">
+<h3>3️⃣ Array operators (very PostgreSQL-specific)<a class="headerlink" href="#array-operators-very-postgresql-specific" title="Link to this heading">#</a></h3>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="o">@&gt;</span><span class="w">   </span><span class="n">contains</span>
+<span class="o">&lt;@</span><span class="w">   </span><span class="k">is</span><span class="w"> </span><span class="n">contained</span><span class="w"> </span><span class="k">by</span>
+<span class="o">&amp;&amp;</span><span class="w">   </span><span class="k">overlaps</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">posts</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">tags</span><span class="w"> </span><span class="o">@&gt;</span><span class="w"> </span><span class="k">ARRAY</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">];</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="json-jsonb-operators-huge-feature">
+<h3>4️⃣ JSON / JSONB operators (huge feature)<a class="headerlink" href="#json-jsonb-operators-huge-feature" title="Link to this heading">#</a></h3>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="o">-&gt;</span><span class="w">    </span><span class="n">get</span><span class="w"> </span><span class="nb">JSON</span><span class="w"> </span><span class="k">object</span>
+<span class="o">-&gt;&gt;</span><span class="w">   </span><span class="n">get</span><span class="w"> </span><span class="nb">text</span>
+<span class="o">@&gt;</span><span class="w">    </span><span class="n">contains</span>
+<span class="o">?</span><span class="w">     </span><span class="k">key</span><span class="w"> </span><span class="k">exists</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="k">data</span><span class="o">-&gt;&gt;</span><span class="s1">&#39;email&#39;</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">users</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="o">@&gt;</span><span class="w"> </span><span class="s1">&#39;{&quot;verified&quot;: true}&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>These operators are <strong>indexable</strong> with GIN indexes.</p>
+</section>
+<hr class="docutils" />
+<section id="range-operators">
+<h3>5️⃣ Range operators<a class="headerlink" href="#range-operators" title="Link to this heading">#</a></h3>
+<p>Used with range types (int4range, tsrange, etc.)</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="o">@&gt;</span><span class="w">   </span><span class="n">contains</span>
+<span class="o">&amp;&amp;</span><span class="w">   </span><span class="k">overlaps</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">bookings</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">period</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">tsrange</span><span class="p">(</span><span class="s1">&#39;2025-01-01&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2025-01-10&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="pattern-matching-operators">
+<h3>6️⃣ Pattern matching operators<a class="headerlink" href="#pattern-matching-operators" title="Link to this heading">#</a></h3>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="o">~</span><span class="w">     </span><span class="n">regex</span><span class="w"> </span><span class="k">match</span>
+<span class="o">~*</span><span class="w">    </span><span class="n">regex</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="p">(</span><span class="k">case</span><span class="o">-</span><span class="k">insensitive</span><span class="p">)</span>
+<span class="o">!~</span><span class="w">    </span><span class="n">regex</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">match</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">users</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="o">~*</span><span class="w"> </span><span class="s1">&#39;^[a-z0-9._%+-]+@example\.com$&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="why-operators-appear-in-pgadmin">
+<h3>7️⃣ Why Operators appear in pgAdmin<a class="headerlink" href="#why-operators-appear-in-pgadmin" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>Because operators are stored in system catalogs:</dt><dd><ul class="simple">
+<li><p>pg_operator</p></li>
+<li><p>Linked to:</p></li>
+<li><p>left type</p></li>
+<li><p>right type</p></li>
+<li><p>result type</p></li>
+<li><p>implementation function</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example (simplified):</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_operator</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">oprname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;@&gt;&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="creating-your-own-operator-advanced">
+<h3>8️⃣ Creating your own operator (advanced)<a class="headerlink" href="#creating-your-own-operator-advanced" title="Link to this heading">#</a></h3>
+<p>PostgreSQL allows custom operators.</p>
+<p>Step 1: Create a function</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">int_is_even</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="nb">boolean</span>
+<span class="k">LANGUAGE</span><span class="w"> </span><span class="k">sql</span>
+<span class="k">AS</span><span class="w"> </span><span class="s">$$</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="nv">$1</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="s">$$</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Step 2: Create operator</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">OPERATOR</span><span class="w"> </span><span class="o">##</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">RIGHTARG</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">int</span><span class="p">,</span>
+<span class="w">    </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">int_is_even</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Use it</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="mf">10</span><span class="w"> </span><span class="o">##</span><span class="p">;</span><span class="w">  </span><span class="c1">-- true</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="mf">7</span><span class="w">  </span><span class="o">##</span><span class="p">;</span><span class="w">  </span><span class="c1">-- false</span>
+</pre></div>
+</div>
+<p>This is why operators are real database objects.</p>
+</section>
+<hr class="docutils" />
+<section id="operators-indexes-important">
+<h3>9️⃣ Operators + Indexes (important)<a class="headerlink" href="#operators-indexes-important" title="Link to this heading">#</a></h3>
+<p>PostgreSQL indexes support <strong>specific operators.</strong></p>
+<dl class="simple">
+<dt>Example:</dt><dd><ul class="simple">
+<li><p>B-tree supports: = &lt; &gt; &lt;= &gt;=</p></li>
+<li><p>GIN supports: &#64;&gt; ? &amp;&amp;</p></li>
+<li><p>GiST supports: spatial and range operators</p></li>
+</ul>
+</dd>
+</dl>
+<p>This is why <strong>operator choice affects performance.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="when-should-you-care-deeply-about-operators">
+<h3>🔟 When should you care deeply about operators?<a class="headerlink" href="#when-should-you-care-deeply-about-operators" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>You should care if you are:</dt><dd><ul class="simple">
+<li><p>Designing APIs directly on PostgreSQL</p></li>
+<li><p>Using JSONB heavily</p></li>
+<li><p>Using arrays or ranges</p></li>
+<li><p>Building search systems</p></li>
+<li><p>Using PostgREST or Hasura</p></li>
+<li><p>Designing custom domains and constraints</p></li>
+<li><p>Optimizing query performance</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Summary</dt><dd><p>Operators in PostgreSQL are typed, index-aware, extensible database objects that define how values interact.</p>
+</dd>
+</dl>
+</section>
+</section>
 </section>
 
 
@@ -530,6 +755,33 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#operators-postgresql">Operators (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-makes-postgresql-operators-special">1️⃣ What makes PostgreSQL operators special?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-operator-categories">2️⃣ Basic operator categories</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#array-operators-very-postgresql-specific">3️⃣ Array operators (very PostgreSQL-specific)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#json-jsonb-operators-huge-feature">4️⃣ JSON / JSONB operators (huge feature)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#range-operators">5️⃣ Range operators</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pattern-matching-operators">6️⃣ Pattern matching operators</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-operators-appear-in-pgadmin">7️⃣ Why Operators appear in pgAdmin</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-your-own-operator-advanced">8️⃣ Creating your own operator (advanced)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#operators-indexes-important">9️⃣ Operators + Indexes (important)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-should-you-care-deeply-about-operators">🔟 When should you care deeply about operators?</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
