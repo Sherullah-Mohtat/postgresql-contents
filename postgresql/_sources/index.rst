@@ -80,9 +80,16 @@ This mirrors how PostgreSQL is organized internally and how it appears in pgAdmi
 .. toctree::
    :hidden:
    :maxdepth: 3
-   :caption: Explanations
+   :caption: Database Explanations
      
    mydb/index
+
+.. toctree::
+   :hidden:
+   :maxdepth: 3
+   :caption: Tables Explanations
+     
+   tables/index
 
 
 ..

@@ -7,7 +7,8 @@
 Procedures (PostgreSQL)
 -------------------------
 
-**1️⃣ What is a Procedure?**
+1️⃣ What is a Procedure?
+-----------------------------
 
 A **procedure** is a database object that:
 	- Runs **server-side logic**

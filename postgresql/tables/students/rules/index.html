@@ -1,0 +1,902 @@
+ 
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Rules &#8212; Postgresql</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=873836d9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/style.css?v=d6ed2d86" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=52fd3798" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/ad_style.css?v=34d129f9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/navbar-scroll.css?v=d0d81848" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/sidebaricons.css?v=a9ffd395" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tables/students/rules/index';</script>
+    <script src="../../../_static/js/custom.js?v=6f0278c6"></script>
+    <script src="../../../_static/js/navbar-scroll.js?v=cb524ae2"></script>
+    <link rel="icon" href="../../../_static/sherullah.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Triggers" href="../triggers/index.html" />
+    <link rel="prev" title="RLS Policies" href="../rlspolicies/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+<!-- Google Tag Manager (noscript) -->
+<noscript
+  ><iframe
+    src="https://www.googletagmanager.com/ns.html?id=GTM-P4GQM59"
+    height="0"
+    width="0"
+    style="display: none; visibility: hidden"
+  ></iframe
+></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<nav class="dask-nav container-fluid">
+  <ul>
+    <li class="logo">
+      <a href="https://docs.dask.org/">
+        <img
+          class="caption"
+          src="../../../_static/images/dask-horizontal-white.svg"
+        />
+      </a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/">Dask</a>
+    </li>
+
+    <li>
+      <a href="https://distributed.dask.org/">Distributed</a>
+    </li>
+
+    <li>
+      <a href="https://ml.dask.org/">Dask ML</a>
+    </li>
+
+    <li>
+      <a href="https://examples.dask.org/">Examples</a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/en/latest/ecosystem.html">Ecosystem</a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/en/latest/support.html">Community</a>
+    </li>
+  </ul>
+</nav>
+
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+<nav class="dask-nav container-fluid navbar-scroll-wrap">
+
+    <!-- Left arrow -->
+  <button class="scroll-btn scroll-left" id="navLeft" aria-label="Scroll left">
+    &#10094;
+  </button>
+
+  <ul class="nav-scroll" id="nav-scroll">
+
+    <!-- 🔥 Home = external site -->
+    <li>
+      <a href="https://sherullah.com/" target="_blank" rel="noopener" class="nav-icon">
+        <img src="../../../_static/images/logo/home48.png" alt="Home" />
+      </a>
+    </li>
+
+    <!-- 🔥 FLUTTER = external docs -->
+    <li>
+      <a href="https://sherullah.com/flutter-contents/flutter/"
+        target="_blank"
+        rel="noopener">
+        FLUTTER
+      </a>
+    </li> 
+
+<!--
+    <li>
+      <a href="https://sherullah.com/firebase-contents/firebase/"
+        target="_blank"
+        rel="noopener">
+        FIREBASE
+      </a>
+    </li> 
+
+    <li>
+      <a href="https://sherullah.com/dart-contents/dart/"
+        target="_blank"
+        rel="noopener">
+        DART
+      </a>
+    </li> 
+  -->
+       <!-- 🔥 SDJANGO= external docs -->
+    <li>
+      <a href="https://sherullah.com/django-contents/django/"
+        target="_blank"
+        rel="noopener">
+        DJANGO
+      </a>
+    </li> 
+<!--
+    <li>
+      <a href="https://sherullah.com/python-contents/python/"
+        target="_blank"
+        rel="noopener">
+        PYTHON
+      </a>
+    </li> 
+  -->
+    <!-- pathto inside repository project-->
+    <li class="">
+      <a href="../../../index.html">POSTGRESQL</a>
+    </li>
+<!--
+     <li>
+      <a href="https://sherullah.com/mongodb-contents/mongodb/"
+        target="_blank"
+        rel="noopener">
+        MONGODB
+      </a>
+    </li> 
+
+    <li>
+      <a href="https://sherullah.com/git-contents/git/"
+        target="_blank"
+        rel="noopener">
+        GIT
+      </a>
+    </li> 
+
+    <li>
+      <a href="https://sherullah.com/github-contents/github/"
+        target="_blank"
+        rel="noopener">
+        GITHUB
+      </a>
+    </li> 
+
+    <li>
+      <a href="https://sherullah.com/docker-contents/docker/"
+        target="_blank"
+        rel="noopener">
+        DOCKER
+      </a>
+    </li> 
+
+    <li>
+      <a href="https://sherullah.com/kubernetes-contents/kubernetes/"
+        target="_blank"
+        rel="noopener">
+        KUBERNETES
+      </a>
+     </li> 
+    -->
+    
+  </ul>
+
+    <!-- Right arrow -->
+  <button class="scroll-btn scroll-right" id="navRight" aria-label="Scroll right">
+    &#10095;
+  </button>
+</nav>
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="_static/images/dask-horizontal-white.svg">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Postgresql</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Object Explorer</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../server/index.html"> Server(1)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../server/localpostgresql/index.html"> Local PostgreSQL</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../server/localpostgresql/databases/index.html"> Databases(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/databases/mydb/index.html"> MyDB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/databases/postgres/index.html"> postgres</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/index.html"> Login/Group Roles(12)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/pg_database_owner.html"> pg_database_owner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/pg_execute_server_program.html"> pg_execute-server_program</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/pg_monitor.html"> pg_monitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/pg_read_all_data.html"> pg_read_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/pg_read_all_settings.html"> pg_read_all_settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/pg_read_all_stats.html"> pg_read_all_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/pg_read_server_files.html"> pg_read_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/pg_signal_backend.html"> pg_signal_backend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/pg_stat_scan_tables.html"> pg_stat_scan_tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/pg_write_all_data.html"> pg_write_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/pg_write_server_files.html"> pg_write_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/logingrouproles/sherullahmohtat.html">👤 sherullahmohtat</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../server/localpostgresql/tablespaces/index.html"> Tablespaces(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/tablespaces/pg_default/index.html"> pg_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../server/localpostgresql/tablespaces/pg_global/index.html"> pg_global</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Explanations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../mydb/index.html"> MyDB</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../mydb/casts/index.html"> Casts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../mydb/catalogs/index.html"> Catalogs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../mydb/eventtriggers/index.html"> Event Triggers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../mydb/extensions/index.html"> Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../mydb/foreigndatawrappers/index.html"> Foreign Data Wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../mydb/languages/index.html"> Languages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../mydb/publications/index.html"> Publications</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../mydb/schemas/index.html"> Schemas</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../mydb/schemas/public/index.html"> public</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/aggregates/index.html"> Aggregates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/collations/index.html"> Collations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/domains/index.html"> Domains</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/fts_configurations/index.html"> FTS Configurations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/fts_dictionaries/index.html"> FTS Dictionaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/fts_parsers/index.html"> FTS Parsers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/fts_templates/index.html"> FTS Templates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/foreign_tables/index.html"> Foreign Tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/functions/index.html"> Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/materialized_views/index.html"> Materialized Views</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/operators/index.html"> Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/procedures/index.html"> Procedures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/sequences/index.html"> Sequences</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/tables/index.html"> Tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/trigger_functions/index.html"> Trigger Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/types/index.html"> Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../mydb/schemas/public/views/index.html"> Views</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../mydb/subscriptions/index.html"> Subscriptions</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tables Explanations</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html"> Tables(1)</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html"> Students</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../columns/index.html"> Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../constraints/index.html"> Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../indexes/index.html"> Indexes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rlspolicies/index.html"> RLS Policies</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#"> Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../triggers/index.html"> Triggers</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1> Rules</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-rules-in-postgresql">What are Rules in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-rules-exist-historical-context">Why Rules exist (historical context)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#do-instead-vs-do-also">DO INSTEAD vs DO ALSO</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-rules-are-dangerous">Why Rules are dangerous</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="rules-rules">
+<h1><img alt="rules" src="../../../_images/rules.png" /> Rules<a class="headerlink" href="#rules-rules" title="Link to this heading">#</a></h1>
+<section id="what-are-rules-in-postgresql">
+<h2>What are Rules in PostgreSQL?<a class="headerlink" href="#what-are-rules-in-postgresql" title="Link to this heading">#</a></h2>
+<p>In <strong>PostgreSQL</strong>, a <strong>Rule</strong> is:</p>
+<p><strong>A query-rewrite mechanism</strong></p>
+<p>PostgreSQL rewrites your SQL before execution.</p>
+<dl class="simple">
+<dt>Important:</dt><dd><ul class="simple">
+<li><p>Rules run <strong>before triggers</strong></p></li>
+<li><p>They <strong>rewrite</strong> the query itself</p></li>
+<li><p>They are <strong>not procedural logic</strong></p></li>
+</ul>
+</dd>
+<dt>Think of Rules as:</dt><dd><p>“When the user runs THIS query, secretly replace it with THAT query.”</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>Where Rules sit in the stack</p>
+<p>Execution order:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>SQL<span class="w"> </span>statement
+↓
+RULE<span class="w"> </span>SYSTEM<span class="w"> </span><span class="o">(</span>query<span class="w"> </span>rewrite<span class="o">)</span>
+↓
+RLS<span class="w"> </span>policies
+↓
+Triggers
+↓
+Actual<span class="w"> </span>execution
+</pre></div>
+</div>
+<p>Rules happen <strong>very early.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="why-rules-exist-historical-context">
+<h2>Why Rules exist (historical context)<a class="headerlink" href="#why-rules-exist-historical-context" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Rules were created originally to:</dt><dd><ul class="simple">
+<li><p>Implement <strong>views</strong></p></li>
+<li><p>Redirect writes to views</p></li>
+<li><p>Support early updatable views</p></li>
+</ul>
+</dd>
+<dt>Today:</dt><dd><ul class="simple">
+<li><p>Mostly used <strong>internally</strong></p></li>
+<li><p>Rarely recommended for application logic</p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>Basic Rule example (SELECT rewrite)</strong></p>
+<p>Suppose you want:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">students</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>To secretly become:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">students</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>You can do:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">RULE</span><span class="w"> </span><span class="n">students_only_active</span><span class="w"> </span><span class="k">AS</span>
+<span class="k">ON</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">students</span>
+<span class="k">DO</span><span class="w"> </span><span class="k">INSTEAD</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">students</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Now:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">students</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>returns only active students.</p>
+</section>
+<hr class="docutils" />
+<section id="do-instead-vs-do-also">
+<h2>DO INSTEAD vs DO ALSO<a class="headerlink" href="#do-instead-vs-do-also" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>DO INSTEAD</dt><dd><ul class="simple">
+<li><p>Replaces the original query</p></li>
+</ul>
+</dd>
+<dt>DO ALSO</dt><dd><ul class="simple">
+<li><p>Runs <strong>in addition</strong> to the original query</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">RULE</span><span class="w"> </span><span class="n">log_student_insert</span><span class="w"> </span><span class="k">AS</span>
+<span class="k">ON</span><span class="w"> </span><span class="k">INSERT</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">students</span>
+<span class="k">DO</span><span class="w"> </span><span class="k">ALSO</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">student_logs</span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span><span class="w"> </span><span class="k">action</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="k">NEW</span><span class="mf">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;insert&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><strong>Rules with INSERT (redirect writes)</strong></p>
+<p>Classic use case: <strong>updatable views</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">students_public</span><span class="w"> </span><span class="k">AS</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="k">name</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">students</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Now allow inserts into the view:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">RULE</span><span class="w"> </span><span class="n">students_public_insert</span><span class="w"> </span><span class="k">AS</span>
+<span class="k">ON</span><span class="w"> </span><span class="k">INSERT</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">students_public</span>
+<span class="k">DO</span><span class="w"> </span><span class="k">INSTEAD</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">students</span><span class="w"> </span><span class="p">(</span><span class="k">name</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="k">NEW</span><span class="mf">.</span><span class="k">name</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This is how PostgreSQL made views “writable” before triggers existed.</p>
+<hr class="docutils" />
+<p><strong>Rules vs Triggers (VERY IMPORTANT)</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Rules</p></th>
+<th class="head"><p>Triggers</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Timing</p></td>
+<td><p>Before execution</p></td>
+<td><p>During execution</p></td>
+</tr>
+<tr class="row-odd"><td><p>Behavior</p></td>
+<td><p>Rewrite query</p></td>
+<td><p>Run procedural code</p></td>
+</tr>
+<tr class="row-even"><td><p>Row-level</p></td>
+<td><p>❌ No</p></td>
+<td><p>✅ Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Predictable</p></td>
+<td><p>❌ Hard</p></td>
+<td><p>✅ Clear</p></td>
+</tr>
+<tr class="row-even"><td><p>Modern usage</p></td>
+<td><p>⚠️ Rare</p></td>
+<td><p>✅ Standard</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>99% of the time, you want triggers, not rules</p>
+<hr class="docutils" />
+<p><strong>Rules vs RLS</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Rules</p></th>
+<th class="head"><p>RLS</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Purpose</p></td>
+<td><p>Rewrite queries</p></td>
+<td><p>Enforce security</p></td>
+</tr>
+<tr class="row-odd"><td><p>Security</p></td>
+<td><p>❌ Unsafe</p></td>
+<td><p>✅ Strong</p></td>
+</tr>
+<tr class="row-even"><td><p>Row visibility</p></td>
+<td><p>❌ Indirect</p></td>
+<td><p>✅ Guaranteed</p></td>
+</tr>
+<tr class="row-odd"><td><p>Recommended</p></td>
+<td><p>❌ No</p></td>
+<td><p>✅ Yes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Rules <strong>do not replace RLS.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="why-rules-are-dangerous">
+<h2>Why Rules are dangerous<a class="headerlink" href="#why-rules-are-dangerous" title="Link to this heading">#</a></h2>
+<p><strong>1. They are invisible</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">students</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>You <strong>cannot tell</strong> what rule rewrote it.</p>
+<ol class="arabic simple" start="2">
+<li><dl class="simple">
+<dt>Hard to debug</dt><dd><ul class="simple">
+<li><p>EXPLAIN may not show intent clearly</p></li>
+<li><p>Complex rewrite chains</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+<p><strong>3. Can break expectations</strong></p>
+<p>Multiple rules can fire and interact unexpectedly.</p>
+<hr class="docutils" />
+<p><strong>When Rules are acceptable</strong></p>
+<p>✔ Internal PostgreSQL features</p>
+<p>✔ Very simple, read-only views</p>
+<p>✔ Legacy systems</p>
+<p>❌ Business logic</p>
+<p>❌ Security</p>
+<p>❌ Auditing</p>
+<p>❌ Multi-tenant filtering</p>
+<p><strong>PostgreSQL’s own recommendation</strong></p>
+<dl class="simple">
+<dt>PostgreSQL documentation clearly implies:</dt><dd><p>Use triggers instead of rules for most tasks.</p>
+</dd>
+</dl>
+<p>pgAdmin: What you’re seeing</p>
+<p>In your tree:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>students
+└──<span class="w"> </span>Rules
+</pre></div>
+</div>
+<dl class="simple">
+<dt>This folder exists because:</dt><dd><ul class="simple">
+<li><p>PostgreSQL supports rules</p></li>
+<li><p>But most tables have zero rules</p></li>
+</ul>
+</dd>
+</dl>
+<p>That’s normal.</p>
+<hr class="docutils" />
+<p><strong>Rule lifecycle</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="c1">-- create</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">RULE</span><span class="w"> </span><span class="mf">...</span>
+
+<span class="c1">-- view</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_rules</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">tablename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;students&#39;</span><span class="p">;</span>
+
+<span class="c1">-- drop</span>
+<span class="k">DROP</span><span class="w"> </span><span class="k">RULE</span><span class="w"> </span><span class="n">rule_name</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">students</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Mental model (remember this)</strong></p>
+<p>Rules rewrite SQL text</p>
+<p>Triggers react to data changes</p>
+<dl class="simple">
+<dt>If you need:</dt><dd><ul class="simple">
+<li><p>Logic → Trigger</p></li>
+<li><p>Security → RLS</p></li>
+<li><p>Aggregation → View / Materialized View</p></li>
+<li><p>API → RLS + functions</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Final guidance (important)</strong></p>
+<dl class="simple">
+<dt>For modern PostgreSQL systems:</dt><dd><ul class="simple">
+<li><p>❌ Avoid Rules</p></li>
+<li><p>✅ Use Triggers</p></li>
+<li><p>✅ Use RLS</p></li>
+<li><p>✅ Use Views (read-only)</p></li>
+<li><p>✅ Use Materialized Views for performance</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../rlspolicies/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"> RLS Policies</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../triggers/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"> Triggers</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-rules-in-postgresql">What are Rules in PostgreSQL?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-rules-exist-historical-context">Why Rules exist (historical context)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#do-instead-vs-do-also">DO INSTEAD vs DO ALSO</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-rules-are-dangerous">Why Rules are dangerous</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024 Sherullah Mohtat. All rights reserved..
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+<!-- Google Tag Manager -->
+<script>
+  (function (w, d, s, l, i) {
+    w[l] = w[l] || [];
+    w[l].push({
+      "gtm.start": new Date().getTime(),
+      event: "gtm.js",
+    });
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s),
+      dl = l != "dataLayer" ? "&l=" + l : "";
+    j.async = true;
+    j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+    f.parentNode.insertBefore(j, f);
+  })(
+    window,
+    document,
+    "script",
+    "dataLayer",
+    "GTM-P4GQM59"
+  );
+</script>
+<!-- End Google Tag Manager -->
+
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

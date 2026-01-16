@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=52fd3798" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/css/ad_style.css?v=34d129f9" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/css/navbar-scroll.css?v=d0d81848" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/css/sidebaricons.css?v=f479e273" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/sidebaricons.css?v=a9ffd395" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -349,7 +349,7 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explanations</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Explanations</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../index.html"> MyDB</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../../casts/index.html"> Casts</a></li>
@@ -383,6 +383,21 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../subscriptions/index.html"> Subscriptions</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tables Explanations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../tables/index.html"> Tables(1)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../tables/students/index.html"> Students</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tables/students/columns/index.html"> Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tables/students/constraints/index.html"> Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tables/students/indexes/index.html"> Indexes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tables/students/rlspolicies/index.html"> RLS Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tables/students/rules/index.html"> Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tables/students/triggers/index.html"> Triggers</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 </ul>
@@ -486,6 +501,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#procedures-postgresql">Procedures (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-procedure">1️⃣ What is a Procedure?</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procedure-vs-function">2️⃣ Procedure vs Function</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-postgresql-added-procedures-pg-11">3️⃣ Why PostgreSQL added Procedures (PG 11+)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-procedure-example">4️⃣ Simple Procedure Example</a></li>
@@ -512,7 +528,8 @@ document.write(`
 <h1><img alt="procedures" src="../../../../_images/procedures.png" /> Procedures<a class="headerlink" href="#procedures-procedures" title="Link to this heading">#</a></h1>
 <section id="procedures-postgresql">
 <h2>Procedures (PostgreSQL)<a class="headerlink" href="#procedures-postgresql" title="Link to this heading">#</a></h2>
-<p><strong>1️⃣ What is a Procedure?</strong></p>
+<section id="what-is-a-procedure">
+<h3>1️⃣ What is a Procedure?<a class="headerlink" href="#what-is-a-procedure" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>A <strong>procedure</strong> is a database object that:</dt><dd><ul class="simple">
 <li><p>Runs <strong>server-side logic</strong></p></li>
@@ -523,6 +540,7 @@ document.write(`
 </dd>
 </dl>
 <p>Procedures are for <strong>doing things</strong>, not for returning values.</p>
+</section>
 <hr class="docutils" />
 <section id="procedure-vs-function">
 <h3>2️⃣ Procedure vs Function<a class="headerlink" href="#procedure-vs-function" title="Link to this heading">#</a></h3>
@@ -776,6 +794,7 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#procedures-postgresql">Procedures (PostgreSQL)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-procedure">1️⃣ What is a Procedure?</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procedure-vs-function">2️⃣ Procedure vs Function</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-postgresql-added-procedures-pg-11">3️⃣ Why PostgreSQL added Procedures (PG 11+)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-procedure-example">4️⃣ Simple Procedure Example</a></li>

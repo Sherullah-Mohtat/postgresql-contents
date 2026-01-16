@@ -357,4 +357,93 @@
   background-image: url("../images/sidebar_icons/views.png") !important;
 }
 
+/*=================================================================================*/
+/*=================================================================================*/
+/*=================================================================================*/
+/*=================================================================================*/
+/*==============================     Tables Icons        ==========================*/
+/*=================================================================================*/
+/*=================================================================================*/
+/*=================================================================================*/
+/*=================================================================================*/
+
+/* ---------- Tables(1) root ---------- */
+.wy-menu-vertical a.reference.internal[href*="tables(1)/"]::before,
+.bd-sidebar       a.reference.internal[href*="tables(1)/"]::before {
+  background-image: url("../images/sidebar_icons/tables.png") !important;
+}
+
+.wy-menu-vertical a.reference.internal[href*="tables(1)/students"]::before,
+.bd-sidebar       a.reference.internal[href*="tables(1)/students"]::before,
+.wy-menu-vertical a.reference.internal[href*="students"]::before,
+.bd-sidebar       a.reference.internal[href*="students"]::before {
+  background-image: url("../images/sidebar_icons/table.png") !important;
+}
+
+/*==================================================================================*/
+/*==================================================================================*/
+/*==================================================================================*/
+/*==================================================================================*/
+/*==================================================================================*/
+/*==================================================================================*/
+/*==================================================================================*/
+
+
+/* Students */
+.wy-menu-vertical a.reference.internal[href*="students/"]::before,
+.bd-sidebar       a.reference.internal[href*="students/"]::before {
+  background-image: url("../images/sidebar_icons/table.png") !important;
+}
+
+
+
+/* public → Aggregates */
+.wy-menu-vertical a.reference.internal[href*="students/columns"]::before,
+.bd-sidebar       a.reference.internal[href*="students/columns"]::before,
+.wy-menu-vertical a.reference.internal[href*="columns"]::before,
+.bd-sidebar       a.reference.internal[href*="columns"]::before {
+  background-image: url("../images/sidebar_icons/columns.png") !important;
+}
+
+/* public → Collations */
+.wy-menu-vertical a.reference.internal[href*="students/constraints"]::before,
+.bd-sidebar       a.reference.internal[href*="students/constraints"]::before,
+.wy-menu-vertical a.reference.internal[href*="constraints"]::before,
+.bd-sidebar       a.reference.internal[href*="constraints"]::before {
+  background-image: url("../images/sidebar_icons/constraints.png") !important;
+}
+
+/* public → Domains */
+.wy-menu-vertical a.reference.internal[href*="students/indexes"]::before,
+.bd-sidebar       a.reference.internal[href*="students/indexes"]::before,
+.wy-menu-vertical a.reference.internal[href*="indexes"]::before,
+.bd-sidebar       a.reference.internal[href*="indexes"]::before {
+  background-image: url("../images/sidebar_icons/indexes.png") !important;
+}
+
+/* public → FTS Configurations */
+.wy-menu-vertical a.reference.internal[href*="students/rlspolicies"]::before,
+.bd-sidebar       a.reference.internal[href*="students/rlspolicies"]::before,
+.wy-menu-vertical a.reference.internal[href*="rlspolicies"]::before,
+.bd-sidebar       a.reference.internal[href*="rlspolicies"]::before {
+  background-image: url("../images/sidebar_icons/rls_policies.png") !important;
+}
+
+/* public → FTS Dictionaries */
+.wy-menu-vertical a.reference.internal[href*="students/rules"]::before,
+.bd-sidebar       a.reference.internal[href*="students/rules"]::before,
+.wy-menu-vertical a.reference.internal[href*="rules"]::before,
+.bd-sidebar       a.reference.internal[href*="rules"]::before {
+  background-image: url("../images/sidebar_icons/rules.png") !important;
+}
+
+/* public → FTS Parsers */
+.wy-menu-vertical a.reference.internal[href*="students/triggers"]::before,
+.bd-sidebar       a.reference.internal[href*="students/triggers"]::before,
+.wy-menu-vertical a.reference.internal[href*="triggers"]::before,
+.bd-sidebar       a.reference.internal[href*="triggers"]::before {
+  background-image: url("../images/sidebar_icons/triggers.png") !important;
+}
+
+
 

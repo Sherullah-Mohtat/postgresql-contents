@@ -1,0 +1,819 @@
+ 
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Students &#8212; Postgresql</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=873836d9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/style.css?v=d6ed2d86" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=52fd3798" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/ad_style.css?v=34d129f9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/navbar-scroll.css?v=d0d81848" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/sidebaricons.css?v=a9ffd395" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tables/students/index';</script>
+    <script src="../../_static/js/custom.js?v=6f0278c6"></script>
+    <script src="../../_static/js/navbar-scroll.js?v=cb524ae2"></script>
+    <link rel="icon" href="../../_static/sherullah.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Columns" href="columns/index.html" />
+    <link rel="prev" title="Tables(1)" href="../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+<!-- Google Tag Manager (noscript) -->
+<noscript
+  ><iframe
+    src="https://www.googletagmanager.com/ns.html?id=GTM-P4GQM59"
+    height="0"
+    width="0"
+    style="display: none; visibility: hidden"
+  ></iframe
+></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<nav class="dask-nav container-fluid">
+  <ul>
+    <li class="logo">
+      <a href="https://docs.dask.org/">
+        <img
+          class="caption"
+          src="../../_static/images/dask-horizontal-white.svg"
+        />
+      </a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/">Dask</a>
+    </li>
+
+    <li>
+      <a href="https://distributed.dask.org/">Distributed</a>
+    </li>
+
+    <li>
+      <a href="https://ml.dask.org/">Dask ML</a>
+    </li>
+
+    <li>
+      <a href="https://examples.dask.org/">Examples</a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/en/latest/ecosystem.html">Ecosystem</a>
+    </li>
+
+    <li>
+      <a href="https://docs.dask.org/en/latest/support.html">Community</a>
+    </li>
+  </ul>
+</nav>
+
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+<nav class="dask-nav container-fluid navbar-scroll-wrap">
+
+    <!-- Left arrow -->
+  <button class="scroll-btn scroll-left" id="navLeft" aria-label="Scroll left">
+    &#10094;
+  </button>
+
+  <ul class="nav-scroll" id="nav-scroll">
+
+    <!-- 🔥 Home = external site -->
+    <li>
+      <a href="https://sherullah.com/" target="_blank" rel="noopener" class="nav-icon">
+        <img src="../../_static/images/logo/home48.png" alt="Home" />
+      </a>
+    </li>
+
+    <!-- 🔥 FLUTTER = external docs -->
+    <li>
+      <a href="https://sherullah.com/flutter-contents/flutter/"
+        target="_blank"
+        rel="noopener">
+        FLUTTER
+      </a>
+    </li> 
+
+<!--
+    <li>
+      <a href="https://sherullah.com/firebase-contents/firebase/"
+        target="_blank"
+        rel="noopener">
+        FIREBASE
+      </a>
+    </li> 
+
+    <li>
+      <a href="https://sherullah.com/dart-contents/dart/"
+        target="_blank"
+        rel="noopener">
+        DART
+      </a>
+    </li> 
+  -->
+       <!-- 🔥 SDJANGO= external docs -->
+    <li>
+      <a href="https://sherullah.com/django-contents/django/"
+        target="_blank"
+        rel="noopener">
+        DJANGO
+      </a>
+    </li> 
+<!--
+    <li>
+      <a href="https://sherullah.com/python-contents/python/"
+        target="_blank"
+        rel="noopener">
+        PYTHON
+      </a>
+    </li> 
+  -->
+    <!-- pathto inside repository project-->
+    <li class="">
+      <a href="../../index.html">POSTGRESQL</a>
+    </li>
+<!--
+     <li>
+      <a href="https://sherullah.com/mongodb-contents/mongodb/"
+        target="_blank"
+        rel="noopener">
+        MONGODB
+      </a>
+    </li> 
+
+    <li>
+      <a href="https://sherullah.com/git-contents/git/"
+        target="_blank"
+        rel="noopener">
+        GIT
+      </a>
+    </li> 
+
+    <li>
+      <a href="https://sherullah.com/github-contents/github/"
+        target="_blank"
+        rel="noopener">
+        GITHUB
+      </a>
+    </li> 
+
+    <li>
+      <a href="https://sherullah.com/docker-contents/docker/"
+        target="_blank"
+        rel="noopener">
+        DOCKER
+      </a>
+    </li> 
+
+    <li>
+      <a href="https://sherullah.com/kubernetes-contents/kubernetes/"
+        target="_blank"
+        rel="noopener">
+        KUBERNETES
+      </a>
+     </li> 
+    -->
+    
+  </ul>
+
+    <!-- Right arrow -->
+  <button class="scroll-btn scroll-right" id="navRight" aria-label="Scroll right">
+    &#10095;
+  </button>
+</nav>
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="_static/images/dask-horizontal-white.svg">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Postgresql</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Object Explorer</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../server/index.html"> Server(1)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../server/localpostgresql/index.html"> Local PostgreSQL</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/databases/index.html"> Databases(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/databases/mydb/index.html"> MyDB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/databases/postgres/index.html"> postgres</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/index.html"> Login/Group Roles(12)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_database_owner.html"> pg_database_owner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_execute_server_program.html"> pg_execute-server_program</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_monitor.html"> pg_monitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_data.html"> pg_read_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_settings.html"> pg_read_all_settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_all_stats.html"> pg_read_all_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_read_server_files.html"> pg_read_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_signal_backend.html"> pg_signal_backend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_stat_scan_tables.html"> pg_stat_scan_tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_all_data.html"> pg_write_all_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/pg_write_server_files.html"> pg_write_server_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/logingrouproles/sherullahmohtat.html">👤 sherullahmohtat</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../server/localpostgresql/tablespaces/index.html"> Tablespaces(2)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_default/index.html"> pg_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../server/localpostgresql/tablespaces/pg_global/index.html"> pg_global</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Database Explanations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../mydb/index.html"> MyDB</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../mydb/casts/index.html"> Casts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mydb/catalogs/index.html"> Catalogs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mydb/eventtriggers/index.html"> Event Triggers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mydb/extensions/index.html"> Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mydb/foreigndatawrappers/index.html"> Foreign Data Wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mydb/languages/index.html"> Languages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mydb/publications/index.html"> Publications</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mydb/schemas/index.html"> Schemas</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../mydb/schemas/public/index.html"> public</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/aggregates/index.html"> Aggregates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/collations/index.html"> Collations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/domains/index.html"> Domains</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/fts_configurations/index.html"> FTS Configurations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/fts_dictionaries/index.html"> FTS Dictionaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/fts_parsers/index.html"> FTS Parsers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/fts_templates/index.html"> FTS Templates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/foreign_tables/index.html"> Foreign Tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/functions/index.html"> Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/materialized_views/index.html"> Materialized Views</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/operators/index.html"> Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/procedures/index.html"> Procedures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/sequences/index.html"> Sequences</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/tables/index.html"> Tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/trigger_functions/index.html"> Trigger Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/types/index.html"> Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mydb/schemas/public/views/index.html"> Views</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mydb/subscriptions/index.html"> Subscriptions</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tables Explanations</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html"> Tables(1)</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#"> Students</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="columns/index.html"> Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="constraints/index.html"> Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="indexes/index.html"> Indexes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rlspolicies/index.html"> RLS Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rules/index.html"> Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triggers/index.html"> Triggers</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1> Students</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-students">1️⃣ What is students?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-clean-production-ready-students-table-example">2️⃣ A clean, production-ready students table (example)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#column-by-column-explanation">3️⃣ Column-by-column explanation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-this-table-is-proper-postgresql-design">4️⃣ Why this table is “proper” PostgreSQL design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-rows-actually-look-mental-model">5️⃣ How rows actually look (mental model)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-postgresql-treats-students-internally">6️⃣ How PostgreSQL treats students internally</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-students-enables-next">7️⃣ What students enables next</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#very-important-rule-remember-this">8️⃣ Very important rule (remember this)</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="table-students">
+<h1><img alt="table" src="../../_images/table.png" /> Students<a class="headerlink" href="#table-students" title="Link to this heading">#</a></h1>
+<section id="what-is-students">
+<h2>1️⃣ What is students?<a class="headerlink" href="#what-is-students" title="Link to this heading">#</a></h2>
+<p>students is a <strong>relation (table)</strong> inside the public schema.</p>
+<p>Conceptually:</p>
+<p>Each <strong>row = one student</strong></p>
+<p>Each <strong>column = one property of a student</strong></p>
+<p>This is the <strong>core data object</strong> — everything else (indexes, constraints, triggers, views) exists because of this table.</p>
+</section>
+<hr class="docutils" />
+<section id="a-clean-production-ready-students-table-example">
+<h2>2️⃣ A clean, production-ready students table (example)<a class="headerlink" href="#a-clean-production-ready-students-table-example" title="Link to this heading">#</a></h2>
+<p>Let’s assume this is the table you created (or very close):</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">students</span><span class="w"> </span><span class="p">(</span>
+<span class="w">   </span><span class="n">id</span><span class="w">              </span><span class="nb">BIGSERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">   </span><span class="n">first_name</span><span class="w">      </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">   </span><span class="n">last_name</span><span class="w">       </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">   </span><span class="n">email</span><span class="w">           </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">   </span><span class="n">date_of_birth</span><span class="w">   </span><span class="nb">DATE</span><span class="p">,</span>
+<span class="w">   </span><span class="n">enrollment_year</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">   </span><span class="n">is_active</span><span class="w">       </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">   </span><span class="n">created_at</span><span class="w">      </span><span class="nb">TIMESTAMPTZ</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">now</span><span class="p">(),</span>
+<span class="w">   </span><span class="n">updated_at</span><span class="w">      </span><span class="nb">TIMESTAMPTZ</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">now</span><span class="p">()</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>This single definition already explains <strong>90% of PostgreSQL fundamentals.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="column-by-column-explanation">
+<h2>3️⃣ Column-by-column explanation<a class="headerlink" href="#column-by-column-explanation" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>id BIGSERIAL PRIMARY KEY</dt><dd><ul class="simple">
+<li><p>Unique identifier for each student</p></li>
+<li><p>Backed by a <strong>sequence</strong></p></li>
+<li><p>Automatically indexed</p></li>
+<li><p>Never duplicated</p></li>
+</ul>
+</dd>
+</dl>
+<p>This is how PostgreSQL knows one row from another.</p>
+<hr class="docutils" />
+<p><strong>first_name, last_name</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Required fields</p></li>
+<li><p>TEXT has no length limit</p></li>
+<li><p>No artificial constraints unless needed</p></li>
+</ul>
+<p>PostgreSQL prefers <strong>flexible types + constraints</strong>, not rigid sizes.</p>
+<hr class="docutils" />
+<dl class="simple">
+<dt>email TEXT UNIQUE NOT NULL</dt><dd><ul class="simple">
+<li><p>Must be present</p></li>
+<li><p>Must be unique across all students</p></li>
+<li><p>Automatically creates a <strong>unique index</strong></p></li>
+</ul>
+</dd>
+</dl>
+<p>This is <strong>data integrity at the database level</strong>, not app level.</p>
+<hr class="docutils" />
+<dl class="simple">
+<dt>date_of_birth DATE</dt><dd><ul class="simple">
+<li><p>Uses a real date type</p></li>
+<li><p>No time, no timezone confusion</p></li>
+</ul>
+</dd>
+</dl>
+<p>Always use semantic types instead of strings.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>enrollment_year INT</dt><dd><ul class="simple">
+<li><p>Numeric year</p></li>
+<li><p>Can be validated with a CHECK constraint later</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p>Example:</p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">enrollment_year</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">1900</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>is_active BOOLEAN DEFAULT true</dt><dd><ul class="simple">
+<li><p>Soft-delete / status flag</p></li>
+<li><p>Safer than deleting rows</p></li>
+</ul>
+</dd>
+</dl>
+<p>Common in real systems.</p>
+<p><strong>created_at, updated_at</strong></p>
+<div class="highlight-postgres notranslate"><div class="highlight"><pre><span></span><span class="nb">TIMESTAMPTZ</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">now</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Stores <strong>time + timezone</strong></p></li>
+<li><p>Always use TIMESTAMPTZ, not TIMESTAMP</p></li>
+<li><p>Can be auto-updated with a trigger</p></li>
+</ul>
+<p>This is <strong>audit-ready design.</strong></p>
+</section>
+<hr class="docutils" />
+<section id="why-this-table-is-proper-postgresql-design">
+<h2>4️⃣ Why this table is “proper” PostgreSQL design<a class="headerlink" href="#why-this-table-is-proper-postgresql-design" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>This table:</dt><dd><ul class="simple">
+<li><p>✔ Uses <strong>native data types</strong></p></li>
+<li><p>✔ Enforces <strong>integrity via constraints</strong></p></li>
+<li><p>✔ Avoids app-only validation</p></li>
+<li><p>✔ Is index-friendly</p></li>
+<li><p>✔ Is security-ready (RLS can be added)</p></li>
+<li><p>✔ Is API-ready (PostgREST / Hasura compatible)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="how-rows-actually-look-mental-model">
+<h2>5️⃣ How rows actually look (mental model)<a class="headerlink" href="#how-rows-actually-look-mental-model" title="Link to this heading">#</a></h2>
+<p>A row inside students looks like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>id<span class="w"> </span><span class="p">|</span><span class="w"> </span>first_name<span class="w"> </span><span class="p">|</span><span class="w"> </span>last_name<span class="w"> </span><span class="p">|</span><span class="w"> </span>email<span class="w"> </span><span class="p">|</span><span class="w"> </span>enrollment_year<span class="w"> </span><span class="p">|</span><span class="w"> </span>is_active
+---+------------+-----------+-------+-----------------+----------
+<span class="m">1</span><span class="w">  </span><span class="p">|</span><span class="w"> </span>Alice<span class="w">      </span><span class="p">|</span><span class="w"> </span>Smith<span class="w">     </span><span class="p">|</span><span class="w"> </span>...<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="m">2023</span><span class="w">            </span><span class="p">|</span><span class="w"> </span><span class="nb">true</span>
+</pre></div>
+</div>
+<p>PostgreSQL stores this <strong>row-wise</strong>, optimized for transactional workloads.</p>
+</section>
+<hr class="docutils" />
+<section id="how-postgresql-treats-students-internally">
+<h2>6️⃣ How PostgreSQL treats students internally<a class="headerlink" href="#how-postgresql-treats-students-internally" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Behind the scenes:</dt><dd><ul class="simple">
+<li><p>Stored as <strong>heap pages</strong></p></li>
+<li><p>Indexed separately</p></li>
+<li><p>MVCC keeps row versions</p></li>
+<li><p>Constraints checked <strong>before commit</strong></p></li>
+</ul>
+</dd>
+</dl>
+<p>👉 You are working with a <strong>real database engine</strong>, not a file.</p>
+</section>
+<hr class="docutils" />
+<section id="what-students-enables-next">
+<h2>7️⃣ What students enables next<a class="headerlink" href="#what-students-enables-next" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>Because this table exists, you can now safely add:</dt><dd><ul class="simple">
+<li><p><strong>Indexes</strong> (performance)</p></li>
+<li><p><strong>RLS policies</strong> (security)</p></li>
+<li><p><strong>Triggers</strong> (automation)</p></li>
+<li><p><strong>Views</strong> (abstractions)</p></li>
+<li><p><strong>APIs</strong> (without writing backend code)</p></li>
+</ul>
+</dd>
+</dl>
+<p>Everything builds on top of this table.</p>
+</section>
+<hr class="docutils" />
+<section id="very-important-rule-remember-this">
+<h2>8️⃣ Very important rule (remember this)<a class="headerlink" href="#very-important-rule-remember-this" title="Link to this heading">#</a></h2>
+<p>Design tables first. Everything else is optional.</p>
+<p>Bad table design = bad system</p>
+<p>Good table design = scalable system</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"> Tables(1)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="columns/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"> Columns</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-students">1️⃣ What is students?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-clean-production-ready-students-table-example">2️⃣ A clean, production-ready students table (example)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#column-by-column-explanation">3️⃣ Column-by-column explanation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-this-table-is-proper-postgresql-design">4️⃣ Why this table is “proper” PostgreSQL design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-rows-actually-look-mental-model">5️⃣ How rows actually look (mental model)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-postgresql-treats-students-internally">6️⃣ How PostgreSQL treats students internally</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-students-enables-next">7️⃣ What students enables next</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#very-important-rule-remember-this">8️⃣ Very important rule (remember this)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024 Sherullah Mohtat. All rights reserved..
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+<!-- Google Tag Manager -->
+<script>
+  (function (w, d, s, l, i) {
+    w[l] = w[l] || [];
+    w[l].push({
+      "gtm.start": new Date().getTime(),
+      event: "gtm.js",
+    });
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s),
+      dl = l != "dataLayer" ? "&l=" + l : "";
+    j.async = true;
+    j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+    f.parentNode.insertBefore(j, f);
+  })(
+    window,
+    document,
+    "script",
+    "dataLayer",
+    "GTM-P4GQM59"
+  );
+</script>
+<!-- End Google Tag Manager -->
+
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
